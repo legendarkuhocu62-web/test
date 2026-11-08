@@ -83,3 +83,20 @@
    outline:3px solid #fff;outline-offset:3px
  }
 }
+
+/* Desktop S00 only: preserve the approved composite without cropping or duplicate UI. */
+.desktop-start-visual{display:none}
+@media(min-width:721px){
+ body.s00-desktop-cover-active{overflow-x:hidden}
+ body.s00-desktop-cover-active .shell{max-width:none}
+ body.s00-desktop-cover-active .masthead,
+ body.s00-desktop-cover-active .statusline,
+ body.s00-desktop-cover-active .reset,
+ body.s00-desktop-cover-active .footer{display:none}
+ body.s00-desktop-cover-active .stage-scene.mobile-cover-s00{background:#061321!important;height:100dvh;min-height:100dvh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+ body.s00-desktop-cover-active .stage-scene.mobile-cover-s00 .scene-content{width:100%;height:100%;padding:0;display:flex;align-items:center;justify-content:center}
+ .mobile-cover-s00 .desktop-start-visual{display:inline-block;position:relative;flex:none;max-width:100vw;max-height:100dvh;line-height:0}
+ .mobile-cover-s00 .desktop-start-visual img{display:block;width:auto;height:auto;max-width:100vw;max-height:100dvh;object-fit:contain}
+ .mobile-cover-s00 .desktop-start-hitbox{position:absolute;left:64%;top:76%;width:32%;height:17%;border:0;padding:0;margin:0;background:transparent;cursor:pointer;touch-action:manipulation}
+ .mobile-cover-s00 .desktop-start-hitbox:focus-visible{outline:3px solid #fff;outline-offset:2px}
+}
