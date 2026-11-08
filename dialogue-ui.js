@@ -70,18 +70,36 @@ function fit(){
  if(!lastOptions)return;
  const node=document.querySelector('#app .game-dialogue--scene');
  if(!node)return;
- const paragraph=node.querySelector('.game-dialogue__text p');
  const textBox=node.querySelector('.game-dialogue__text');
- if(!paragraph||!textBox)return;
+ const paragraph=textBox?.querySelector('p');
+ const panel=node.querySelector('.game-dialogue__panel');
+ if(!paragraph||!textBox||!panel)return;
  const raw=activeText;
- const previousSegments=segments;
- const originalIndex=previousSegments.slice(0,page).reduce((n,s)=>n+s.length,0);
- const previousHTML=paragraph.innerHTML;
+ const oldSegments=segments.slice();
+ const absoluteOffset=oldSegments.slice(0,page).reduce((n,x)=>n+x.length,0);
+ const oldHTML=paragraph.innerHTML;
+ const measure=document.createElement('p');
+ measure.className=paragraph.className;
+ measure.style.cssText='position:absolute;visibility:hidden;pointer-events:none;height:auto;min-height:0;max-height:none;overflow:visible;margin:0;';
+ measure.style.width=paragraph.getBoundingClientRect().width+'px';
+ textBox.appendChild(measure);
+ const panelStyle=getComputedStyle(panel);
+ const panelVertical=(parseFloat(panelStyle.paddingTop)||0)+(parseFloat(panelStyle.paddingBottom)||0)
+   +(parseFloat(panelStyle.borderTopWidth)||0)+(parseFloat(panelStyle.borderBottomWidth)||0);
+ const header=panel.querySelector('.game-dialogue__speaker');
+ const footer=panel.querySelector('.game-dialogue__footer');
+ const headerStyle=header?getComputedStyle(header):null;
+ const footerStyle=footer?getComputedStyle(footer):null;
+ const headerHeight=header?(header.getBoundingClientRect().height+(parseFloat(headerStyle.marginBottom)||0)):0;
+ const footerHeight=footer?(footer.getBoundingClientRect().height+(parseFloat(footerStyle.marginTop)||0)):0;
+ const maxPanelHeight=Math.min(
+   parseFloat(panelStyle.maxHeight)||Infinity,
+   panel.parentElement?.getBoundingClientRect().height||Infinity
+ );
+ const room=Math.max(0,maxPanelHeight-panelVertical-headerHeight-footerHeight);
  function fits(value){
-   paragraph.innerHTML=escapeHTML(value).replace(/\n/g,'<br>');
-   const contentHeight=paragraph.getBoundingClientRect().height;
-   const availableHeight=textBox.getBoundingClientRect().height;
-   return contentHeight<=availableHeight+1&&node.querySelector('.game-dialogue__panel').scrollHeight<=node.querySelector('.game-dialogue__panel').clientHeight+2;
+   measure.innerHTML=escapeHTML(value).replace(/\n/g,'<br>');
+   return measure.getBoundingClientRect().height<=room+0.5;
  }
  let next=[];
  if(fits(raw))next=[raw];
@@ -91,8 +109,6 @@ function fit(){
      if(fits(buffer+unit)){buffer+=unit;continue}
      if(buffer){next.push(buffer);buffer=''}
      if(fits(unit)){buffer=unit;continue}
-     /* Исключение: одно предложение слишком велико. Делим по словам,
-        не обрывая слово и не изменяя ни одного символа исходной реплики. */
      const words=unit.match(/\S+\s*|\s+/g)||[unit];
      for(const word of words){
        if(buffer&&!fits(buffer+word)){next.push(buffer);buffer=''}
@@ -101,15 +117,15 @@ function fit(){
    }
    if(buffer||!next.length)next.push(buffer);
  }
- paragraph.innerHTML=previousHTML;
+ measure.remove();
+ paragraph.innerHTML=oldHTML;
  if(next.join('')!==raw)next=[raw];
  let nextPage=0,cursor=0;
- for(let i=0;i<next.length;i++){
-   if(cursor<=originalIndex)nextPage=i;
-   cursor+=next[i].length;
+ for(let i=0;i<next.length;i++){if(cursor<=absoluteOffset)nextPage=i;cursor+=next[i].length}
+ nextPage=Math.min(nextPage,next.length-1);
+ if(next.length!==segments.length||next.some((x,i)=>x!==segments[i])||page!==nextPage){
+   segments=next;page=nextPage;node.outerHTML=render(lastOptions);
  }
- const changed=next.length!==segments.length||next.some((p,i)=>p!==segments[i])||page!==nextPage;
- if(changed){segments=next;page=nextPage;node.outerHTML=render(lastOptions)}
 }
 function move(action){
  if(action==='dlgMore'&&page<segments.length-1)page++;
