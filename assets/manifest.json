@@ -83,6 +83,12 @@
       "screen": "mobile",
       "status": "user_approved",
       "note": "Provided filename ID CH1-IMG-021 conflicts with existing S02 desktop report ID; resolve registry ID before syncing with main."
+    },
+    "bg_meeting_empty": {
+      "type": "background",
+      "path": "assets/backgrounds/CH1-IMG-019_S03_Переговорная_без_персонажей.jpeg",
+      "scene": "S03",
+      "status": "user_approved"
     }
   }
 }
