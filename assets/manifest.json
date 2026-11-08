@@ -75,6 +75,14 @@
       "scene": "S02",
       "screen": "mobile",
       "status": "uploaded_visual_check_pending"
+    },
+    "s00_mobile_start": {
+      "type": "background",
+      "path": "assets/backgrounds/CH1-IMG-021_S00_start_mobile_composite.jpeg",
+      "scene": "S00",
+      "screen": "mobile",
+      "status": "user_approved",
+      "note": "Provided filename ID CH1-IMG-021 conflicts with existing S02 desktop report ID; resolve registry ID before syncing with main."
     }
   }
 }
