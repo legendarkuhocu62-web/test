@@ -8,8 +8,11 @@ function splitExact(value,limit){
  while(at<str.length){
    let end=Math.min(at+limit,str.length);
    if(end<str.length){
-     const min=at+Math.floor(limit*.57);
-     for(let i=end;i>min;i--){if(/[\s.!?;,]/.test(str[i-1])){end=i;break}}
+     const strongMin=at+Math.floor(limit*.18);
+     let selected=0;
+     for(let i=end;i>strongMin;i--){const ch=str[i-1],next=str[i]||'';if(ch==='\n'||(/[.!?]/.test(ch)&&/\s/.test(next))){selected=i;break}}
+     if(!selected){const weakMin=at+Math.floor(limit*.57);for(let i=end;i>weakMin;i--){if(/[\s,;]/.test(str[i-1])){selected=i;break}}}
+     if(selected)end=selected;
    }
    if(end<=at)end=Math.min(str.length,at+limit);
    out.push(str.slice(at,end));at=end;
@@ -56,5 +59,5 @@ function move(action){
  else if(action==='dlgStart')page=0;
  return lastOptions?render(lastOptions):'';
 }
-window.CEH_DIALOGUE={render,move,splitExact,getReadState:()=>({key:activeKey,page,total:segments.length,joined:segments.join('')})};
+window.CEH_DIALOGUE={render,move,refresh:()=>lastOptions?render(lastOptions):'',splitExact,getReadState:()=>({key:activeKey,page,total:segments.length,joined:segments.join('')})};
 })();
