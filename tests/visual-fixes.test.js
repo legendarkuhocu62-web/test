@@ -23,9 +23,17 @@ for(const [width,height] of sizes){
      iw:img.naturalWidth,ih:img.naturalHeight,cx:(h.left+h.right)/2,cy:(h.top+h.bottom)/2,
      scrollWidth:document.documentElement.scrollWidth};
   });
-  assert.equal(cover.fit,'cover','desktop cover must not stretch or letterbox the artwork');
+  assert.equal(cover.fit,'contain','desktop start must preserve the full approved 16:9 artwork');
   assert.ok(cover.w>=width-3&&cover.h>=height-3,'S00 does not fill available desktop');
   assert.ok(cover.iw>0&&cover.ih>0,'S00 image did not load');
+  const foreground=await page.evaluate(()=>{
+    const img=document.querySelector('.desktop-start-visual img');
+    const b=img.getBoundingClientRect(),ratio=img.naturalWidth/img.naturalHeight;
+    const w=Math.min(b.width,b.height*ratio),h=w/ratio;
+    return {left:b.left+(b.width-w)/2,right:b.left+(b.width+w)/2,top:b.top+(b.height-h)/2,bottom:b.top+(b.height+h)/2};
+  });
+  assert.ok(foreground.left>=-3&&foreground.top>=-3&&foreground.right<=width+3&&foreground.bottom<=height+3,
+    'S00 approved artwork was cropped');
   assert.ok(cover.cx>=0&&cover.cx<=width&&cover.cy>=0&&cover.cy<=height,'Start hitbox invisible at '+width+'x'+height);
   assert.ok(cover.scrollWidth<=width+3,'S00 horizontal scroll at '+width+'x'+height);
   await page.screenshot({path:'tests/screenshot-fix-s00-'+width+'x'+height+'.png'});
