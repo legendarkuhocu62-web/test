@@ -101,46 +101,72 @@
  .mobile-cover-s00 .desktop-start-hitbox:focus-visible{outline:3px solid #fff;outline-offset:2px}
 }
 
-/* S01 unified layout v6 — shared header and status restored; mobile scene fits remaining viewport. */
-.speaker-id{display:flex;flex-direction:column;gap:3px}
-.speaker-id b{color:#efc586}
-.speaker-id small{color:#e3edf7;font-size:.78em;font-weight:500}
-.s01-scene{height:min(850px,calc(100dvh - 105px));min-height:0;overflow:hidden;align-items:stretch}
-.s01-scene .scene-content{height:100%;min-height:0;padding:0;display:flex;flex-direction:column;justify-content:flex-end}
-.s01-dialogue{position:relative;flex:1;min-height:0;display:flex;align-items:flex-end;padding:12px clamp(12px,3vw,36px);overflow:hidden;isolation:isolate}
-.s01-figure{position:absolute;left:4%;bottom:0;height:90%;max-width:55%;object-fit:contain;object-position:bottom;filter:drop-shadow(0 10px 25px #0008);pointer-events:none}
-.s01-panel{position:relative;z-index:2;margin-left:auto;width:min(78%,950px);max-height:90%;display:flex;flex-direction:column;min-height:0;padding:clamp(14px,2vw,24px);background:rgba(9,22,38,.93);border:1px solid #df9d4e;border-radius:14px;box-shadow:0 14px 35px #0009}
-.s01-panel .speaker-id{flex:none;margin-bottom:8px}
-.s01-panel .speaker-id b{font-size:clamp(17px,1.7vw,23px)}
-.s01-panel .speaker-id small{font-size:clamp(12px,1.1vw,15px)}
-.s01-panel-copy{flex:0 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain}
-.s01-panel-copy p{margin:0;font-size:clamp(15px,1.5vw,21px);line-height:1.4;overflow-wrap:anywhere}
-.s01-panel-action{display:flex;justify-content:flex-end;flex:none;margin-top:10px}
-.s01-panel-action .btn{margin:0;min-height:44px}
-.s01-scene .scene-content>.glass{margin:auto;width:min(92%,940px);max-height:90%;overflow-y:auto}
-.s01-build{position:absolute;z-index:8;top:7px;right:9px;padding:3px 6px;background:#071522dd;color:#f4c57c;font-size:10px;border-radius:4px;pointer-events:none}
+
+/* ТЗ 2.0: one shared three-layer dialogue layout. S00, investment UI and the report document retain their own layouts. */
+body.dialogue-mode-active{overflow:hidden}
+body.dialogue-mode-active .shell{height:100vh;height:100dvh;max-width:none;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+body.dialogue-mode-active .masthead{flex:0 0 auto}
+body.dialogue-mode-active #app{min-height:0;flex:1 1 auto;display:flex;flex-direction:column;overflow:hidden}
+body.dialogue-mode-active #app>.statusline{flex:0 0 auto;gap:10px;min-width:0}
+body.dialogue-mode-active #app>.statusline>span{min-width:0}
+body.dialogue-mode-active #app>.statusline>span:last-child{text-align:right}
+body.dialogue-mode-active .reset,body.dialogue-mode-active .footer{display:none}
+body.dialogue-mode-active .stage-scene.dialogue-stage{position:relative;flex:1 1 auto;min-height:0;height:auto;overflow:hidden;align-items:stretch;background-image:linear-gradient(0deg,#06101b99,transparent 54%),var(--bg)}
+.dialogue-stage .scene-content{min-height:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:0;overflow:hidden}
+.dialogue-stage--office{background-position:center center}
+.dialogue-stage--meeting{background-position:center center}
+.game-dialogue{position:relative;flex:1 1 auto;min-height:0;width:100%;display:flex;align-items:flex-end;padding:0 clamp(12px,2vw,32px) clamp(12px,2vh,25px);isolation:isolate}
+.game-dialogue__character{position:absolute;z-index:1;bottom:0;left:42%;height:91%;width:30%;max-width:36%;object-fit:contain;object-position:center bottom;pointer-events:none;filter:drop-shadow(0 9px 20px #0008)}
+.game-dialogue__panel{position:relative;z-index:2;flex:0 1 auto;width:100%;min-width:0;min-height:0;max-height:50%;display:flex;flex-direction:column;padding:clamp(14px,2.2vw,25px);border:2px solid #e99023;border-radius:23px;background:rgba(6,21,39,.93);box-shadow:0 12px 32px #0009}
+.game-dialogue__speaker{position:relative;z-index:3;display:flex;align-items:stretch;flex-wrap:wrap;gap:0;margin:-29px 0 12px;max-width:100%}
+.game-dialogue__name,.game-dialogue__role{padding:8px 15px;line-height:1.25;overflow-wrap:anywhere}
+.game-dialogue__name{background:linear-gradient(#ffab39,#ed7500);font-size:clamp(15px,1.8vw,23px);font-weight:800;color:white;border-radius:15px 13px 0 0;box-shadow:0 4px 9px #0006}
+.game-dialogue__role{background:rgba(9,23,40,.97);border-top:1px solid #ef8a17;border-right:1px solid #e99023;border-radius:0 12px 0 0;color:#e6eef7;font-size:clamp(12px,1.25vw,17px);display:flex;align-items:center}
+.game-dialogue__text{min-height:0;overflow:hidden;flex:0 1 auto}
+.game-dialogue__text p{margin:0;line-height:1.4;font-size:clamp(16px,1.5vw,22px);overflow-wrap:anywhere}
+.game-dialogue__footer{display:flex;gap:8px;justify-content:space-between;align-items:flex-end;flex:0 0 auto;margin-top:11px}
+.dialogue-counter{font-size:12px;color:#bbccdc;white-space:nowrap;align-self:center}
+.game-dialogue__actions{display:flex;justify-content:flex-end;align-items:center;flex-wrap:wrap;gap:6px;margin-left:auto}
+.dialogue-control{appearance:none;cursor:pointer;color:#fff;background:#29425d;border:1px solid #8ea7bc;border-radius:11px;padding:10px 13px;min-height:44px;font-size:clamp(12px,1.1vw,15px);font-weight:650}
+.dialogue-control--primary{color:#11243a;background:linear-gradient(#f6aa44,#f18a0a);border:1px solid #ffc16c;font-weight:800}
+.dialogue-control:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.game-dialogue__actions .btn{min-height:44px;margin:0;border-radius:11px;padding:10px 18px;background:linear-gradient(#f6aa44,#f18a0a);color:#11243a;border:1px solid #ffc16c;font-weight:800}
+.game-dialogue__actions .btn:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.game-dialogue--inline{display:block;min-height:0;padding:0;isolation:auto}
+.game-dialogue--inline .game-dialogue__panel{width:100%;max-height:none}
+.game-dialogue--inline .game-dialogue__speaker{margin:-18px 0 10px}
+.game-dialogue--inline .game-dialogue__text{overflow:visible}
+.report-dialogue{padding:0;border:0;background:transparent}
+.dialogue-stage .scene-content>.s01-questions{position:relative;z-index:3;flex:0 1 auto;width:min(95%,940px);max-height:62%;overflow-y:auto;margin:auto auto 14px}
+.s03-group-scene .scene-content{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-end}
+.s03-chooser{width:min(94%,1000px);margin:14px auto;max-height:70dvh;overflow:auto}
+.s03-chooser .choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
 @media(max-width:720px){
- body.s01-immersive-active{overflow:hidden}
- /* Retain the same top masthead and scene status as S02. */
- body.s01-immersive-active .reset,
- body.s01-immersive-active .footer{display:none!important}
- body.s01-immersive-active .shell{max-width:none;margin:0;height:100vh;height:100dvh;min-height:0;display:flex;flex-direction:column;overflow:hidden}
- body.s01-immersive-active .masthead{flex:0 0 auto}
- body.s01-immersive-active #app{flex:1 1 auto;min-height:0;height:auto;display:flex;flex-direction:column;overflow:hidden}
- body.s01-immersive-active .statusline{display:flex;flex:0 0 auto;gap:8px;min-width:0;padding:8px 12px;font-size:11px}
- body.s01-immersive-active .statusline>span{min-width:0}
- body.s01-immersive-active .statusline>span:last-child{text-align:right}
- body.s01-immersive-active .stage-scene.s01-scene{position:relative;inset:auto;flex:1 1 auto;width:100%;height:auto;min-height:0;max-height:none;margin:0;padding:0;overflow:hidden;z-index:auto;background-position:center}
- body.s01-immersive-active .s01-scene .scene-content{height:100%;min-height:0;padding:0;overflow:hidden}
- body.s01-immersive-active .s01-dialogue{height:100%;flex:1;min-height:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;padding:0 10px max(10px,env(safe-area-inset-bottom));overflow:hidden}
- body.s01-immersive-active .s01-figure{position:relative;top:auto;bottom:auto;left:auto;transform:none;flex:1 1 0;width:100%;height:0;min-height:0;max-height:none;max-width:100%;margin:0 auto;object-fit:contain;object-position:center bottom;z-index:1}
- body.s01-immersive-active .s01-panel{flex:none;margin:-clamp(12px,2.8dvh,30px) 0 0;width:100%;max-height:53%;min-height:0;padding:12px 13px;border-radius:12px;overflow:hidden}
- body.s01-immersive-active .s01-panel-copy p{font-size:clamp(14px,3.6vw,17px);line-height:1.35}
- body.s01-immersive-active .s01-panel-action{margin-top:8px}
- body.s01-immersive-active .s01-panel-action .btn{min-height:44px;padding:9px 16px}
- body.s01-immersive-active .s01-scene .scene-content>.glass{max-height:calc(100% - 30px);width:calc(100% - 20px);margin:auto 10px;overflow-y:auto}
+ body.dialogue-mode-active .masthead{padding:8px 12px}
+ body.dialogue-mode-active .statusline{padding:7px 12px;font-size:11px;line-height:1.2}
+ body.dialogue-mode-active .stage-scene.dialogue-stage{width:100%;height:auto;min-height:0;background-image:linear-gradient(0deg,#06101b99,transparent 56%),var(--bg)}
+ .dialogue-stage--office{background-size:auto 100%;background-position:12% top}
+ .dialogue-stage--meeting{background-size:auto 100%;background-position:53% top}
+ .game-dialogue--scene{display:grid;grid-template-rows:clamp(105px,24%,188px) minmax(0,1fr) auto;align-items:stretch;gap:0;padding:0 10px max(11px,env(safe-area-inset-bottom,0px));overflow:hidden}
+ .game-dialogue--scene .game-dialogue__character{position:relative;grid-row:2;z-index:1;left:auto;bottom:auto;top:auto;justify-self:end;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;object-position:center bottom}
+ .game-dialogue--scene .game-dialogue__panel{grid-row:3;z-index:2;max-height:min(46dvh,365px);width:100%;min-height:0;padding:11px 12px;border-radius:15px;margin-top:-16px}
+ .game-dialogue--scene .game-dialogue__speaker{margin:-25px 0 8px;flex-wrap:wrap}
+ .game-dialogue__name,.game-dialogue__role{padding:7px 9px}
+ .game-dialogue__name{font-size:clamp(14px,4.1vw,18px)}
+ .game-dialogue__role{font-size:clamp(11px,2.9vw,13px)}
+ .game-dialogue--scene .game-dialogue__text p{font-size:clamp(14px,3.8vw,17px);line-height:1.35}
+ .game-dialogue__footer{margin-top:8px}
+ .game-dialogue__actions{gap:5px}
+ .dialogue-control{padding:8px 9px;font-size:12px}
+ .game-dialogue__actions .btn{padding:9px 12px;font-size:clamp(12px,3.7vw,16px)}
+ .dialogue-stage .scene-content>.s01-questions{max-height:62%;margin:auto 10px 11px;width:calc(100% - 20px);padding:14px}
+ .s03-chooser{max-height:70%;width:calc(100% - 20px);margin:10px auto}
+ .s03-chooser .choices{grid-template-columns:1fr}
+ .game-dialogue--inline .game-dialogue__speaker{margin:-16px 0 7px}
+ .game-dialogue--inline .game-dialogue__text p{font-size:15px}
 }
-@media(max-width:720px) and (max-height:620px){
- body.s01-immersive-active .s01-figure{height:0;max-height:none}
- body.s01-immersive-active .s01-panel{max-height:62%}
+@media(max-width:720px) and (max-height:650px){
+ .game-dialogue--scene{grid-template-rows:clamp(75px,19%,122px) minmax(0,1fr) auto}
+ .game-dialogue--scene .game-dialogue__panel{max-height:52dvh}
+ .game-dialogue__role{font-size:11px}
 }
