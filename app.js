@@ -22,7 +22,7 @@ function render(){let html='';if(s.scene==='S00'){
  <div class="report-stage-layout">
    <div class="report-mentor"><img src="${A.irina}" alt="Ирина Соколова, главный технолог"><div class="report-mentor-name"><b>Ирина Соколова</b><small>Главный технолог · наставник</small></div></div>
    <div class="report-document">
-     <picture><source media="(max-width:720px)" srcset="assets/objects/CH1-S02-production-report-mobile.jpeg"><img src="assets/objects/CH1-S02-production-report-desktop.png" alt="Производственный отчёт ЦЕХ 404: производственный цикл 9–16 дней, загрузка оборудования 68%, простои 9%, переналадка 70 минут, поиск инструмента 12 минут за смену, ожидание деталей 2,5 дня, дефекты на финальном контроле 60%, поставки еженедельные, отсутствие материалов 2 случая за прошлый месяц." loading="eager"></picture>
+     <picture><source media="(max-width:720px)" srcset="assets/objects/CH1-S02-production-report-mobile.jpeg"><img data-act="reportZoom" title="Нажмите, чтобы увеличить отчёт" src="assets/objects/CH1-S02-production-report-desktop.png" alt="Производственный отчёт ЦЕХ 404: производственный цикл 9–16 дней, загрузка оборудования 68%, простои 9%, переналадка 70 минут, поиск инструмента 12 минут за смену, ожидание деталей 2,5 дня, дефекты на финальном контроле 60%, поставки еженедельные, отсутствие материалов 2 случая за прошлый месяц." loading="eager"></picture>
      ${btn('Увеличить отчёт','reportZoom')}
    </div>
  </div>
