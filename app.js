@@ -7,12 +7,12 @@ function btn(t,act,id='',cls=''){return `<button type="button" class="btn ${cls}
 function frame(bg,content,cls=''){return `<section class="stage-scene ${cls}" style="--bg:url('${bg}')"><div class="scene-content">${content}</div></section>`}
 function chapterDialogue(key,speaker,role,text,portrait,finish,variant='scene'){return D.render({key,speaker,role,text,portrait,finish,variant})}
 /* S00 desktop cover: keep the Start hitbox aligned with the 16:9 artwork
-   when object-fit:cover crops its edges on unusual screens. */
+   when object-fit:contain preserves every edge of the artwork. */
 function syncStartHitbox(){
  const visual=app.querySelector('.desktop-start-visual'),img=visual?.querySelector('img'),hit=visual?.querySelector('.desktop-start-hitbox');
  if(!visual||!img||!hit||window.innerWidth<=720)return;
  if(!img.complete||!img.naturalWidth||!img.naturalHeight){img.addEventListener('load',syncStartHitbox,{once:true});return}
- const w=visual.clientWidth,h=visual.clientHeight,scale=Math.max(w/img.naturalWidth,h/img.naturalHeight);
+ const w=visual.clientWidth,h=visual.clientHeight,scale=Math.min(w/img.naturalWidth,h/img.naturalHeight);
  if(!w||!h||!Number.isFinite(scale))return;
  const iw=img.naturalWidth*scale,ih=img.naturalHeight*scale,dx=(w-iw)/2,dy=(h-ih)/2;
  hit.style.left=(dx+iw*.64)+'px';
