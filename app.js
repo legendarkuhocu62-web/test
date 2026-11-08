@@ -68,8 +68,9 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
  }
  app.innerHTML=`<div class="statusline"><span>Глава 1 · ${e(s.scene)}</span><span>Восстановленная тестовая сборка</span></div>${html}<div class="reset">${btn('Начать заново','reset')}</div>`;
  try{localStorage.setItem(key,JSON.stringify(s))}catch(_){}
+ requestAnimationFrame(()=>D.fit());
 }
-function act(action,id){if(['dlgMore','dlgBack','dlgStart'].includes(action)){const node=app.querySelector('.game-dialogue');if(node)node.outerHTML=D.move(action);return;}if(action==='reportZoom'){document.getElementById('report-preview')?.showModal();return;}if(action==='reportClose'){document.getElementById('report-preview')?.close();return;}if(action==='reset'){if(confirm('Начать заново?'))s=L.initial()}
+function act(action,id){if(['dlgMore','dlgBack','dlgStart'].includes(action)){const node=app.querySelector('.game-dialogue');if(node){node.outerHTML=D.move(action);requestAnimationFrame(()=>D.fit());}return;}if(action==='reportZoom'){document.getElementById('report-preview')?.showModal();return;}if(action==='reportClose'){document.getElementById('report-preview')?.close();return;}if(action==='reset'){if(confirm('Начать заново?'))s=L.initial()}
  else if(action==='s00next')s.s00=Math.min(2,s.s00+1);
  else if(action==='badge'){const name=L.cleanName(document.getElementById('name')?.value);if(!name){alert('Введите имя');return}s.name=name;s.s00=3}
  else if(action==='next'){const next={S00:'S01',S01:'S02',S02:'S03',S03:'S04'};if(next[s.scene]===id){if(s.scene==='S01'&&s.asked.length!==3)return;if(s.scene==='S02'&&!s.hypothesisConfirmed)return;s.scene=id}}
@@ -88,6 +89,6 @@ function act(action,id){if(['dlgMore','dlgBack','dlgStart'].includes(action)){co
  render()}
 app.addEventListener('click',ev=>{const b=ev.target.closest('[data-act]');if(b)act(b.dataset.act,b.dataset.id)});
 app.addEventListener('keydown',ev=>{if(ev.key==='Enter'&&ev.target.id==='name'){ev.preventDefault();act('badge','')}});
-window.addEventListener('resize',()=>{const node=app.querySelector('.game-dialogue');if(node)node.outerHTML=D.refresh()});
+window.addEventListener('resize',()=>{const node=app.querySelector('.game-dialogue');if(node){node.outerHTML=D.refresh();requestAnimationFrame(()=>D.fit());}});
 render();window.__CEH_TEST__={getState:()=>structuredClone(s),act};
 })();
