@@ -276,8 +276,10 @@ body.s02-view-active .s02-report-stage .scene-content,body.s02-view-active .s02-
     object-position:center center;
   }
   body.dialogue-mode-active .game-dialogue--scene .game-dialogue__character {
-    transform:scale(1.18);
-    transform-origin:center bottom;
+    width:42%;
+    max-width:48%;
+    height:91%;
+    transform:none;
   }
 }
 @media (max-width:720px) {
