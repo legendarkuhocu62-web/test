@@ -61,6 +61,20 @@
       "type": "object",
       "path": "assets/icons/CH404-CH1-S00-001_employee_badge_technician.png",
       "status": "approved"
+    },
+    "report_desktop": {
+      "type": "object",
+      "path": "assets/objects/CH1-S02-production-report-desktop.png",
+      "scene": "S02",
+      "screen": "desktop",
+      "status": "uploaded_visual_check_pending"
+    },
+    "report_mobile": {
+      "type": "object",
+      "path": "assets/objects/CH1-S02-production-report-mobile.jpeg",
+      "scene": "S02",
+      "screen": "mobile",
+      "status": "uploaded_visual_check_pending"
     }
   }
 }

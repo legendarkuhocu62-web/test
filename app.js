@@ -10,17 +10,30 @@ function render(){let html='';if(s.scene==='S00'){
  if(s.s00===0)html=frame(A.title,`<div class="intro-title"><h1>ЦЕХ 404: Эффект домино</h1>${btn('Начать игру','s00next','','primary')}</div>`,'cover');
  if(s.s00===1)html=frame(A.gate,`<div class="glass"><h1>Первый день на предприятии</h1><p>Сегодня твой первый день на машиностроительном предприятии «ЦЕХ 404».<br>За проходной уже началась рабочая смена.<br>Тебе предстоит познакомиться с людьми, оборудованием и процессами, от которых зависит работа всего предприятия.</p>${btn('Подойти к проходной','s00next','','primary')}</div>`);
  if(s.s00===2)html=frame(A.entry,`<div class="glass"><h1>ДОПУСК НА ПРЕДПРИЯТИЕ</h1><p>Для входа на территорию необходимо оформить персональный пропуск.</p><label for="name">Как тебя зовут?</label><input id="name" maxlength="40" placeholder="Введите имя" value="${e(s.name)}">${btn('Получить пропуск','badge','','primary')}</div>`);
- if(s.s00===3)html=frame(A.entry,`<div class="glass"><h1>Пропуск получен</h1><div class="badge-card"><img src="${A.badge}" alt="Пропуск техника-технолога"><div class="badge-overlay"><strong>${e(s.name)}</strong><span>Техник-технолог</span></div></div>${btn('Пройти через турникет','next','S01','primary')}</div>`);
+ if(s.s00===3)html=frame(A.entry,`<div class="glass"><h1>Пропуск получен</h1><div class="badge-card"><img src="${A.badge}" alt="Пропуск техника-технолога"><div class="badge-overlay"><strong>${e(s.name)}</strong></div></div>${btn('Пройти через турникет','next','S01','primary')}</div>`);
  }else if(s.scene==='S01'){
  let text='';if(s.s01<4){text=dialogue('Ирина Соколова',d.intro[s.s01].replace('[Имя]',s.name));text+=btn(s.s01===3?'Задать вопросы Ирине':'Далее','introNext','','primary')}
  else if(s.reply){const q=d.questions.find(x=>x.id===s.reply);text=dialogue('Ирина Соколова',q.answer);text+=btn('Вернуться к вопросам','replyClose','','primary')}
  else {text='<div class="glass"><h2>О чём ты хочешь спросить?</h2><div class="choices">'+d.questions.map(q=>btn((s.asked.includes(q.id)?'✓ ':'')+q.label,'ask',q.id,s.asked.includes(q.id)?'seen':'')).join('')+'</div>'+ (s.asked.length===3?btn('Изучить производственный отчёт','next','S02','primary'):'')+'</div>'}
  html=frame(A.office,text,'character-scene');
+
  }else if(s.scene==='S02'){
- let h=`<div class="glass document"><h1>Производственный отчёт</h1><p>Сводные данные производственного участка</p><div class="report-grid">${d.report.map(x=>`<div class="datum"><small>${e(x.label)}</small><b>${e(x.value)}</b><span>${e(x.note)}</span></div>`).join('')}</div><h2>Какой вывод можно сделать?</h2><div class="choices">${d.hypotheses.map(x=>btn((s.hypothesis===x.id?'✓ ':'')+x.label,'hypothesis',x.id,s.hypothesis===x.id?'selected':'')).join('')}</div>`;
+ let h=`<div class="report-content">
+ <div class="report-stage-layout">
+   <div class="report-mentor"><img src="${A.irina}" alt="Ирина Соколова, главный технолог"><div class="report-mentor-name"><b>Ирина Соколова</b><small>Главный технолог · наставник</small></div></div>
+   <div class="report-document">
+     <picture><source media="(max-width:720px)" srcset="assets/objects/CH1-S02-production-report-mobile.jpeg"><img src="assets/objects/CH1-S02-production-report-desktop.png" alt="Производственный отчёт ЦЕХ 404: производственный цикл 9–16 дней, загрузка оборудования 68%, простои 9%, переналадка 70 минут, поиск инструмента 12 минут за смену, ожидание деталей 2,5 дня, дефекты на финальном контроле 60%, поставки еженедельные, отсутствие материалов 2 случая за прошлый месяц." loading="eager"></picture>
+     ${btn('Увеличить отчёт','reportZoom')}
+   </div>
+ </div>
+ <div class="glass report-questions">
+   <h2>Какой вывод можно сделать?</h2>
+   <details class="report-text-access"><summary>Посмотреть показатели отчёта текстом</summary><div class="report-data-text">${d.report.map(x=>`<p><b>${e(x.label)} — ${e(x.value)}</b><br><span>${e(x.note)}</span></p>`).join('')}</div></details>
+   <div class="choices">${d.hypotheses.map(x=>btn((s.hypothesis===x.id?'✓ ':'')+x.label,'hypothesis',x.id,s.hypothesis===x.id?'selected':'')).join('')}</div>`;
  if(s.hypothesis&&!s.hypothesisConfirmed)h+=btn('Подтвердить гипотезу','confirmHyp','','primary');
  if(s.hypothesisConfirmed){h+=`<div class="feedback">${dialogue('Ирина Соколова',d.hypotheses.find(x=>x.id===s.hypothesis).reply)}</div>`+btn('Продолжить','next','S03','primary')}
- html=frame(A.engineer,h+'</div>');
+ h+=`</div><dialog id="report-preview" class="report-preview"><button type="button" class="btn" data-act="reportClose">Закрыть увеличенный отчёт</button><picture><source media="(max-width:720px)" srcset="assets/objects/CH1-S02-production-report-mobile.jpeg"><img src="assets/objects/CH1-S02-production-report-desktop.png" alt="Увеличенный производственный отчёт"></picture></dialog></div>`;
+ html=frame(A.office,h,'report-scene');
  }else if(s.scene==='S03'){
  let h=`<div class="glass document"><h1>Три профессиональные позиции</h1><p>Перед подготовкой рекомендаций выслушай специалистов.</p>`;
  if(s.s03Person){const p=d.people.find(x=>x.id===s.s03Person);h+=dialogue(p.name,p.speech,p.id)+`<p><b>Вопрос:</b> ${e(p.question)}</p><p><b>Ответ:</b> ${e(p.reply)}</p>`+btn('Вернуться к специалистам','closePerson','','primary')}
@@ -42,7 +55,7 @@ function render(){let html='';if(s.scene==='S00'){
  app.innerHTML=`<div class="statusline"><span>Глава 1 · ${e(s.scene)}</span><span>Восстановленная тестовая сборка</span></div>${html}<div class="reset">${btn('Начать заново','reset')}</div>`;
  try{localStorage.setItem(key,JSON.stringify(s))}catch(_){}
 }
-function act(action,id){if(action==='reset'){if(confirm('Начать заново?'))s=L.initial()}
+function act(action,id){if(action==='reportZoom'){document.getElementById('report-preview')?.showModal();return;}if(action==='reportClose'){document.getElementById('report-preview')?.close();return;}if(action==='reset'){if(confirm('Начать заново?'))s=L.initial()}
  else if(action==='s00next')s.s00=Math.min(2,s.s00+1);
  else if(action==='badge'){const name=L.cleanName(document.getElementById('name')?.value);if(!name){alert('Введите имя');return}s.name=name;s.s00=3}
  else if(action==='next'){const next={S00:'S01',S01:'S02',S02:'S03',S03:'S04'};if(next[s.scene]===id){if(s.scene==='S01'&&s.asked.length!==3)return;if(s.scene==='S02'&&!s.hypothesisConfirmed)return;s.scene=id}}
