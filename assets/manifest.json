@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "status": "reconstructed",
+  "assets": {
+    "bg_title": {
+      "type": "background",
+      "path": "assets/backgrounds/CH1-IMG-001_Главный-экран.png",
+      "status": "approved"
+    },
+    "bg_gate": {
+      "type": "background",
+      "path": "assets/backgrounds/CH1-IMG-006_Внешняя проходная.png",
+      "status": "approved"
+    },
+    "bg_registration": {
+      "type": "background",
+      "path": "assets/backgrounds/CH1-IMG-002_Входная зона и турникеты.png",
+      "status": "approved"
+    },
+    "bg_office": {
+      "type": "background",
+      "path": "assets/backgrounds/CH1-IMG-005_Технологический отдел.png",
+      "status": "approved"
+    },
+    "bg_engineer": {
+      "type": "background",
+      "path": "assets/backgrounds/CH1-IMG-014_Инженерный кабинет.png",
+      "status": "candidate"
+    },
+    "bg_meeting_group": {
+      "type": "background",
+      "path": "assets/backgrounds/CH1-IMG-020_S03_three_characters.jpeg",
+      "status": "approved_uploaded"
+    },
+    "irina_neutral": {
+      "type": "character",
+      "path": "assets/characters/CH1-IMG-013_Женский персонаж с планшетом.png",
+      "status": "approved"
+    },
+    "irina_friendly": {
+      "type": "character",
+      "path": "assets/characters/CH1-IMG-015_irina_friendly.png",
+      "status": "approved"
+    },
+    "irina_focused": {
+      "type": "character",
+      "path": "assets/characters/CH1-IMG-016_irina_focused.png",
+      "status": "approved"
+    },
+    "andrey_neutral": {
+      "type": "character",
+      "path": "assets/characters/CH1-IMG-012_Персонаж Андрей Громов.png",
+      "status": "approved"
+    },
+    "marina_neutral": {
+      "type": "character",
+      "path": "assets/characters/CH1-IMG-011_Персонаж Марина Власова.png",
+      "status": "approved"
+    },
+    "employee_badge": {
+      "type": "object",
+      "path": "assets/icons/CH404-CH1-S00-001_employee_badge_technician.png",
+      "status": "approved"
+    }
+  }
+}
