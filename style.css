@@ -170,3 +170,9 @@ body.dialogue-mode-active .stage-scene.dialogue-stage{position:relative;flex:1 1
  .game-dialogue--scene .game-dialogue__panel{max-height:52dvh}
  .game-dialogue__role{font-size:11px}
 }
+
+/* CH1-IMG-002 only: preserve the entire horizontal entrance image on narrow screens. */
+@media(max-width:720px){
+ .stage-scene.entrance-scene{background-color:#081423;background-size:100% 100%,100% auto;background-position:center center,center top;background-repeat:no-repeat;align-items:flex-end}
+ .stage-scene.entrance-scene .scene-content{padding-top:calc(100vw * 0.5632 + 12px)}
+}
