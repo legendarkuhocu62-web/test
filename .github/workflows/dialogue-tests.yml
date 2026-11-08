@@ -22,3 +22,26 @@ jobs:
           node-version: '22'
       - name: Test dialogue navigation and source integrity
         run: node tests/dialogue-ui.test.js
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser test dependency
+        run: |
+          npm install --no-save playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Run visual viewport checks
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/ceh404-http.log 2>&1 &
+          sleep 2
+          node tests/dialogue-browser.test.js
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dialogue-browser-screenshots
+          path: tests/screenshot-*.png
+          if-no-files-found: ignore
