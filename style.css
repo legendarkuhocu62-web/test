@@ -176,3 +176,12 @@ body.dialogue-mode-active .stage-scene.dialogue-stage{position:relative;flex:1 1
  .stage-scene.entrance-scene{background-color:#081423;background-size:100% 100%,100% auto;background-position:center center,center top;background-repeat:no-repeat;align-items:flex-end}
  .stage-scene.entrance-scene .scene-content{padding-top:calc(100vw * 0.5632 + 12px)}
 }
+
+/* CH1-IMG-002: keep the three turnstiles visible beside the pass form on desktop. */
+@media(min-width:721px){
+ .stage-scene.entrance-scene .scene-content>.glass{max-width:min(34vw,440px)}
+}
+@media(max-width:720px){
+ .stage-scene.entrance-scene{min-height:0;align-items:flex-start}
+ .stage-scene.entrance-scene .scene-content>.glass{max-width:100%}
+}
