@@ -92,10 +92,13 @@ function fit(){
  const footerStyle=footer?getComputedStyle(footer):null;
  const headerHeight=header?(header.getBoundingClientRect().height+(parseFloat(headerStyle.marginBottom)||0)):0;
  const footerHeight=footer?(footer.getBoundingClientRect().height+(parseFloat(footerStyle.marginTop)||0)):0;
- const maxPanelHeight=Math.min(
-   parseFloat(panelStyle.maxHeight)||Infinity,
-   panel.parentElement?.getBoundingClientRect().height||Infinity
- );
+ const parentHeight=panel.parentElement?.getBoundingClientRect().height||Infinity;
+ const rawMax=panelStyle.maxHeight.trim();
+ const numericMax=parseFloat(rawMax);
+ const resolvedMax=rawMax.endsWith('%')
+   ?(Number.isFinite(parentHeight)?parentHeight*(numericMax/100):Infinity)
+   :(Number.isFinite(numericMax)?numericMax:Infinity);
+ const maxPanelHeight=Math.min(resolvedMax,parentHeight);
  const room=Math.max(0,maxPanelHeight-panelVertical-headerHeight-footerHeight);
  function fits(value){
    measure.innerHTML=escapeHTML(value).replace(/\n/g,'<br>');
