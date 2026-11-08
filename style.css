@@ -101,7 +101,7 @@
  .mobile-cover-s00 .desktop-start-hitbox:focus-visible{outline:3px solid #fff;outline-offset:2px}
 }
 
-/* S01 unified layout v4 — one source of truth for all screen sizes. */
+/* S01 unified layout v5 — on mobile character and panel share a flex column. */
 .speaker-id{display:flex;flex-direction:column;gap:3px}
 .speaker-id b{color:#efc586}
 .speaker-id small{color:#e3edf7;font-size:.78em;font-weight:500}
@@ -129,15 +129,15 @@
  body.s01-immersive-active #app{height:100dvh;overflow:hidden}
  body.s01-immersive-active .stage-scene.s01-scene{position:fixed;inset:0;width:100vw;height:100dvh;min-height:0;max-height:100dvh;margin:0;padding:0;overflow:hidden;z-index:5;background-position:center}
  body.s01-immersive-active .s01-scene .scene-content{height:100%;min-height:0;padding:0;overflow:hidden}
- body.s01-immersive-active .s01-dialogue{height:100%;flex:1;min-height:0;display:flex;align-items:flex-end;padding:0 10px max(10px,env(safe-area-inset-bottom));overflow:hidden}
- body.s01-immersive-active .s01-figure{top:3%;bottom:auto;left:50%;transform:translateX(-50%);height:57%;max-height:57%;max-width:95%;object-fit:contain;object-position:top center}
- body.s01-immersive-active .s01-panel{margin:0;width:100%;max-height:53%;min-height:0;padding:12px 13px;border-radius:12px;overflow:hidden}
+ body.s01-immersive-active .s01-dialogue{height:100%;flex:1;min-height:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;padding:0 10px max(10px,env(safe-area-inset-bottom));overflow:hidden}
+ body.s01-immersive-active .s01-figure{position:relative;top:auto;bottom:auto;left:auto;transform:none;flex:1 1 0;width:100%;height:0;min-height:0;max-height:none;max-width:100%;margin:0 auto;object-fit:contain;object-position:center bottom;z-index:1}
+ body.s01-immersive-active .s01-panel{flex:none;margin:-clamp(12px,2.8dvh,30px) 0 0;width:100%;max-height:53%;min-height:0;padding:12px 13px;border-radius:12px;overflow:hidden}
  body.s01-immersive-active .s01-panel-copy p{font-size:clamp(14px,3.6vw,17px);line-height:1.35}
  body.s01-immersive-active .s01-panel-action{margin-top:8px}
  body.s01-immersive-active .s01-panel-action .btn{min-height:44px;padding:9px 16px}
  body.s01-immersive-active .s01-scene .scene-content>.glass{max-height:calc(100% - 30px);width:calc(100% - 20px);margin:auto 10px;overflow-y:auto}
 }
 @media(max-width:720px) and (max-height:620px){
- body.s01-immersive-active .s01-figure{height:45%;max-height:45%}
+ body.s01-immersive-active .s01-figure{height:0;max-height:none}
  body.s01-immersive-active .s01-panel{max-height:62%}
 }
