@@ -101,7 +101,7 @@
  .mobile-cover-s00 .desktop-start-hitbox:focus-visible{outline:3px solid #fff;outline-offset:2px}
 }
 
-/* S01 unified layout v5 — on mobile character and panel share a flex column. */
+/* S01 unified layout v6 — shared header and status restored; mobile scene fits remaining viewport. */
 .speaker-id{display:flex;flex-direction:column;gap:3px}
 .speaker-id b{color:#efc586}
 .speaker-id small{color:#e3edf7;font-size:.78em;font-weight:500}
@@ -121,13 +121,16 @@
 .s01-build{position:absolute;z-index:8;top:7px;right:9px;padding:3px 6px;background:#071522dd;color:#f4c57c;font-size:10px;border-radius:4px;pointer-events:none}
 @media(max-width:720px){
  body.s01-immersive-active{overflow:hidden}
- body.s01-immersive-active .masthead,
- body.s01-immersive-active .statusline,
+ /* Retain the same top masthead and scene status as S02. */
  body.s01-immersive-active .reset,
  body.s01-immersive-active .footer{display:none!important}
- body.s01-immersive-active .shell{max-width:none;margin:0}
- body.s01-immersive-active #app{height:100dvh;overflow:hidden}
- body.s01-immersive-active .stage-scene.s01-scene{position:fixed;inset:0;width:100vw;height:100dvh;min-height:0;max-height:100dvh;margin:0;padding:0;overflow:hidden;z-index:5;background-position:center}
+ body.s01-immersive-active .shell{max-width:none;margin:0;height:100vh;height:100dvh;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+ body.s01-immersive-active .masthead{flex:0 0 auto}
+ body.s01-immersive-active #app{flex:1 1 auto;min-height:0;height:auto;display:flex;flex-direction:column;overflow:hidden}
+ body.s01-immersive-active .statusline{display:flex;flex:0 0 auto;gap:8px;min-width:0;padding:8px 12px;font-size:11px}
+ body.s01-immersive-active .statusline>span{min-width:0}
+ body.s01-immersive-active .statusline>span:last-child{text-align:right}
+ body.s01-immersive-active .stage-scene.s01-scene{position:relative;inset:auto;flex:1 1 auto;width:100%;height:auto;min-height:0;max-height:none;margin:0;padding:0;overflow:hidden;z-index:auto;background-position:center}
  body.s01-immersive-active .s01-scene .scene-content{height:100%;min-height:0;padding:0;overflow:hidden}
  body.s01-immersive-active .s01-dialogue{height:100%;flex:1;min-height:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;padding:0 10px max(10px,env(safe-area-inset-bottom));overflow:hidden}
  body.s01-immersive-active .s01-figure{position:relative;top:auto;bottom:auto;left:auto;transform:none;flex:1 1 0;width:100%;height:0;min-height:0;max-height:none;max-width:100%;margin:0 auto;object-fit:contain;object-position:center bottom;z-index:1}
