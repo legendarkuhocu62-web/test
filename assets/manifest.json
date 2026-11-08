@@ -71,10 +71,11 @@
     },
     "report_mobile": {
       "type": "object",
-      "path": "assets/objects/CH1-S02-production-report-mobile.jpeg",
+      "path": "assets/objects/CH1-S02-production-report-mobile.png",
       "scene": "S02",
       "screen": "mobile",
-      "status": "uploaded_visual_check_pending"
+      "status": "converted_from_source_jpeg_visual_check_pending",
+      "note": "PNG conversion from the existing mobile JPEG without altering report numbers or wording; verified source on Google Drive: 17PT4pxILCV3NxEW2-ZYjyqpPQYlRIjXb"
     },
     "s00_mobile_start": {
       "type": "background",
