@@ -32,7 +32,7 @@ for(const [width,height] of sizes){
  assert.ok(decodeURI(image.src).includes(expectedName),'wrong scene asset: '+image.src);
  assert.ok(image.complete&&image.width===1671&&image.height===941,'wrong dimensions or image failed to load '+JSON.stringify(image));
  if(width<=720){
-  assert.ok(image.sizes.includes('100% auto'),'full-width mobile fit missing '+JSON.stringify(image));
+  assert.match(image.sizes,/100% 100%,\s*100%(?: auto)?$/,'full-width mobile fit missing '+JSON.stringify(image));
   assert.ok(image.glassTop>=image.sceneTop+width*941/1671-5,'mobile UI hides turnstiles '+JSON.stringify(image));
  }
  await page.screenshot({path:'tests/screenshot-entrance-'+width+'x'+height+'.png',fullPage:true});
