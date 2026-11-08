@@ -88,5 +88,6 @@ function act(action,id){if(['dlgMore','dlgBack','dlgStart'].includes(action)){co
  render()}
 app.addEventListener('click',ev=>{const b=ev.target.closest('[data-act]');if(b)act(b.dataset.act,b.dataset.id)});
 app.addEventListener('keydown',ev=>{if(ev.key==='Enter'&&ev.target.id==='name'){ev.preventDefault();act('badge','')}});
+window.addEventListener('resize',()=>{const node=app.querySelector('.game-dialogue');if(node)node.outerHTML=D.refresh()});
 render();window.__CEH_TEST__={getState:()=>structuredClone(s),act};
 })();
