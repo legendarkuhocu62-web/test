@@ -100,3 +100,27 @@
  .mobile-cover-s00 .desktop-start-hitbox{position:absolute;left:64%;top:76%;width:32%;height:17%;border:0;padding:0;margin:0;background:transparent;cursor:pointer;touch-action:manipulation}
  .mobile-cover-s00 .desktop-start-hitbox:focus-visible{outline:3px solid #fff;outline-offset:2px}
 }
+
+/* S01 pilot: separate background, large character and bottom dialogue panel; other scenes unchanged. */
+.speaker-id{display:flex;flex-direction:column;gap:3px}.speaker-id b{color:#efc586}.speaker-id small{color:#e3edf7;font-size:.7em;font-weight:500}
+.s01-scene{min-height:0;height:calc(100dvh - 112px);height:calc(100vh - 112px);height:calc(100dvh - 112px);align-items:stretch;overflow:hidden;background-image:linear-gradient(0deg,#06101a88,transparent 65%),var(--bg)}
+.s01-scene .scene-content{padding:0;display:flex;flex-direction:column;justify-content:flex-end;min-height:0}
+.s01-dialogue{position:relative;flex:1;min-height:0;display:flex;align-items:flex-end;justify-content:center;padding:0 clamp(12px,3vw,36px) 82px;pointer-events:none}
+.s01-figure{position:absolute;bottom:0;left:clamp(12px,5vw,90px);height:min(85%,690px);max-width:47%;object-fit:contain;object-position:bottom;filter:drop-shadow(0 10px 25px #0008)}
+.s01-panel{position:relative;z-index:2;width:100%;max-width:1350px;padding:clamp(15px,2vw,24px);background:rgba(9,22,38,.92);border:1px solid #df9d4e;border-radius:14px;box-shadow:0 14px 35px #0009;pointer-events:auto}
+.s01-panel .speaker-id{margin-bottom:8px}.s01-panel .speaker-id b{font-size:clamp(17px,1.7vw,23px)}.s01-panel .speaker-id small{font-size:clamp(12px,1.1vw,15px)}
+.s01-panel p{margin:0;max-width:100%;font-size:clamp(15px,1.5vw,21px);line-height:1.45;white-space:normal;overflow-wrap:anywhere}
+.s01-controls{position:absolute;bottom:clamp(12px,2vw,28px);right:clamp(12px,3vw,36px);z-index:3}.s01-controls .btn{margin:0;min-height:44px}
+.s01-scene .scene-content>.glass{margin:auto auto 12px;width:min(92%,940px)}
+@media(max-width:720px){
+ .s01-scene{height:auto;min-height:calc(100dvh - 92px);overflow:visible}
+ .s01-scene .scene-content{min-height:calc(100dvh - 92px);justify-content:flex-end}
+ .s01-dialogue{min-height:calc(100dvh - 92px);flex:1;padding:0 10px calc(76px + env(safe-area-inset-bottom,0px));align-items:flex-end}
+ .s01-figure{height:clamp(250px,65dvh,620px);max-width:96%;left:50%;transform:translateX(-50%);bottom:30%;object-fit:contain;object-position:bottom}
+ .s01-panel{padding:12px 14px;border-radius:12px;max-height:50dvh;overflow-y:auto;overscroll-behavior:contain}
+ .s01-panel p{font-size:clamp(15px,3.8vw,17px);line-height:1.4}
+ .s01-panel .speaker-id b{font-size:17px}.s01-panel .speaker-id small{font-size:12px}
+ .s01-controls{bottom:calc(14px + env(safe-area-inset-bottom,0px));right:12px;left:12px;display:flex;justify-content:flex-end}
+ .s01-controls .btn{min-height:44px;text-align:center}
+}
+@media(max-width:720px) and (max-height:620px){.s01-scene,.s01-scene .scene-content,.s01-dialogue{min-height:570px}.s01-figure{height:320px;bottom:35%}.s01-panel{max-height:none}}
