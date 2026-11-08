@@ -272,9 +272,21 @@ body.s02-view-active .s02-report-stage .scene-content,body.s02-view-active .s02-
     height:100%;
     max-width:none;
     max-height:none;
-    object-fit:cover;
+    object-fit:contain;
     object-position:center center;
+    position:relative;
+    z-index:1;
   }
+  body.s00-desktop-cover-active .mobile-cover-s00 .desktop-start-visual::before {
+    content:'';
+    position:absolute;
+    inset:-20px;
+    background-image:linear-gradient(#06132170,#06132170),url('assets/backgrounds/CH1-IMG-001_Главный-экран.png');
+    background-size:cover;
+    background-position:center;
+    filter:blur(14px);
+  }
+  body.s00-desktop-cover-active .mobile-cover-s00 .desktop-start-hitbox{z-index:2}
   body.dialogue-mode-active .game-dialogue--scene .game-dialogue__character {
     width:42%;
     max-width:48%;
