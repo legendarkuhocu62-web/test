@@ -6,6 +6,20 @@ function e(x){return String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;
 function btn(t,act,id='',cls=''){return `<button type="button" class="btn ${cls}" data-act="${e(act)}" data-id="${e(id)}">${e(t)}</button>`}
 function frame(bg,content,cls=''){return `<section class="stage-scene ${cls}" style="--bg:url('${bg}')"><div class="scene-content">${content}</div></section>`}
 function chapterDialogue(key,speaker,role,text,portrait,finish,variant='scene'){return D.render({key,speaker,role,text,portrait,finish,variant})}
+/* S00 desktop cover: keep the Start hitbox aligned with the 16:9 artwork
+   when object-fit:cover crops its edges on unusual screens. */
+function syncStartHitbox(){
+ const visual=app.querySelector('.desktop-start-visual'),img=visual?.querySelector('img'),hit=visual?.querySelector('.desktop-start-hitbox');
+ if(!visual||!img||!hit||window.innerWidth<=720)return;
+ if(!img.complete||!img.naturalWidth||!img.naturalHeight){img.addEventListener('load',syncStartHitbox,{once:true});return}
+ const w=visual.clientWidth,h=visual.clientHeight,scale=Math.max(w/img.naturalWidth,h/img.naturalHeight);
+ if(!w||!h||!Number.isFinite(scale))return;
+ const iw=img.naturalWidth*scale,ih=img.naturalHeight*scale,dx=(w-iw)/2,dy=(h-ih)/2;
+ hit.style.left=(dx+iw*.64)+'px';
+ hit.style.top=(dy+ih*.76)+'px';
+ hit.style.width=(iw*.32)+'px';
+ hit.style.height=(ih*.17)+'px';
+}
 function render(){document.body.classList.toggle('s00-mobile-cover-active',s.scene==='S00'&&s.s00===0);document.body.classList.toggle('s00-desktop-cover-active',s.scene==='S00'&&s.s00===0);document.body.classList.toggle('dialogue-mode-active',s.scene==='S01'||(s.scene==='S03'&&!!s.s03Person)||(s.scene==='S02'&&['intro','feedback'].includes(s.s02Step)));document.body.classList.toggle('s02-view-active',s.scene==='S02');let html='';if(s.scene==='S00'){
  if(s.s00===0)html=frame(A.title,`<div class="desktop-start-visual"><img src="${A.title}" alt="ЦЕХ 404 — производственная игра-симулятор. Начало игры." fetchpriority="high"><button type="button" class="desktop-start-hitbox" data-act="s00next" aria-label="Начать игру"></button></div><div class="mobile-start-visual"><img src="assets/backgrounds/CH1-IMG-021_S00_start_mobile_composite.jpeg" alt="ЦЕХ 404 — производственная игра-симулятор, мобильная стартовая заставка" fetchpriority="high"><button type="button" class="mobile-start-hitbox" data-act="s00next" aria-label="Начать игру"></button></div>`,'cover mobile-cover-s00');
  if(s.s00===1)html=frame(A.gate,`<div class="glass"><h1>Первый день на предприятии</h1><p>Сегодня твой первый день на машиностроительном предприятии «ЦЕХ 404».<br>За проходной уже началась рабочая смена.<br>Тебе предстоит познакомиться с людьми, оборудованием и процессами, от которых зависит работа всего предприятия.</p>${btn('Подойти к проходной','s00next','','primary')}</div>`);
@@ -52,7 +66,7 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
  }
  app.innerHTML=`<div class="statusline"><span>Глава 1 · ${e(s.scene)}</span><span>Восстановленная тестовая сборка</span></div>${html}<div class="reset">${btn('Начать заново','reset')}</div>`;
  try{localStorage.setItem(key,JSON.stringify(s))}catch(_){}
- requestAnimationFrame(()=>{D.fit();if(s.scene==='S02'&&s.s02Step==='report')app.querySelector('.s02-report-close')?.focus({preventScroll:true});});
+ requestAnimationFrame(()=>{D.fit();syncStartHitbox();if(s.scene==='S02'&&s.s02Step==='report')app.querySelector('.s02-report-close')?.focus({preventScroll:true});});
 }
 function act(action,id){if(['dlgMore','dlgBack','dlgStart'].includes(action)){const node=app.querySelector('.game-dialogue');if(node){node.outerHTML=D.move(action);requestAnimationFrame(()=>D.fit());}return;}if(action==='reset'){if(confirm('Начать заново?'))s=L.initial()}
  else if(action==='s02Open'&&s.scene==='S02'&&s.s02Step==='intro'){s.s02ReportSeen=true;s.s02Step='report'}
@@ -89,6 +103,6 @@ app.addEventListener('keydown',ev=>{
  }
  if(ev.key==='Enter'&&ev.target.id==='name'){ev.preventDefault();act('badge','')}
 });
-window.addEventListener('resize',()=>{const node=app.querySelector('.game-dialogue');if(node){node.outerHTML=D.refresh();requestAnimationFrame(()=>D.fit());}});
+window.addEventListener('resize',()=>{syncStartHitbox();const node=app.querySelector('.game-dialogue');if(node){node.outerHTML=D.refresh();requestAnimationFrame(()=>D.fit());}});
 render();window.__CEH_TEST__={getState:()=>structuredClone(s),act};
 })();
