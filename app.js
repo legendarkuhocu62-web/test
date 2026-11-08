@@ -16,7 +16,7 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
  let text='';if(s.s01<4){text=s01Dialogue(d.intro[s.s01].replace('[Имя]',s.name),s.s01===0?'irina_friendly':'irina',btn(s.s01===3?'Задать вопросы Ирине':'Далее','introNext','','primary'))}
  else if(s.reply){const q=d.questions.find(x=>x.id===s.reply);text=s01Dialogue(q.answer,'irina',btn('Вернуться к вопросам','replyClose','','primary'))}
  else {text='<div class="glass"><h2>О чём ты хочешь спросить?</h2><div class="choices">'+d.questions.map(q=>btn((s.asked.includes(q.id)?'✓ ':'')+q.label,'ask',q.id,s.asked.includes(q.id)?'seen':'')).join('')+'</div>'+ (s.asked.length===3?btn('Изучить производственный отчёт','next','S02','primary'):'')+'</div>'}
- html=frame(A.office,text,'character-scene s01-scene');
+ html=frame(A.office,`<div class="s01-build" aria-label="Версия S01">S01 · v4</div>`+text,'character-scene s01-scene');
 
  }else if(s.scene==='S02'){
  let h=`<div class="report-content">
