@@ -1,7 +1,7 @@
 /* ЦЕХ 404 — shared dialogue renderer v2.0. Purely visual paging: gameplay state is untouched. */
 (()=>{
 'use strict';
-let activeKey='',page=0,segments=[''];
+let activeKey='',page=0,segments=[''],lastOptions=null;
 const escapeHTML=s=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 function splitExact(value,limit){
  const str=String(value??''),out=[];let at=0;
@@ -26,7 +26,9 @@ function limitForViewport(){
 function button(label,act,primary=false){
  return '<button type="button" class="dialogue-control'+(primary?' dialogue-control--primary':'')+'" data-act="'+act+'">'+escapeHTML(label)+'</button>';
 }
-function render({key,speaker,role,text,portrait='',finish='',variant='scene',alt=''}){
+function render(options){
+ lastOptions=options;
+ const {key,speaker,role,text,portrait='',finish='',variant='scene',alt=''}=options;
  const raw=String(text??''),keyString=String(key);
  if(activeKey!==keyString){activeKey=keyString;page=0}
  segments=splitExact(raw,limitForViewport());
@@ -52,6 +54,7 @@ function move(action){
  if(action==='dlgMore'&&page<segments.length-1)page++;
  else if(action==='dlgBack'&&page>0)page--;
  else if(action==='dlgStart')page=0;
+ return lastOptions?render(lastOptions):'';
 }
 window.CEH_DIALOGUE={render,move,splitExact,getReadState:()=>({key:activeKey,page,total:segments.length,joined:segments.join('')})};
 })();
