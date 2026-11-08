@@ -254,35 +254,42 @@ body.s02-view-active .s02-report-stage .scene-content,body.s02-view-active .s02-
 }
 
 
-/* UI QA 2026-11-09: desktop cover and scene-portrait scale.
-   Preserve the entire approved S00 image and its clickable start area. */
+/* UI QA correction 2026-11-09: full-screen 16:9 start image without distortion.
+   The invisible hit area is recalculated in app.js for object-fit:cover. */
 @media (min-width:721px) {
   body.s00-desktop-cover-active .mobile-cover-s00 .desktop-start-visual {
     display:block;
-    width:100vw;
-    height:100dvh;
+    position:relative;
+    width:100%;
+    height:100%;
     max-width:none;
     max-height:none;
     overflow:hidden;
   }
   body.s00-desktop-cover-active .mobile-cover-s00 .desktop-start-visual img {
+    display:block;
     width:100%;
     height:100%;
     max-width:none;
     max-height:none;
-    object-fit:fill;
+    object-fit:cover;
+    object-position:center center;
   }
   body.dialogue-mode-active .game-dialogue--scene .game-dialogue__character {
-    width:36%;
-    max-width:42%;
-    height:94%;
+    transform:scale(1.18);
+    transform-origin:center bottom;
   }
 }
 @media (max-width:720px) {
   body.dialogue-mode-active .game-dialogue--scene .game-dialogue__character {
-    width:94%;
-    max-width:94%;
-    height:min(88%,37dvh);
-    max-height:min(88%,37dvh);
+    width:100%;
+    max-width:100%;
+    height:min(100%,44dvh);
+    max-height:min(100%,44dvh);
+    transform:scale(1.16);
+    transform-origin:center bottom;
   }
 }
+/* Keep the mobile report transparent and inside the available viewport. */
+.s02-report-sheet {overflow:hidden}
+.s02-report-sheet picture,.s02-report-sheet img {background:transparent}
