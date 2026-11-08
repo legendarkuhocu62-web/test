@@ -252,3 +252,37 @@ body.s02-view-active .s02-report-stage .scene-content,body.s02-view-active .s02-
  .s02-answer{padding:7px;font-size:13px;line-height:1.22}
  .s02-choice-panel h1{font-size:17px}
 }
+
+
+/* UI QA 2026-11-09: desktop cover and scene-portrait scale.
+   Preserve the entire approved S00 image and its clickable start area. */
+@media (min-width:721px) {
+  body.s00-desktop-cover-active .mobile-cover-s00 .desktop-start-visual {
+    display:block;
+    width:100vw;
+    height:100dvh;
+    max-width:none;
+    max-height:none;
+    overflow:hidden;
+  }
+  body.s00-desktop-cover-active .mobile-cover-s00 .desktop-start-visual img {
+    width:100%;
+    height:100%;
+    max-width:none;
+    max-height:none;
+    object-fit:fill;
+  }
+  body.dialogue-mode-active .game-dialogue--scene .game-dialogue__character {
+    width:36%;
+    max-width:42%;
+    height:94%;
+  }
+}
+@media (max-width:720px) {
+  body.dialogue-mode-active .game-dialogue--scene .game-dialogue__character {
+    width:94%;
+    max-width:94%;
+    height:min(88%,37dvh);
+    max-height:min(88%,37dvh);
+  }
+}
