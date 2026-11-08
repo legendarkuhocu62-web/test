@@ -29,7 +29,7 @@ for(const [width,height] of sizes){
    sizes:style.backgroundSize,position:style.backgroundPosition,
    sceneTop:sc.top,glassTop:gr.top,viewportWidth:innerWidth};
  });
- assert.ok(image.src.includes(expectedName),'wrong scene asset: '+image.src);
+ assert.ok(decodeURI(image.src).includes(expectedName),'wrong scene asset: '+image.src);
  assert.ok(image.complete&&image.width===1671&&image.height===941,'wrong dimensions or image failed to load '+JSON.stringify(image));
  if(width<=720){
   assert.ok(image.sizes.includes('100% auto'),'full-width mobile fit missing '+JSON.stringify(image));
