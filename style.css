@@ -124,3 +124,28 @@
  .s01-controls .btn{min-height:44px;text-align:center}
 }
 @media(max-width:720px) and (max-height:620px){.s01-scene,.s01-scene .scene-content,.s01-dialogue{min-height:570px}.s01-figure{height:320px;bottom:35%}.s01-panel{max-height:none}}
+
+/* S01 mobile hotfix: keep the entire dialogue scene within one viewport. */
+@media(max-width:720px){
+ body.s01-immersive-active{overflow-x:hidden}
+ body.s01-immersive-active .masthead,
+ body.s01-immersive-active .statusline,
+ body.s01-immersive-active .reset,
+ body.s01-immersive-active .footer{display:none}
+ body.s01-immersive-active .shell{max-width:none}
+ body.s01-immersive-active .stage-scene.s01-scene{height:100dvh;min-height:100dvh;max-height:100dvh;overflow:hidden;align-items:stretch}
+ body.s01-immersive-active .s01-scene .scene-content{height:100%;min-height:0;max-height:100%;padding:0;display:flex;flex-direction:column}
+ body.s01-immersive-active .s01-dialogue{height:100%;min-height:0;flex:1 1 auto;padding:0 10px calc(70px + env(safe-area-inset-bottom,0px));overflow:hidden;align-items:flex-end}
+ body.s01-immersive-active .s01-figure{height:clamp(190px,56dvh,520px);max-height:62%;max-width:92%;bottom:32%;left:50%;transform:translateX(-50%);object-position:center bottom}
+ body.s01-immersive-active .s01-panel{flex:none;max-height:min(48dvh,420px);overflow-y:auto;padding:10px 13px}
+ body.s01-immersive-active .s01-panel p{font-size:clamp(14px,3.7vw,17px);line-height:1.35}
+ body.s01-immersive-active .s01-controls{bottom:calc(10px + env(safe-area-inset-bottom,0px));right:10px;left:10px;justify-content:flex-end}
+ body.s01-immersive-active .s01-controls .btn{min-height:44px}
+ body.s01-immersive-active .s01-scene .scene-content>.glass{max-height:calc(100% - 20px);overflow-y:auto;margin:auto;padding:14px}
+}
+@media(max-width:720px) and (max-height:620px){
+ body.s01-immersive-active .stage-scene.s01-scene{height:100dvh;min-height:100dvh;max-height:100dvh}
+ body.s01-immersive-active .s01-dialogue{min-height:0}
+ body.s01-immersive-active .s01-figure{height:50dvh;bottom:38%}
+ body.s01-immersive-active .s01-panel{max-height:50dvh}
+}
