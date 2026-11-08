@@ -1,0 +1,24 @@
+name: Dialogue UI regression tests
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'app.js'
+      - 'data.js'
+      - 'dialogue-ui.js'
+      - 'logic.js'
+      - 'tests/**'
+      - '.github/workflows/dialogue-tests.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  dialogue:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test dialogue navigation and source integrity
+        run: node tests/dialogue-ui.test.js
