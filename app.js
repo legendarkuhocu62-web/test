@@ -9,17 +9,17 @@ function chapterDialogue(key,speaker,role,text,portrait,finish,variant='scene'){
 /* S00 desktop cover: keep the Start hitbox aligned with the 16:9 artwork
    when object-fit:contain preserves every edge of the artwork. */
 function syncStartHitbox(){
- const visual=app.querySelector('.desktop-start-visual'),img=visual?.querySelector('img'),hit=visual?.querySelector('.desktop-start-hitbox');
- if(!visual||!img||!hit||window.innerWidth<=720)return;
- if(!img.complete||!img.naturalWidth||!img.naturalHeight){img.addEventListener('load',syncStartHitbox,{once:true});return}
- const w=visual.clientWidth,h=visual.clientHeight,scale=Math.min(w/img.naturalWidth,h/img.naturalHeight);
- if(!w||!h||!Number.isFinite(scale))return;
- const iw=img.naturalWidth*scale,ih=img.naturalHeight*scale,dx=(w-iw)/2,dy=(h-ih)/2;
- hit.style.left=(dx+iw*.64)+'px';
- hit.style.top=(dy+ih*.76)+'px';
- hit.style.width=(iw*.32)+'px';
- hit.style.height=(ih*.17)+'px';
+ // The start text is baked into the approved image, so its exact coordinates
+ // must not be guessed from percentages. Make the entire desktop cover clickable.
+ const hit=app.querySelector('.desktop-start-hitbox');
+ if(!hit)return;
+ hit.style.inset='0';
+ hit.style.left='0';
+ hit.style.top='0';
+ hit.style.width='100%';
+ hit.style.height='100%';
 }
+
 function render(){document.body.classList.toggle('s00-mobile-cover-active',s.scene==='S00'&&s.s00===0);document.body.classList.toggle('s00-desktop-cover-active',s.scene==='S00'&&s.s00===0);document.body.classList.toggle('dialogue-mode-active',s.scene==='S01'||(s.scene==='S03'&&!!s.s03Person)||(s.scene==='S02'&&['intro','feedback'].includes(s.s02Step)));document.body.classList.toggle('s02-view-active',s.scene==='S02');let html='';if(s.scene==='S00'){
  if(s.s00===0)html=frame(A.title,`<div class="desktop-start-visual"><img src="${A.title}" alt="ЦЕХ 404 — производственная игра-симулятор. Начало игры." fetchpriority="high"><button type="button" class="desktop-start-hitbox" data-act="s00next" aria-label="Начать игру"></button></div><div class="mobile-start-visual"><img src="assets/backgrounds/CH1-IMG-021_S00_start_mobile_composite.jpeg" alt="ЦЕХ 404 — производственная игра-симулятор, мобильная стартовая заставка" fetchpriority="high"><button type="button" class="mobile-start-hitbox" data-act="s00next" aria-label="Начать игру"></button></div>`,'cover mobile-cover-s00');
  if(s.s00===1)html=frame(A.gate,`<div class="glass"><h1>Первый день на предприятии</h1><p>Сегодня твой первый день на машиностроительном предприятии «ЦЕХ 404».<br>За проходной уже началась рабочая смена.<br>Тебе предстоит познакомиться с людьми, оборудованием и процессами, от которых зависит работа всего предприятия.</p>${btn('Подойти к проходной','s00next','','primary')}</div>`);
