@@ -47,20 +47,20 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
    const content=chapterDialogue('S03:person:'+p.id,p.name,p.role,message,A[p.id],btn('Вернуться к специалистам','closePerson','','primary'));
    html=frame(A.meeting,content,'dialogue-stage dialogue-stage--meeting');
  }else{
-   const buttons=d.people.map(p=>btn((s.asked03.includes(p.id)?'✓ ':'')+p.name+' · '+p.role,'person',p.id,s.asked03.includes(p.id)?'seen':'')).join('');
+   const buttons=d.people.map(p=>`<button type="button" class="btn person-choice ${s.asked03.includes(p.id)?'seen':''}" data-act="person" data-id="${e(p.id)}"><span class="person-choice__name">${s.asked03.includes(p.id)?'✓ ':''}${e(p.name)}</span><span class="person-choice__role">${e(p.role)}</span></button>`).join('');
    const content='<div class="glass s03-chooser"><h1>Три профессиональные позиции</h1><p>Перед подготовкой рекомендаций выслушай специалистов.</p><div class="choices">'+buttons+'</div>'+btn('Перейти к инвестициям','next','S04','primary')+'</div>';
    html=frame(A.group,content,'s03-group-scene');
  }
  }else if(s.scene==='S04'){
  let h='<div class="glass document"><h1>Инвестиционное предложение</h1>';
- if(s.s04Mode==='priority'){h+='<p>Сначала выбери основной приоритет инвестиционной программы.</p><div class="choices">'+d.goals.map(x=>btn((s.priority===x.id?'✓ ':'')+x.label,'priority',x.id,s.priority===x.id?'selected':'')).join('')+'</div>'+(s.priority?btn('Перейти к выбору мероприятий','catalog','','primary'):'')}
+ if(s.s04Mode==='priority'){h+='<p>При желании выбери основной приоритет инвестиционной программы. Это ориентир для анализа, а не условие допуска к формированию портфеля.</p><div class="choices">'+d.goals.map(x=>btn((s.priority===x.id?'✓ ':'')+x.label,'priority',x.id,s.priority===x.id?'selected':'')).join('')+'</div>'+btn('Перейти к выбору мероприятий','catalog','','primary')}
  else if(s.s04Mode==='catalog'){
- const spent=L.spent(s);h+=`<div class="budget"><span>Бюджет <b>100 млн у.е.</b></span><span>Выбрано <b>${spent} млн у.е.</b></span><span>Осталось <b>${100-spent} млн у.е.</b></span></div><p>Все инициативы A–M доступны. Можно отменять выбор. Стоимость L и M в бюджете равна нулю, но это не означает отсутствия затрат и рисков.</p><div class="invest-grid">`;
+ const spent=L.spent(s);h+=s.budgetMessage?`<p class="warning budget-message" role="alert">${e(s.budgetMessage)}</p>`:'';h+=`<div class="budget"><span>Бюджет <b>100 млн у.е.</b></span><span>Выбрано <b>${spent} млн у.е.</b></span><span>Осталось <b>${100-spent} млн у.е.</b></span></div><p>Все инициативы A–M доступны. Можно отменять выбор. Стоимость L и M в бюджете равна нулю, но это не означает отсутствия затрат и рисков.</p><div class="invest-grid">`;
  h+=d.initiatives.map(x=>`<article class="investment"><div class="invest-head"><b>${x.id}</b><strong>${x.cost} млн у.е.</strong></div><h3>${e(x.title)}</h3><p>${e(x.focus)}</p><details><summary>Условия и риски</summary><p><b>Условия:</b> ${e(x.conditions)}</p><p><b>Риски:</b> ${e(x.risks)}</p><p><b>Не гарантирует:</b> ${e(x.not)}</p></details>${btn(s.selected.includes(x.id)?'✓ Убрать из портфеля':'Добавить','toggle',x.id,s.selected.includes(x.id)?'selected':'')}</article>`).join('')+'</div>';
  if(spent>100)h+='<p class="warning">Бюджет превышен. Убери одну или несколько инициатив.</p>';
- h+=btn('Проверить предложение','review','','primary');
- if(s.showReview){h+=`<div class="feedback"><h2>Проверка портфеля</h2><p>Выбрано: ${e(s.selected.join(', ')||'нет инициатив')}. Приоритет: ${e(d.goals.find(x=>x.id===s.priority)?.label)}.</p><p>Обоснование должно учитывать условия и риски. Оценка эффектов предварительная; профессиональная проверка ещё требуется.</p></div>`;
- if(spent<=100&&s.selected.length)h+=btn('Зафиксировать предварительное предложение','finish','','primary')}
+ h+=btn('Подтвердить предварительный портфель','review','','primary');
+ if(s.showReview){h+=`<div class="feedback"><h2>Подтверждение предварительного портфеля</h2><p>Выбрано: ${e(s.selected.join(', '))}.</p><p>Общая стоимость: <b>${spent} млн у.е.</b></p><p>Остаток бюджета: <b>${100-spent} млн у.е.</b></p><p>Приоритет: ${e(d.goals.find(x=>x.id===s.priority)?.label||'не выбран')}.</p><p>Вы действительно хотите сохранить этот предварительный портфель?</p></div>`;
+ if(spent<=100&&s.selected.length)h+=btn('Вернуться к выбору','catalog','','')+btn('Подтвердить и продолжить','finish','','primary')}
  }else{h+='<h2>Предварительное предложение сохранено</h2><p>Портфель: '+e(s.selected.join(', '))+'</p><p>Сумма: '+L.spent(s)+' млн у.е. из 100 млн у.е.</p><p>Продолжение S04 (EDU-01 и пересмотр портфеля) пока не интегрировано. Следующие события не выдаются за утверждённые.</p>'+btn('Вернуться к редактору','catalog','','primary')}
  html=frame(A.engineer,h+'</div>');
  }
@@ -83,9 +83,9 @@ function act(action,id){if(['dlgMore','dlgBack','dlgStart'].includes(action)){co
  else if(action==='person'){s.s03Person=id;if(!s.asked03.includes(id))s.asked03.push(id)}
  else if(action==='closePerson')s.s03Person=null;
  else if(action==='priority')s.priority=id;
- else if(action==='catalog'){s.s04Mode='catalog';s.showReview=false;s.finished=false}
- else if(action==='toggle'){s.selected=s.selected.includes(id)?s.selected.filter(x=>x!==id):[...s.selected,id];s.showReview=false}
- else if(action==='review')s.showReview=true;
+ else if(action==='catalog'){s.s04Mode='catalog';s.showReview=false;s.finished=false;s.budgetMessage=''}
+ else if(action==='toggle'){if(s.selected.includes(id)){s.selected=s.selected.filter(x=>x!==id);s.budgetMessage=''}else{const item=d.initiatives.find(x=>x.id===id);const remaining=100-L.spent(s);if(item&&L.spent(s)+item.cost>100){s.budgetMessage=`Нельзя добавить инициативу «${item.title}»: доступный бюджет — ${remaining} млн у.е., стоимость инициативы — ${item.cost} млн у.е. Общий лимит — 100 млн у.е. Выбранные инициативы сохранены.`}else{s.selected=[...s.selected,id];s.budgetMessage=''}}s.showReview=false}
+ else if(action==='review'&&s.selected.length&&L.spent(s)<=100)s.showReview=true;
  else if(action==='finish'&&L.spent(s)<=100&&s.selected.length)s.s04Mode='finished';
  render()}
 app.addEventListener('click',ev=>{const b=ev.target.closest('[data-act]');if(b)act(b.dataset.act,b.dataset.id)});
