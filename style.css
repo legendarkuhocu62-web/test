@@ -307,3 +307,10 @@ body.s02-view-active .s02-report-stage .scene-content,body.s02-view-active .s02-
 /* Keep the mobile report transparent and inside the available viewport. */
 .s02-report-sheet {overflow:hidden}
 .s02-report-sheet picture,.s02-report-sheet img {background:transparent}
+
+
+/* S03 chooser: show each specialist's full name and job title on separate lines. */
+.s03-chooser .person-choice{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:76px;text-align:center;white-space:normal}
+.person-choice__name{font-weight:800;line-height:1.2}
+.person-choice__role{font-size:.88em;line-height:1.25;font-weight:500;opacity:.9}
+.budget-message{padding:12px 15px;border:1px solid #e99023;border-radius:12px;background:#4a260f;color:#fff;line-height:1.4}
