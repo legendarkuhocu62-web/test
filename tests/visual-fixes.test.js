@@ -37,8 +37,11 @@ for(const [width,height] of sizes){
   assert.ok(cover.cx>=0&&cover.cx<=width&&cover.cy>=0&&cover.cy<=height,'Start hitbox invisible at '+width+'x'+height);
   assert.ok(cover.scrollWidth<=width+3,'S00 horizontal scroll at '+width+'x'+height);
   await page.screenshot({path:'tests/screenshot-fix-s00-'+width+'x'+height+'.png'});
-  await page.locator('.desktop-start-hitbox').click();
-  assert.ok(await page.getByText('Первый день на предприятии').count()>0,'Start button does not work');
+  // Click the visible painted Start area, not the centre of an invisible hitbox.
+  const visualBox=await page.locator('.desktop-start-visual').boundingBox();
+  await page.mouse.click(visualBox.x+visualBox.width*0.79,visualBox.y+visualBox.height*0.84);
+  assert.ok(await page.getByText('Первый день на предприятии').count()>0,'Start button does not work from the visible painted area');
+  assert.equal(await page.evaluate(()=>window.__CEH_TEST__.getState().s00),1,'S00 did not advance after real mouse click');
  }
  await page.evaluate(k=>localStorage.setItem(k,JSON.stringify({
   scene:'S02',s00:3,name:'Тест',s01:4,s02Step:'report',s02ReportSeen:true,
