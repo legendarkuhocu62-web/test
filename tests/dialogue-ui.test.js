@@ -3,6 +3,14 @@ const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),asse
 const root=path.resolve(__dirname,'..');
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 new vm.Script(read('app.js'),{filename:'app.js'});
+const html=read('index.html');
+const appSource=read('app.js');
+assert.match(html,/app\.js\?v=edu01-game-dialog-20261112-v2/,'new app code must bypass stale mobile cache');
+assert.match(html,/style\.css\?v=edu01-game-dialog-20261112-v2/,'new modal CSS must bypass stale mobile cache');
+assert.match(appSource,/showEduFeedback\('Вы неправильно рассчитали\. Попробуйте ещё раз\.'\)/,
+  'EDU-01 wrong calculation must open in-game dialog');
+assert.doesNotMatch(appSource,/window\.alert\('Вы неправильно рассчитали/,
+  'EDU-01 must never use native browser alert');
 new vm.Script(read('logic.js'),{filename:'logic.js'});
 const window={innerWidth:390,innerHeight:844,visualViewport:{width:390,height:844}};
 const ctx={window};
