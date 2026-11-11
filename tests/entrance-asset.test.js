@@ -43,14 +43,23 @@ for(const [width,height] of sizes){
    'desktop pass panel is too wide: '+JSON.stringify(image));
  }
  if(width<=720){
-  assert.match(image.sizes,/100% 100%,\s*100%(?: auto)?$/,
-   'full-width mobile background fit missing '+JSON.stringify(image));
+  assert.match(image.sizes,/100% 100%,\s*cover$/,
+   'mobile background must fill viewport without dark bands '+JSON.stringify(image));
+  const aligned=await page.evaluate(()=>{const s=document.querySelector('.entrance-scene').getBoundingClientRect(),g=document.querySelector('.entrance-scene .glass').getBoundingClientRect();return {sceneTop:s.top,sceneBottom:s.bottom,glassTop:g.top,glassBottom:g.bottom,centerDiff:Math.abs((s.top+s.bottom-g.top-g.bottom)/2),glassHeight:g.height,screenHeight:innerHeight,docWidth:document.documentElement.scrollWidth};});
+  assert.ok(aligned.centerDiff<=36,'entrance form should be centered vertically '+JSON.stringify(aligned));
+  assert.ok(aligned.docWidth<=width+3,'mobile entry has horizontal overflow '+JSON.stringify(aligned));
  }
  await page.screenshot({path:'tests/screenshot-entrance-'+width+'x'+height+'.png',fullPage:true});
  await page.locator('#name').fill('Анна');
  await page.locator('[data-act="badge"]').click();
  assert.equal(await page.locator('.entrance-scene').count(),1,'registration-to-pass image lost');
  assert.equal(await page.locator('.badge-card').count(),1,'badge stage missing');
+ if(width<=720){
+  const badge=await page.evaluate(()=>{const s=document.querySelector('.entrance-scene').getBoundingClientRect(),g=document.querySelector('.entrance-scene .badge-screen').getBoundingClientRect(),btn=document.querySelector('.badge-screen .btn').getBoundingClientRect();return {delta:Math.abs((s.top+s.bottom-g.top-g.bottom)/2),buttonBottom:btn.bottom,screenHeight:innerHeight,docWidth:document.documentElement.scrollWidth};});
+  assert.ok(badge.delta<=36,'badge panel must stay centered '+JSON.stringify(badge));
+  assert.ok(badge.buttonBottom<=height+3,'badge action must remain visible '+JSON.stringify(badge));
+  assert.ok(badge.docWidth<=width+3,'badge page overflows horizontally '+JSON.stringify(badge));
+ }
  await page.locator('[data-act="next"]').click();
  assert.equal(await page.locator('.dialogue-stage--office').count(),1,'transition to S01 failed');
  assert.deepEqual(errors,[],'JavaScript error '+width+'x'+height);
