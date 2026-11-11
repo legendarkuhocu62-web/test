@@ -944,3 +944,42 @@ body{overflow-x:hidden}.shell{max-width:none}.masthead{padding:8px clamp(12px,2v
     overflow-wrap:break-word;
   }
 }
+
+/* S00 entrance & pass: continuous background, centred form and badge on phones.
+   Preserve the approved CH1-IMG-002 asset, other scenes and pass overlay. */
+@media (max-width:720px){
+  .stage-scene.entrance-scene{
+    height:auto;
+    min-height:calc(100dvh - 62px);
+    align-items:center;
+    background-color:#081423;
+    background-size:100% 100%,cover;
+    background-position:center center,center center;
+    background-repeat:no-repeat,no-repeat;
+  }
+  .stage-scene.entrance-scene .scene-content{
+    width:100%;
+    min-height:calc(100dvh - 62px);
+    padding:clamp(12px,3vw,22px)!important;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+  }
+  .stage-scene.entrance-scene .scene-content>.glass{
+    width:min(100%,510px);
+    max-width:100%;
+    margin:auto;
+    padding:clamp(15px,4vw,24px);
+    background:rgba(8,22,40,.82);
+  }
+  .stage-scene.entrance-scene .badge-screen .badge-card{
+    width:min(58vw,260px);
+    margin:10px auto;
+  }
+  .stage-scene.entrance-scene .badge-screen .btn{
+    max-width:100%;
+    white-space:normal;
+    text-align:center;
+  }
+}
