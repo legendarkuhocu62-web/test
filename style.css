@@ -860,6 +860,10 @@ body{overflow-x:hidden}.shell{max-width:none}.masthead{padding:8px clamp(12px,2v
     margin:0 auto 5px;
     background:rgba(255,255,255,.75);
   }
+  /* Match the seats in the approved portrait: Andrey · Irina · Marina. */
+  #app .s03-group-scene .choices .person-choice[data-id="andrey"] {order:1}
+  #app .s03-group-scene .choices .person-choice[data-id="irina"] {order:2}
+  #app .s03-group-scene .choices .person-choice[data-id="marina"] {order:3}
   body.s03-mobile-choice-active .s03-chooser__next {
     margin-top:10px;
     text-align:center;
