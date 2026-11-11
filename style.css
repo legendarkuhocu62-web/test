@@ -899,3 +899,48 @@ body{overflow-x:hidden}.shell{max-width:none}.masthead{padding:8px clamp(12px,2v
   body.s03-mobile-choice-active .s03-chooser__next {margin-top:6px}
   #app .s03-group-scene .s03-chooser__next .btn {min-height:48px}
 }
+
+/* EDU-01 mobile correction: show the complete technical document before the answer
+   card, without a clipped inner scroll area on phones and small tablets. */
+@media (max-width:930px) {
+  .document--edu .edu-layout {
+    grid-template-columns:minmax(0,1fr);
+    width:100%;
+    min-width:0;
+    align-items:start;
+  }
+  .document--edu .edu-doc {
+    display:block;
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    max-height:none;
+    overflow:visible;
+    margin:0;
+    transform:none;
+    box-sizing:border-box;
+  }
+  .document--edu .edu-task {
+    min-width:0;
+    width:100%;
+    margin:0;
+    box-sizing:border-box;
+  }
+}
+@media (max-width:590px) {
+  .document--edu .edu-doc {
+    max-height:none;
+    overflow:visible;
+    padding:14px;
+  }
+  .document--edu .edu-doc table {
+    width:100%;
+    table-layout:fixed;
+    font-size:clamp(12px,3.3vw,15px);
+  }
+  .document--edu .edu-doc th,
+  .document--edu .edu-doc td {
+    padding:7px 5px;
+    overflow-wrap:break-word;
+  }
+}
