@@ -12,6 +12,8 @@ on:
       - 'logic.js'
       - 'tests/**'
       - '.github/workflows/dialogue-tests.yml'
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
@@ -44,6 +46,7 @@ jobs:
           node tests/dialogue-browser.test.js
           node tests/entrance-asset.test.js
           node tests/visual-fixes.test.js
+          node tests/design-layout.test.js
       - uses: actions/upload-artifact@v4
         if: always()
         with:
