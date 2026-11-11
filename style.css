@@ -1226,8 +1226,8 @@ body.dialogue-mode-active #app .dialogue-stage .game-dialogue--scene .game-dialo
   left:50%!important;
   width:min(43%,520px)!important;
   max-width:min(43%,520px)!important;
-  height:min(74%,640px)!important;
-  max-height:74%;
+  height:min(66%,600px)!important;
+  max-height:66%;
   transform:translateX(-50%)!important;
   transform-origin:center bottom;
   object-fit:contain;
