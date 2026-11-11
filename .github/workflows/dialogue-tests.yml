@@ -28,7 +28,9 @@ jobs:
         with:
           node-version: '22'
       - name: Test dialogue navigation and source integrity
-        run: node tests/dialogue-ui.test.js
+        run: |
+          node tests/dialogue-ui.test.js
+          node tests/edu01-approved-documents.test.js
   browser:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
