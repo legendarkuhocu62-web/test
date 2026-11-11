@@ -90,6 +90,16 @@
       "path": "assets/backgrounds/CH1-IMG-019_S03_Переговорная_без_персонажей.jpeg",
       "scene": "S03",
       "status": "user_approved"
+    },
+    "bg_meeting_group_mobile": {
+      "id": "CH1-IMG-022",
+      "type": "background",
+      "path": "assets/backgrounds/CH1-IMG-022_S03_meeting_three_characters_mobile.png",
+      "scene": "S03",
+      "screen": "mobile",
+      "status": "user_approved",
+      "source": "https://drive.google.com/file/d/1wCsQ17ABO-9l1P8f6yx3SSclXW4JvyYR/view",
+      "note": "941 × 1672; used only at viewport widths <=430px; HTML labels/buttons remain interactive."
     }
   }
 }
