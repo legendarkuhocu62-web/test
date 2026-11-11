@@ -1,0 +1,39 @@
+name: Import approved EDU-01 document scans once
+on:
+  push:
+    branches:
+      - fix/edu01-approved-documents-20261112
+    paths:
+      - .github/workflows/edu01-import-once.yml
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download two approved images from project Google Drive
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/edu01
+          curl -fLsS --retry 3 --connect-timeout 15 --max-time 120 "https://drive.google.com/uc?export=download&id=14RKQ5ezMoxUjg9xboRB9t_4cVHA9OgC6" -o assets/edu01/schema-ek-v20-01.jpg
+          curl -fLsS --retry 3 --connect-timeout 15 --max-time 120 "https://drive.google.com/uc?export=download&id=1LCyT_rYeQ4zjGO1Q2KDg3WKvTyRLY87L" -o assets/edu01/act-ns-008-26.jpg
+          for f in assets/edu01/*.jpg; do
+            test "$(file --mime-type -b "$f")" = image/jpeg
+            test "$(stat -c%s "$f")" -gt 150000
+            printf "%s: " "$f"; sha256sum "$f"
+          done
+      - name: Commit document images to isolated test branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/edu01/schema-ek-v20-01.jpg assets/edu01/act-ns-008-26.jpg
+          if ! git diff --cached --quiet; then
+            git commit -m "asset(EDU-01): add approved technical documents [skip ci]"
+            git push origin HEAD:fix/edu01-approved-documents-20261112
+          fi
