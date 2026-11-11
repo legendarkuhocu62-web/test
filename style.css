@@ -376,3 +376,247 @@ body{overflow-x:hidden}.shell{max-width:none}.masthead{padding:8px clamp(12px,2v
 }
 /* Keep the first-day entrance and pass on a single viewport. */
 #app .gate-scene~.reset,#app .entrance-scene~.reset{display:none!important}
+
+
+/* ЦЕХ 404 · 11.11.2026 · Buttons follow the orange slanted title-screen artwork.
+   Approved images are unchanged: this only styles actual HTML buttons. */
+#app .btn:not(.desktop-start-hitbox):not(.mobile-start-hitbox),
+#app .dialogue-control{
+  position:relative;
+  isolation:isolate;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  vertical-align:middle;
+  min-height:46px;
+  max-width:100%;
+  padding:12px 24px;
+  margin:7px 7px 0;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:#fff!important;
+  font-family:inherit;
+  font-size:clamp(13px,1.08vw,17px);
+  font-style:italic;
+  font-weight:850;
+  line-height:1.25;
+  letter-spacing:.025em;
+  text-transform:uppercase;
+  text-align:center;
+  text-shadow:0 1px 3px #692900ab;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  cursor:pointer;
+  transition:transform .15s ease, filter .15s ease;
+}
+#app .btn::before,#app .dialogue-control::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  inset:0 8px;
+  border-radius:clamp(9px,1vw,16px);
+  background:linear-gradient(125deg,#ffac24 0%,#ff9109 52%,#f47600 100%);
+  transform:skewX(-15deg);
+  box-shadow:inset 0 2px 0 #ffda79aa,0 5px 12px #0a111b90;
+  pointer-events:none;
+}
+#app .btn:hover,#app .dialogue-control:hover{transform:translateY(-1px);filter:brightness(1.08)}
+#app .btn:active,#app .dialogue-control:active{transform:translateY(1px)}
+#app .btn:focus-visible,#app .dialogue-control:focus-visible{
+  outline:3px solid #fff;
+  outline-offset:4px;
+}
+#app .btn.primary,#app .dialogue-control--primary{padding-right:54px}
+#app .btn.primary::after,#app .dialogue-control--primary::after{
+  content:"";
+  position:absolute;
+  right:22px;
+  top:50%;
+  transform:translateY(-50%);
+  width:0;height:0;
+  border-left:13px solid #fff;
+  border-top:8px solid transparent;
+  border-bottom:8px solid transparent;
+  filter:drop-shadow(0 1px 2px #6d3100);
+  pointer-events:none;
+}
+#app .btn.selected::before,#app .btn.seen::before{
+  background:linear-gradient(125deg,#cd6708,#d47b13);
+  box-shadow:inset 0 0 0 2px #ffe0a4,0 4px 10px #0a111b90;
+}
+#app .btn:disabled,#app .dialogue-control:disabled{
+  opacity:.48;cursor:not-allowed;transform:none;filter:grayscale(.25);
+}
+#app .btn:disabled::after{opacity:.7}
+#app .investment .btn{
+  align-self:flex-start;
+  width:auto;
+  font-size:clamp(12px,1vw,15px);
+  margin-top:auto;
+}
+#app .choices .btn,#app .game-dialogue__actions .btn{margin:0 7px}
+#app .person-choice{font-style:normal;text-transform:none}
+#app .person-choice__name,#app .person-choice__role{text-transform:none;font-style:normal}
+#app .reset .btn{font-size:12px}
+
+/* S04: full-width content, compact responsive cards and accessible portfolio action. */
+.stage-scene.investment-scene{
+  height:auto!important;
+  min-height:calc(100dvh - 58px);
+  align-items:flex-start;
+  background-position:center top;
+}
+.investment-scene .scene-content{
+  width:100%;
+  max-width:1540px;
+  margin:0 auto;
+  padding:clamp(12px,2.3vw,30px);
+}
+.investment-scene .glass.document{
+  width:100%;
+  max-width:1460px;
+  margin:0 auto;
+  padding:clamp(16px,2vw,28px);
+  background:linear-gradient(145deg,rgba(10,24,42,.96),rgba(15,33,56,.95));
+}
+.document--catalog .budget{
+  position:sticky;
+  top:0;
+  z-index:4;
+  padding:12px 16px;
+  border:1px solid #f6bc5c77;
+  border-radius:12px;
+  background:rgba(13,31,52,.97);
+  backdrop-filter:blur(8px);
+  box-shadow:0 5px 20px #0005;
+}
+.document--catalog .invest-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  align-items:stretch;
+  gap:14px;
+  margin:16px 0 14px;
+}
+.document--catalog .investment{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  min-width:0;
+  padding:clamp(12px,1.1vw,17px);
+  border:1px solid #a4bcd044;
+  border-radius:14px;
+  background:linear-gradient(160deg,#21344eec,#172c44e6);
+}
+.document--catalog .investment h3{font-size:clamp(15px,1.12vw,19px);line-height:1.28;margin:6px 0 0}
+.document--catalog .investment p{font-size:clamp(12px,.93vw,15px);line-height:1.4;margin:1px 0 6px}
+.document--catalog .investment details{margin-top:auto;padding:9px 10px;border-radius:8px}
+.document--catalog .investment summary{line-height:1.35}
+.document--catalog .invest-head{gap:8px;flex-wrap:wrap}
+.document--catalog .portfolio-actions{
+  position:sticky;
+  bottom:0;
+  z-index:5;
+  display:flex;
+  justify-content:flex-end;
+  padding:12px 14px 14px;
+  border-top:1px solid #ffc46966;
+  border-radius:12px;
+  background:linear-gradient(0deg,rgba(11,24,39,.99),rgba(11,24,39,.94));
+  backdrop-filter:blur(12px);
+}
+.document--catalog .portfolio-actions .btn{margin:0}
+
+/* EDU-01: source documents remain visible beside the answer card on desktop. */
+.document--edu .edu-layout{
+  display:grid;
+  grid-template-columns:minmax(0,1.04fr) minmax(340px,.96fr);
+  gap:clamp(14px,2vw,26px);
+  align-items:start;
+}
+.document--edu .edu-doc{
+  margin:0;
+  padding:clamp(14px,1.5vw,22px);
+  max-height:min(70dvh,700px);
+  overflow:auto;
+  border:1px solid #d0d8de;
+  border-radius:15px;
+  background:#f3f6f8;
+  color:#172536;
+  font-size:clamp(14px,1.05vw,17px);
+  line-height:1.5;
+}
+.document--edu .edu-doc p{margin:8px 0}
+.document--edu .edu-doc table{table-layout:fixed;width:100%;font-size:inherit}
+.document--edu .edu-doc th,.document--edu .edu-doc td{padding:10px;overflow-wrap:anywhere}
+.document--edu .edu-task{
+  padding:clamp(15px,1.6vw,24px);
+  border:1px solid #e5a54e99;
+  border-radius:15px;
+  background:rgba(8,23,42,.85);
+}
+.document--edu .edu-task h3{font-size:clamp(20px,1.75vw,27px);line-height:1.25;margin:0 0 12px}
+.document--edu .edu-task p{margin:8px 0 15px}
+.document--edu .edu-answer-fields{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
+}
+#app .document--edu .edu-task label{font-size:clamp(14px,1.08vw,18px);font-weight:650;line-height:1.4}
+#app .document--edu .edu-task input[inputmode="decimal"]{
+  display:block;
+  width:100%;
+  max-width:none;
+  min-width:0;
+  margin-top:8px;
+  padding:13px 14px;
+  border:2px solid #d0d9e4;
+  border-radius:10px;
+  background:#fff;
+  color:#172536;
+  font-size:clamp(16px,1.2vw,19px);
+}
+#app .document--edu .edu-task input::placeholder{
+  color:#697689;
+  opacity:1;
+  font-style:normal;
+  font-weight:400;
+}
+.document--edu .edu-task .choices{gap:8px}
+.document--edu .edu-task .choices label{
+  display:block;
+  margin:0;
+  padding:10px 12px;
+  border:1px solid #607a93;
+  border-radius:9px;
+  background:#172e47;
+  cursor:pointer;
+}
+.document--edu .edu-task .choices label:focus-within{outline:2px solid #ffc36d}
+@media(max-width:1199px){
+ .document--catalog .invest-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:930px){
+ .document--catalog .invest-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .document--edu .edu-layout{grid-template-columns:1fr}
+ .document--edu .edu-doc{max-height:31dvh}
+ .document--edu .edu-task{padding:16px}
+}
+@media(max-width:590px){
+ .stage-scene.investment-scene{height:auto!important;min-height:calc(100dvh - 48px)}
+ .investment-scene .scene-content{padding:10px}
+ .investment-scene .glass.document{padding:14px}
+ .document--catalog .invest-grid{grid-template-columns:1fr;gap:10px}
+ .document--catalog .investment{padding:14px}
+ .document--catalog .portfolio-actions{padding:9px 0 11px}
+ .document--catalog .portfolio-actions .btn{width:100%;margin:0}
+ .document--edu .edu-doc{max-height:27dvh}
+ .document--edu .edu-answer-fields{grid-template-columns:1fr;gap:4px}
+ #app .btn:not(.desktop-start-hitbox):not(.mobile-start-hitbox),#app .dialogue-control{
+   font-size:clamp(12px,3.4vw,15px);padding:11px 19px;min-height:44px;
+ }
+ #app .btn.primary,#app .dialogue-control--primary{padding-right:43px}
+ #app .btn.primary::after,#app .dialogue-control--primary::after{right:17px;border-left-width:10px;border-top-width:7px;border-bottom-width:7px}
+ #app .investment .btn{font-size:13px}
+}
