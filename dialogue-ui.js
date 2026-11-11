@@ -53,7 +53,8 @@ function render(options){
  let controls='';
  if(segments.length>1&&page>0){
    controls+=button('Назад','dlgBack');
-   if(page>1)controls+=button('К началу','dlgStart');
+   // Only Back + Continue; a third button wrapped onto a second row
+   // on short phones and squeezed the text out of the fixed frame.
  }
  controls+=final?finish:button('Читать далее','dlgMore',true);
  const avatar=variant==='inline'||!portrait?'':'<img class="game-dialogue__character" src="'+escapeHTML(portrait)+'" alt="'+escapeHTML(alt||speaker)+'">';
