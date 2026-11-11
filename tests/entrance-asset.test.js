@@ -16,6 +16,9 @@ for(const [width,height] of sizes){
   s04Mode:'priority',selected:[],showReview:false,finished:false
  })),storageKey);
  await page.reload({waitUntil:'load'});
+ // S00 has two short gate screens; step 2 is the second gate message.
+ await page.locator('.gate-scene').waitFor();
+ await page.locator('[data-act="s00next"]').click();
  await page.locator('.entrance-scene').waitFor();
  const image=await page.evaluate(async()=>{
   const scene=document.querySelector('.entrance-scene'),glass=scene.querySelector('.glass');
@@ -27,17 +30,21 @@ for(const [width,height] of sizes){
   const sc=scene.getBoundingClientRect(),gr=glass.getBoundingClientRect();
   return {src:pic.src,complete:pic.complete,width:pic.naturalWidth,height:pic.naturalHeight,
    sizes:style.backgroundSize,position:style.backgroundPosition,
-   sceneTop:sc.top,glassTop:gr.top,viewportWidth:innerWidth};
+   sceneTop:sc.top,glassTop:gr.top,glassLeft:gr.left,glassRight:gr.right,glassWidth:gr.width,viewportWidth:innerWidth};
  });
  assert.ok(decodeURI(image.src).includes(expectedName),'wrong scene asset: '+image.src);
  assert.ok(image.complete&&image.width===1671&&image.height===941,'wrong dimensions or image failed to load '+JSON.stringify(image));
+ // The current single-viewport layout places the form over a part of the
+ // background, unlike the retired below-image layout. Preserve its usability.
+ assert.ok(image.glassLeft>=-3&&image.glassRight<=width+3,
+  'pass panel overflows horizontally: '+JSON.stringify(image));
  if(width>720){
-  const right=await page.locator('.entrance-scene .glass').evaluate(el=>el.getBoundingClientRect().right);
-  assert.ok(right<=width*0.49,'desktop pass panel blocks turnstiles: '+right+'/'+width);
+  assert.ok(image.glassWidth<=Math.min(520,width*.6)+3,
+   'desktop pass panel is too wide: '+JSON.stringify(image));
  }
  if(width<=720){
-  assert.match(image.sizes,/100% 100%,\s*100%(?: auto)?$/,'full-width mobile fit missing '+JSON.stringify(image));
-  assert.ok(image.glassTop>=image.sceneTop+width*941/1671-5,'mobile UI hides turnstiles '+JSON.stringify(image));
+  assert.match(image.sizes,/100% 100%,\s*100%(?: auto)?$/,
+   'full-width mobile background fit missing '+JSON.stringify(image));
  }
  await page.screenshot({path:'tests/screenshot-entrance-'+width+'x'+height+'.png',fullPage:true});
  await page.locator('#name').fill('Анна');
