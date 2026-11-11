@@ -343,3 +343,14 @@ body{overflow-x:hidden}.shell{max-width:none}.masthead{padding:8px clamp(12px,2v
  .s03-chooser{max-height:54dvh;padding:12px}.s03-chooser .choices{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
  .person-choice{padding:8px 5px;font-size:12px}.person-choice__role{font-size:10px}
 }
+/* S03: keep the group portrait visible; captions sit below each seated specialist. */
+.s03-chooser{width:100%;max-width:1200px;margin:0 auto;background:linear-gradient(0deg,rgba(5,15,27,.9),rgba(5,15,27,.2));border:0;border-radius:14px;padding:clamp(10px,2vw,20px);max-height:56dvh;overflow:visible}
+.s03-chooser__intro{text-align:center;text-shadow:0 2px 8px #000;margin-bottom:8px}
+.s03-chooser__intro h1{margin:0;font-size:clamp(20px,2.3vw,30px)}
+.s03-chooser__intro p{margin:5px 0}
+.s03-chooser .choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(8px,2vw,22px);margin:8px 0}
+.s03-chooser__next{text-align:center}
+.s03-chooser__next .btn{margin:4px auto}
+.dialogue-control{background:#172e47;color:#fff;border:1px solid #88a5bd60}
+.dialogue-control--primary{background:#dcad64!important;color:#101b27!important;border:1px solid #f6d9a7!important}
+@media(max-width:720px){.s03-chooser{max-height:60dvh;padding:8px}.s03-chooser__intro h1{font-size:19px}.s03-chooser__intro p{font-size:12px}.s03-chooser .choices{gap:5px}.s03-chooser .person-choice{min-height:68px;padding:6px 4px}}
