@@ -9,6 +9,8 @@ on:
       - 'assets/backgrounds/**'
       - 'data.js'
       - 'dialogue-ui.js'
+      - 'materials-panel.js'
+      - 'materials-panel.css'
       - 'logic.js'
       - 'tests/**'
       - '.github/workflows/dialogue-tests.yml'
@@ -47,6 +49,7 @@ jobs:
           node tests/entrance-asset.test.js
           node tests/visual-fixes.test.js
           node tests/design-layout.test.js
+          node tests/materials-panel.test.js
           node tests/s03-mobile-background.test.js
       - uses: actions/upload-artifact@v4
         if: always()
