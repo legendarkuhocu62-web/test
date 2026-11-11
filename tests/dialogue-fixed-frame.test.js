@@ -9,7 +9,7 @@ const assert=require('node:assert/strict');
  const variants=[
   {scene:'S01',s01:0}, {scene:'S01',s01:2},
   {scene:'S02',s02Step:'intro'},
-  {scene:'S02',s02Step:'feedback',hypothesis:'queue',hypothesisConfirmed:true},
+  {scene:'S02',s02Step:'feedback',hypothesis:'insufficient',hypothesisConfirmed:true},
   {scene:'S03',s03Person:'andrey'}, {scene:'S03',s03Person:'marina'}
  ];
  for(const [width,height] of [[375,667],[390,600],[390,844],[430,932],[1024,768],[1366,768]]){
