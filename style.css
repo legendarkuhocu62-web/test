@@ -314,3 +314,32 @@ body.s02-view-active .s02-report-stage .scene-content,body.s02-view-active .s02-
 .person-choice__name{font-weight:800;line-height:1.2}
 .person-choice__role{font-size:.88em;line-height:1.25;font-weight:500;opacity:.9}
 .budget-message{padding:12px 15px;border:1px solid #e99023;border-radius:12px;background:#4a260f;color:#fff;line-height:1.4}
+
+
+/* Approved UI corrections 11.11.2026 */
+body{overflow-x:hidden}.shell{max-width:none}.masthead{padding:8px clamp(12px,2vw,24px)}
+.stage span,.statusline,.footer{display:none!important}
+.stage-scene{min-height:calc(100dvh - 58px);height:calc(100dvh - 58px)}
+.scene-content{padding:clamp(10px,2vw,22px)}
+.btn,.dialogue-control{border-radius:11px;min-height:44px;font-weight:700}
+.btn.primary,.dialogue-control--primary{background:#dcad64!important;color:#101b27!important;border:1px solid #f6d9a7!important}
+.gate-scene .scene-content{display:flex;align-items:flex-end;justify-content:center}
+.gate-scene .game-dialogue--inline{width:min(100%,820px);margin:0 auto}
+.gate-scene .game-dialogue--inline .game-dialogue__panel{max-height:32dvh}
+.entrance-scene .scene-content{padding:clamp(10px,2vw,20px)!important;display:flex;align-items:flex-end}
+.entrance-scene .scene-content>.glass{max-width:min(520px,100%);margin:0 auto}
+.badge-screen .badge-card{width:min(34vw,300px);margin:8px auto}
+.badge-screen{text-align:center}.badge-screen .btn{display:block;margin:10px auto 0}
+.dialogue-stage .game-dialogue__character{left:34%;width:32%;height:90%;bottom:0;object-position:center bottom}
+.dialogue-stage--office .game-dialogue__character,.dialogue-stage--meeting .game-dialogue__character{left:34%!important;top:auto!important;bottom:0!important}
+.s03-group-scene .scene-content{padding:12px}.s03-chooser{max-height:48dvh;overflow:auto}
+.s03-chooser .choices{grid-template-columns:repeat(3,minmax(0,1fr));align-items:end}
+.budget-message{white-space:pre-line}
+@media(max-width:720px){
+ .masthead{padding:6px 10px}.stage-scene{height:calc(100dvh - 48px);min-height:calc(100dvh - 48px)}
+ .entrance-scene .scene-content{padding:8px!important}.entrance-scene .scene-content>.glass{max-width:100%;padding:12px}
+ .badge-screen .badge-card{width:min(58vw,260px)}.badge-screen .glass h1{font-size:22px}
+ .dialogue-stage .game-dialogue__character{left:10%!important;width:80%;height:90%;max-width:80%}
+ .s03-chooser{max-height:54dvh;padding:12px}.s03-chooser .choices{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+ .person-choice{padding:8px 5px;font-size:12px}.person-choice__role{font-size:10px}
+}
