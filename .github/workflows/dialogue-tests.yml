@@ -12,6 +12,8 @@ on:
       - 'logic.js'
       - 'tests/**'
       - '.github/workflows/dialogue-tests.yml'
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
