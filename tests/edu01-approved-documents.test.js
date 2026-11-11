@@ -17,6 +17,10 @@ assert.ok(app.includes('edu-doc--scans'),'EDU-01 image cards missing');
 assert.ok(app.includes('edu-document-dialog'),'EDU-01 document modal missing');
 assert.ok(!app.includes('class="edu-doc"><b>СХЕМА КОНТРОЛЯ'),'old text imitation still active');
 assert.ok(css.includes('EDU-01 approved scanned documents'),'new styles missing');
+assert.ok(app.includes('class="edu-subtle-hint"'),'EDU-01 step 4 hint missing');
+assert.ok(app.includes('какая информация поможет проверить причины и масштаб проблемы'),'hint text missing');
+assert.ok(css.includes('quiet methodological cue'),'hint styling missing');
+assert.ok(app.includes("chosen.join(',')==='1,2,3,4'"),'correct answers must stay unchanged');
 assert.match(index,/app\.js\?v=[a-z0-9-]+/,'versioned app script missing');
 assert.match(index,/style\.css\?v=[a-z0-9-]+/,'versioned styles missing');
 for(const key of ["action==='edu1'","action==='edu2'","action==='edu3'","action==='edu4'","action==='finish'"]){
