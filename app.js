@@ -83,7 +83,7 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
  }
  html=frame(A.engineer,h+'</div>');
  }
- app.innerHTML=`${html}<div class="reset">${btn('Начать заново','reset')}</div>`;
+ app.innerHTML=`<div class="statusline" aria-hidden="true"></div>${html}<div class="reset">${btn('Начать заново','reset')}</div>`;
  try{localStorage.setItem(key,JSON.stringify(s))}catch(_){}
  requestAnimationFrame(()=>{D.fit();syncStartHitbox();if(s.scene==='S02'&&s.s02Step==='report')app.querySelector('.s02-report-close')?.focus({preventScroll:true});});
 }
