@@ -5,6 +5,33 @@ const materialsUI=window.CEH_MATERIALS.create({getState:()=>s,data:d,root:app});
  const A={title:'assets/backgrounds/CH1-IMG-001_Главный-экран.png',gate:'assets/backgrounds/CH1-IMG-006_Внешняя проходная.png',entry:'assets/backgrounds/CH1-IMG-002_Входная зона и турникеты.png?v=approved-20261109',office:'assets/backgrounds/CH1-IMG-005_Технологический отдел.png',engineer:'assets/backgrounds/CH1-IMG-014_Инженерный кабинет.png',group:'assets/backgrounds/CH1-IMG-020_S03_three_characters.jpeg',badge:'assets/icons/CH404-CH1-S00-001_employee_badge_technician.png',irina:'assets/characters/CH1-IMG-013_Женский персонаж с планшетом.png',irina_friendly:'assets/characters/CH1-IMG-015_irina_friendly.png',irina_focused:'assets/characters/CH1-IMG-016_irina_focused.png',meeting:'assets/backgrounds/CH1-IMG-019_S03_Переговорная_без_персонажей.jpeg',andrey:'assets/characters/CH1-IMG-012_Персонаж Андрей Громов.png',marina:'assets/characters/CH1-IMG-011_Персонаж Марина Власова.png'};
 function e(x){return String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function btn(t,act,id='',cls=''){return `<button type="button" class="btn ${cls}" data-act="${e(act)}" data-id="${e(id)}">${e(t)}</button>`}
+/* EDU-01 documents: view original image without resetting scene or inputs. */
+let eduDocumentDialog=null,eduDocumentReturnFocus=null;
+function showEduDocument(src,title){
+  if(!eduDocumentDialog){
+    const dlg=document.createElement('dialog');
+    dlg.className='edu-document-dialog';
+    dlg.setAttribute('aria-labelledby','edu-document-dialog-title');
+    dlg.innerHTML='<div class="edu-document-dialog__header"><h2 id="edu-document-dialog-title"></h2><button type="button" class="edu-document-dialog__close" aria-label="Закрыть документ">Закрыть ✕</button></div><div class="edu-document-dialog__body"><img alt="" loading="eager"></div><a class="edu-document-dialog__original" target="_blank" rel="noopener">Открыть оригинал для увеличения</a>';
+    dlg.querySelector('.edu-document-dialog__close').addEventListener('click',()=>dlg.close());
+    dlg.addEventListener('close',()=>{if(eduDocumentReturnFocus&&eduDocumentReturnFocus.isConnected)eduDocumentReturnFocus.focus({preventScroll:true});});
+    document.body.appendChild(dlg);
+    eduDocumentDialog=dlg;
+  }
+  eduDocumentReturnFocus=document.activeElement;
+  eduDocumentDialog.querySelector('#edu-document-dialog-title').textContent=title;
+  const photo=eduDocumentDialog.querySelector('.edu-document-dialog__body img');
+  photo.src=src;photo.alt=title;
+  eduDocumentDialog.querySelector('.edu-document-dialog__original').href=src;
+  if(!eduDocumentDialog.open)eduDocumentDialog.showModal();
+  eduDocumentDialog.querySelector('.edu-document-dialog__close').focus({preventScroll:true});
+}
+app.addEventListener('click',ev=>{
+  const link=ev.target.closest('a[data-edu-image]');
+  if(!link||!app.contains(link)||typeof HTMLDialogElement==='undefined')return;
+  ev.preventDefault();
+  showEduDocument(link.getAttribute('href'),link.dataset.title||'Документ ОТК');
+});
 /* In-game EDU feedback. Native browser alert() has browser-owned styling and
    incorrectly appears as an external site confirmation on Android. */
 let eduFeedbackDialog=null,eduFeedbackReturnFocus=null;
@@ -93,7 +120,10 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
  }else if(s.s04Mode==='eduIntro'){
   h+='<h2>Проверка документов ОТК</h2><p>Ты уже выбрал, куда предложить вложить средства. Перед отправкой открой документы ОТК. Они помогут проверить, какие выводы из отчёта действительно подтверждаются, а что пока остаётся предположением.</p><p><b>Документы:</b> схема контроля наружного диаметра ЭК-В20-01 и акт о несоответствии № НС-008/26.</p>'+btn('Проверить документы','startEdu','','primary');
  }else if(s.s04Mode==='edu'){
-  h+='<h2>EDU-01 · Проверка технических документов</h2><div class="edu-layout"><div class="edu-doc"><b>СХЕМА КОНТРОЛЯ НАРУЖНОГО ДИАМЕТРА</b><p>ЭК-В20-01 · Вал В-20</p><p>Контролируемый размер: <b>Ø20,00 ±0,05 мм</b></p><hr><b>АКТ О НЕСООТВЕТСТВИИ ПРОДУКЦИИ № НС-008/26</b><p>Изделие: Вал В-20 · Партия П-0811-04 · Место выявления: окончательный контроль</p><table><tr><th>Деталь</th><th>Измеренный диаметр</th></tr><tr><td>В-20-01</td><td>20,02 мм</td></tr><tr><td>В-20-02</td><td>20,08 мм</td></tr></table></div><section class="edu-task" aria-label="Профессиональное задание">';
+  h+='<h2>EDU-01 · Проверка технических документов</h2><p class="edu-instructions">Открой схему контроля и акт ОТК. Изучи данные документов, затем выполни задания.</p><div class="edu-layout"><div class="edu-doc edu-doc--scans" aria-label="Документы ОТК">'
+      +'<article class="edu-document-card"><h3>Схема контроля ЭК-В20-01</h3><a class="edu-document-link" data-edu-image data-title="Схема контроля ЭК-В20-01" href="assets/edu01/schema-ek-v20-01.jpg" target="_blank" rel="noopener" aria-label="Открыть схему контроля ЭК-В20-01"><img src="assets/edu01/schema-ek-v20-01.jpg" alt="Технический чертёж вала В-20, размер Ø20,00 ±0,05 мм" loading="lazy"><span>Открыть чертёж</span></a></article>'
+      +'<article class="edu-document-card"><h3>Акт о несоответствии № НС-008/26</h3><a class="edu-document-link" data-edu-image data-title="Акт о несоответствии № НС-008/26" href="assets/edu01/act-ns-008-26.jpg" target="_blank" rel="noopener" aria-label="Открыть акт о несоответствии № НС-008/26"><img src="assets/edu01/act-ns-008-26.jpg" alt="Акт ОТК с результатами измерений 20,02 и 20,08 мм" loading="lazy"><span>Открыть акт ОТК</span></a></article>'
+      +'<p class="edu-doc-hint">Нажми на документ, чтобы рассмотреть его в большом размере. Ответы вводятся ниже.</p></div><section class="edu-task" aria-label="Профессиональное задание">';
   if(s.eduMessage)h+='<p class="warning" role="alert">'+e(s.eduMessage)+'</p>';
   if(s.eduStep===1)h+='<h3>Задание 1. Проверь размер</h3><p>Введи нижний и верхний предельные размеры в миллиметрах.</p><div class="edu-answer-fields"><label>Нижний предел, мм<input id="edu-low" inputmode="decimal" autocomplete="off" placeholder="Введите ответ"></label><label>Верхний предел, мм<input id="edu-high" inputmode="decimal" autocomplete="off" placeholder="Введите ответ"></label></div>'+btn('Проверить расчёт','edu1','','primary');
   if(s.eduStep===2)h+='<h3>Задание 2. Проверь результат контроля</h3><p>Какая деталь имеет записанный диаметр выше верхнего предела?</p><div class="choices"><label><input type="radio" name="edu-part" value="1"> 1 — В-20-01</label><label><input type="radio" name="edu-part" value="2"> 2 — В-20-02</label><label><input type="radio" name="edu-part" value="3"> 3 — ни одна</label></div><label>На сколько миллиметров превышен предел?<input id="edu-excess" inputmode="decimal" autocomplete="off" placeholder="Введите ответ"></label>'+btn('Проверить ответ','edu2','','primary');
