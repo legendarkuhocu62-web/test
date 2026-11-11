@@ -47,6 +47,7 @@ jobs:
           sleep 2
           node tests/dialogue-browser.test.js
           node tests/entrance-asset.test.js
+          node tests/s00-mobile-badge.test.js
           node tests/visual-fixes.test.js
           node tests/design-layout.test.js
           node tests/materials-panel.test.js
