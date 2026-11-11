@@ -49,7 +49,7 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
    html=frame(A.meeting,content,'dialogue-stage dialogue-stage--meeting');
  }else{
    const buttons=d.people.map(p=>`<button type="button" class="btn person-choice ${s.asked03.includes(p.id)?'seen':''}" data-act="person" data-id="${e(p.id)}"><span class="person-choice__name">${s.asked03.includes(p.id)?'✓ ':''}${e(p.name)}</span><span class="person-choice__role">${e(p.role)}</span></button>`).join('');
-   const content='<div class="glass s03-chooser"><h1>Три профессиональные позиции</h1><p>Перед подготовкой рекомендаций выслушай специалистов.</p><div class="choices">'+buttons+'</div>'+btn('Перейти к инвестициям','next','S04','primary')+'</div>';
+   const content='<div class="s03-chooser"><div class="s03-chooser__intro"><h1>Три профессиональные позиции</h1><p>Перед подготовкой рекомендаций выслушай специалистов.</p></div><div class="choices">'+buttons+'</div><div class="s03-chooser__next">'+btn('Перейти к инвестициям','next','S04','primary')+'</div></div>';
    html=frame(A.group,content,'s03-group-scene');
  }
  }else if(s.scene==='S04'){
