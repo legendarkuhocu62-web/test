@@ -74,6 +74,30 @@ const key='ceh404.rebuilt.qa50.20261108';
   if(width>930)assert.ok(layout.horizontal,'EDU-01 source and task should be side by side at '+width);
   else assert.ok(layout.vertical,'EDU-01 source should be above task at '+width);
 
+  // A wrong value must open a branded game dialog instead of Android's native
+  // site-confirmation alert. Closing it must preserve both form values.
+  let nativeAlerts=0;
+  page.on('dialog',dialog=>{nativeAlerts++;dialog.dismiss();});
+  await low.fill('36');await high.fill('20,05');
+  await page.locator('[data-act="edu1"]').click();
+  const feedback=page.locator('dialog.edu-feedback-dialog');
+  await feedback.waitFor({state:'visible'});
+  assert.match(await feedback.innerText(),/Вы неправильно рассчитали\. Попробуйте ещё раз\./);
+  assert.equal(await feedback.locator('#edu-feedback-heading').innerText(),'Проверь расчёт');
+  const style=await feedback.evaluate(x=>({
+    bg:getComputedStyle(x).backgroundImage,
+    border:getComputedStyle(x).borderTopColor,
+    button:getComputedStyle(x.querySelector('.edu-feedback-dialog__button'),'::before').backgroundImage,
+    rect:x.getBoundingClientRect().toJSON()
+  }));
+  assert.match(style.bg,/linear-gradient/,'game modal background missing');
+  assert.match(style.button,/linear-gradient/,'orange game CTA missing');
+  assert.ok(style.rect.left>=0&&style.rect.right<=width+2,'mobile feedback exceeds viewport');
+  await feedback.locator('.edu-feedback-dialog__button').click();
+  assert.equal(await feedback.evaluate(x=>x.open),false,'feedback must close');
+  assert.equal(await low.inputValue(),'36','lower input must be preserved');
+  assert.equal(await high.inputValue(),'20,05','upper input must be preserved');
+  assert.equal(nativeAlerts,0,'never call a native browser alert for EDU-01');
   await low.fill('19,95');await high.fill('20,05');
   await page.locator('[data-act="edu1"]').click();
   assert.equal(await page.evaluate(()=>window.__CEH_TEST__.getState().eduStep),2,
