@@ -360,3 +360,12 @@ body{overflow-x:hidden}.shell{max-width:none}.masthead{padding:8px clamp(12px,2v
 .btn:hover,.btn:focus-visible,.dialogue-control:hover,.dialogue-control:focus-visible{background:#f0bd73!important;color:#101b27!important;border-color:#fff0cf!important}
 .btn.selected,.btn.seen{background:#dcad64!important;color:#101b27!important}
 .game-dialogue__character{bottom:0;object-position:center bottom}
+
+.edu-doc{margin:14px 0;padding:16px;border:1px solid #9eb4c766;border-radius:12px;background:rgba(235,242,248,.96);color:#172536}
+.edu-doc table{width:100%;border-collapse:collapse;margin-top:10px;color:#172536}
+.edu-doc th,.edu-doc td{padding:8px;border:1px solid #73869a;text-align:left}
+.edu-doc hr{border:0;border-top:1px solid #9aa9b8;margin:12px 0}
+#app .document input[type="number"],#app .document input[inputmode="decimal"]{max-width:220px;margin:6px 0 12px;padding:10px;border-radius:8px;border:1px solid #9eb4c7;background:#fff;color:#172536}
+#app .document label{display:block;margin:10px 0}
+#app .document label input[type="radio"],#app .document label input[type="checkbox"]{display:inline-block;width:auto;margin:0 8px 0 0}
+.edu-gromov{font-size:clamp(18px,2vw,25px);line-height:1.55}
