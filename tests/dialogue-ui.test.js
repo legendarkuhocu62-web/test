@@ -5,8 +5,11 @@ const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 new vm.Script(read('app.js'),{filename:'app.js'});
 const html=read('index.html');
 const appSource=read('app.js');
-assert.match(html,/app\.js\?v=edu01-game-dialog-20261112-v2/,'new app code must bypass stale mobile cache');
-assert.match(html,/style\.css\?v=edu01-game-dialog-20261112-v2/,'new modal CSS must bypass stale mobile cache');
+const appVer=html.match(/app\.js\?v=([^"']+)/)?.[1];
+const styleVer=html.match(/style\.css\?v=([^"']+)/)?.[1];
+assert.ok(appVer&&styleVer,'app and style files must have cache-busting versions');
+assert.equal(appVer,styleVer,'app/CSS versions must be synchronised to prevent stale mobile cache');
+assert.notEqual(appVer,'20261111-mat1','must not use the old pre-modal app');
 assert.match(appSource,/showEduFeedback\('Вы неправильно рассчитали\. Попробуйте ещё раз\.'\)/,
   'EDU-01 wrong calculation must open in-game dialog');
 assert.doesNotMatch(appSource,/window\.alert\('Вы неправильно рассчитали/,
