@@ -354,3 +354,9 @@ body{overflow-x:hidden}.shell{max-width:none}.masthead{padding:8px clamp(12px,2v
 .dialogue-control{background:#172e47;color:#fff;border:1px solid #88a5bd60}
 .dialogue-control--primary{background:#dcad64!important;color:#101b27!important;border:1px solid #f6d9a7!important}
 @media(max-width:720px){.s03-chooser{max-height:60dvh;padding:8px}.s03-chooser__intro h1{font-size:19px}.s03-chooser__intro p{font-size:12px}.s03-chooser .choices{gap:5px}.s03-chooser .person-choice{min-height:68px;padding:6px 4px}}
+
+/* All primary game actions share the approved orange button treatment. */
+.btn,.dialogue-control{background:#dcad64!important;color:#101b27!important;border:1px solid #f6d9a7!important;font-weight:800}
+.btn:hover,.btn:focus-visible,.dialogue-control:hover,.dialogue-control:focus-visible{background:#f0bd73!important;color:#101b27!important;border-color:#fff0cf!important}
+.btn.selected,.btn.seen{background:#dcad64!important;color:#101b27!important}
+.game-dialogue__character{bottom:0;object-position:center bottom}
