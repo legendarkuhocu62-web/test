@@ -369,3 +369,10 @@ body{overflow-x:hidden}.shell{max-width:none}.masthead{padding:8px clamp(12px,2v
 #app .document label{display:block;margin:10px 0}
 #app .document label input[type="radio"],#app .document label input[type="checkbox"]{display:inline-block;width:auto;margin:0 8px 0 0}
 .edu-gromov{font-size:clamp(18px,2vw,25px);line-height:1.55}
+
+/* Align S02 portrait with the common desktop character anchor. */
+@media(min-width:721px){
+ .s02-intro .game-dialogue__character,.s02-feedback .game-dialogue__character{left:34%!important;width:32%!important;max-width:36%!important;bottom:0!important}
+}
+/* Keep the first-day entrance and pass on a single viewport. */
+#app .gate-scene~.reset,#app .entrance-scene~.reset{display:none!important}
