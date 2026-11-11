@@ -54,11 +54,11 @@ const KEY='ceh404.rebuilt.qa50.20261108';
   }else{
     assert.doesNotMatch(x.background,/CH1-IMG-023/,'desktop layout must retain old background');
   }
+  await page.screenshot({path:'tests/screenshot-s00-badge-'+width+'x'+height+'.png'});
   await button.click();
   assert.equal(await page.evaluate(()=>window.__CEH_TEST__.getState().scene),'S01',
     'turnstile action should open S01');
   assert.deepEqual(errors,[],'page error '+width+'x'+height);
-  await page.screenshot({path:'tests/screenshot-s00-badge-'+width+'x'+height+'.png'});
   console.log('PASS S00 badge '+width+'x'+height);
   await page.close();
  }
