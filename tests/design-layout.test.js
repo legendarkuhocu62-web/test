@@ -30,7 +30,14 @@ const key='ceh404.rebuilt.qa50.20261108';
     buttonColor:getComputedStyle(button).color,
     skew:pseudo.transform,
     gradient:pseudo.backgroundImage,
-    action:!!document.querySelector('.portfolio-actions .btn')
+    action:!!document.querySelector('.portfolio-actions .btn'),
+    primaryArrow:getComputedStyle(document.querySelector('.portfolio-actions .btn'),'::after').content,
+    actionPosition:getComputedStyle(document.querySelector('.portfolio-actions')).position,
+    actionButtonWidth:document.querySelector('.portfolio-actions .btn').getBoundingClientRect().width,
+    actionButtonRight:document.querySelector('.portfolio-actions .btn').getBoundingClientRect().right,
+    actionButtonLeft:document.querySelector('.portfolio-actions .btn').getBoundingClientRect().left,
+    actionTextOverflow:document.querySelector('.portfolio-actions .btn').scrollWidth >
+      document.querySelector('.portfolio-actions .btn').clientWidth + 2
    };
   });
   assert.ok(catalog.bodyWidth<=catalog.viewWidth+3,'catalogue horizontal overflow '+width);
@@ -39,6 +46,14 @@ const key='ceh404.rebuilt.qa50.20261108';
   assert.equal(catalog.buttonColor,'rgb(255, 255, 255)','button lettering not white');
   assert.equal(catalog.columns,width<=590?1:width<=930?2:4,'wrong catalogue columns '+width);
   assert.ok(catalog.action,'portfolio confirmation absent');
+  assert.equal(catalog.primaryArrow,'none','decorative triangle must be removed at '+width);
+  assert.equal(catalog.actionTextOverflow,false,'CTA text overflows at '+width);
+  assert.ok(catalog.actionButtonLeft>=-2 && catalog.actionButtonRight<=width+2,
+   'CTA button overflows viewport at '+width);
+  if(width<=720) {
+   assert.equal(catalog.actionPosition,'static','mobile CTA must not cover investment cards');
+   assert.ok(catalog.actionButtonWidth<=370+2,'mobile CTA too wide at '+width);
+  }
 
   await page.evaluate(k=>localStorage.setItem(k,JSON.stringify({
    scene:'S04',s04Mode:'edu',selected:['C'],initialSelected:['C'],
