@@ -60,7 +60,7 @@
       }
       if(Array.isArray(s.initialSelected))
         add(box,'Первоначальный инвестиционный портфель',portfolio(s.initialSelected));
-      if(eduSeen(s)&&['gromov','reviewFinal','savedFinal'].includes(s.s04Mode))
+      if(eduSeen(s)&&(s.returnToReview===true||['gromov','reviewFinal','savedFinal'].includes(s.s04Mode)))
         add(box,'EDU-01','Проверка технических документов пройдена.');
       if(Array.isArray(s.finalSelected)){
         const before=Array.isArray(s.initialSelected)?s.initialSelected.slice().sort().join(','):'';
