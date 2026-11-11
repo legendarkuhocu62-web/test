@@ -1158,3 +1158,38 @@ body{overflow-x:hidden}.shell{max-width:none}.masthead{padding:8px clamp(12px,2v
   body.s00-mobile-badge-active #app .badge-screen .badge-card{width:min(55vw,31dvh,180px);margin-bottom:6px}
   body.s00-mobile-badge-active #app .badge-screen .btn.primary{min-height:42px;padding:8px!important}
 }
+
+
+/* EDU-01 approved scanned documents | 2026-11-12 */
+.document--edu .edu-instructions{margin:12px 0 20px;line-height:1.55}
+.document--edu .edu-doc.edu-doc--scans{display:flex;flex-direction:column;gap:14px;max-height:min(76dvh,760px);padding:12px;overflow:auto;background:#e9f0f6;border:1px solid #afc1d0}
+.document--edu .edu-document-card{min-width:0;padding:12px;border-radius:12px;border:1px solid #b8c9d9;background:#fff;color:#152638}
+.document--edu .edu-document-card h3{margin:0 0 10px;font-size:clamp(15px,1.2vw,19px);line-height:1.35;color:#172638}
+.document--edu .edu-document-link{display:block;font-weight:750;color:#174a7c;text-decoration:none}
+.document--edu .edu-document-link img{display:block;width:100%;height:auto;max-height:310px;object-fit:contain;border-radius:6px;border:1px solid #c7d4e0;background:#f8f8f8}
+.document--edu .edu-document-link span{display:block;padding:11px 0 2px;text-decoration:underline;text-underline-offset:3px}
+.document--edu .edu-document-link:focus-visible{outline:3px solid #ffb63c;outline-offset:4px}
+.document--edu .edu-doc-hint{margin:0;font-size:13px;color:#324b61;line-height:1.5}
+.edu-document-dialog{box-sizing:border-box;width:min(94vw,1050px);max-width:1050px;max-height:94dvh;padding:0;border:1px solid #c4d1dc;border-radius:15px;background:#f8fafc;color:#162739;box-shadow:0 20px 80px rgba(0,0,0,.4)}
+.edu-document-dialog::backdrop{background:rgba(2,9,20,.85)}
+.edu-document-dialog__header{position:sticky;top:0;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:#102238;color:#fff}
+.edu-document-dialog__header h2{margin:0;font-size:clamp(15px,2vw,22px);line-height:1.3;color:#fff}
+.edu-document-dialog__close{flex-shrink:0;cursor:pointer;border:1px solid #e0e7ef;border-radius:10px;padding:10px 14px;background:#fff;color:#102238;font:700 15px/1.2 system-ui,sans-serif;min-height:44px}
+.edu-document-dialog__close:focus-visible,.edu-document-dialog__original:focus-visible{outline:3px solid #ffb63c;outline-offset:2px}
+.edu-document-dialog__body{max-height:calc(94dvh - 130px);overflow:auto;text-align:center;padding:12px}
+.edu-document-dialog__body img{display:block;width:100%;max-width:930px;height:auto;margin:0 auto;background:white}
+.edu-document-dialog__original{display:block;text-align:center;padding:12px;color:#154574;font-size:14px;font-weight:700;text-decoration:underline}
+@media(max-width:930px){.document--edu .edu-doc.edu-doc--scans{max-height:none;overflow:visible}}
+@media(max-width:590px){
+ .document--edu .edu-doc.edu-doc--scans{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:9px}
+ .document--edu .edu-document-card{padding:8px}
+ .document--edu .edu-document-card h3{font-size:13px;line-height:1.25;min-height:47px}
+ .document--edu .edu-document-link img{height:160px;max-height:none;object-fit:contain}
+ .document--edu .edu-document-link span{font-size:13px;line-height:1.25}
+ .document--edu .edu-doc-hint{grid-column:1/-1;font-size:12px}
+ .edu-document-dialog{width:98vw;max-height:96dvh}
+ .edu-document-dialog__header{padding:10px}
+ .edu-document-dialog__header h2{font-size:15px}
+ .edu-document-dialog__close{padding:9px}
+ .edu-document-dialog__body{max-height:calc(96dvh - 121px);padding:6px}
+}
