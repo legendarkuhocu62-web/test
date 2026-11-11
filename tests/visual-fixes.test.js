@@ -66,9 +66,15 @@ for(const [width,height] of sizes){
    'S02 report box out of viewport '+JSON.stringify(scene));
  assert.ok(scene.scrollW<=width+3&&scene.scrollH<=height+3,'S02 outer page scroll '+JSON.stringify(scene));
  await page.screenshot({path:'tests/screenshot-fix-s02-'+width+'x'+height+'.png'});
+ assert.equal(await page.locator('.ceh-materials-trigger').count(),0,
+  'S02 document must not have materials shortcut covering report close button');
  await page.locator('.s02-report-close').click();
  assert.equal(await page.locator('.s02-report-layer').count(),0,'Report did not close');
+ assert.equal(await page.locator('.ceh-materials-trigger').count(),1,
+  'Materials shortcut must return immediately after closing report');
  await page.locator('[data-act="s02Open"]').click();
+ assert.equal(await page.locator('.ceh-materials-trigger').count(),0,
+  'Materials shortcut must be hidden when report is reopened');
  assert.equal(await page.locator('.s02-report-sheet img').count(),1,'Report did not reopen');
  await page.locator('[data-act="s02Conclude"]').click();
  assert.equal(await page.locator('.s02-answer').count(),3,'S02 conclusions not available');

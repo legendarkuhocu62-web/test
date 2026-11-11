@@ -139,7 +139,10 @@
     function attach(){
       root.querySelector('.ceh-materials-trigger')?.remove();
       const s=getState();
-      if(!eligible(s))return;
+      // The S02 production report is an immersive document view with its own
+      // close control in the top-right corner. Do not cover that control.
+      // Materials remain available as soon as the report is closed.
+      if(!eligible(s)||(s.scene==='S02'&&s.s02Step==='report'))return;
       const trigger=el('button','ceh-materials-trigger','Материалы предприятия');
       trigger.type='button';
       trigger.setAttribute('aria-haspopup','dialog');
