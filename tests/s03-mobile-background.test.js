@@ -28,7 +28,13 @@ assert.deepEqual(sequence,['andrey','irina','marina'],'mobile captions do not al
 await page.screenshot({path:'tests/screenshot-s03-'+width+'x'+height+'.png'});
 for(let i=0;i<3;i++){
 await buttons.nth(i).click();
-assert.ok(await page.locator('[data-act="closePerson"]').count());
+let fragments=0;
+while(await page.locator('[data-act="dlgMore"]').count()){
+  assert.equal(await page.locator('[data-act="closePerson"]').count(),0,'must read all text before closing');
+  await page.locator('[data-act="dlgMore"]').click();
+  assert.ok(++fragments<40,'S03 dialogue pagination loop');
+}
+assert.ok(await page.locator('[data-act="closePerson"]').count(),'S03 final action is missing');
 await page.locator('[data-act="closePerson"]').click();
 }
 assert.equal(await page.evaluate(()=>window.__CEH_TEST__.getState().asked03.length),3);
