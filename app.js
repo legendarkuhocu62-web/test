@@ -5,6 +5,32 @@ const materialsUI=window.CEH_MATERIALS.create({getState:()=>s,data:d,root:app});
  const A={title:'assets/backgrounds/CH1-IMG-001_Главный-экран.png',gate:'assets/backgrounds/CH1-IMG-006_Внешняя проходная.png',entry:'assets/backgrounds/CH1-IMG-002_Входная зона и турникеты.png?v=approved-20261109',office:'assets/backgrounds/CH1-IMG-005_Технологический отдел.png',engineer:'assets/backgrounds/CH1-IMG-014_Инженерный кабинет.png',group:'assets/backgrounds/CH1-IMG-020_S03_three_characters.jpeg',badge:'assets/icons/CH404-CH1-S00-001_employee_badge_technician.png',irina:'assets/characters/CH1-IMG-013_Женский персонаж с планшетом.png',irina_friendly:'assets/characters/CH1-IMG-015_irina_friendly.png',irina_focused:'assets/characters/CH1-IMG-016_irina_focused.png',meeting:'assets/backgrounds/CH1-IMG-019_S03_Переговорная_без_персонажей.jpeg',andrey:'assets/characters/CH1-IMG-012_Персонаж Андрей Громов.png',marina:'assets/characters/CH1-IMG-011_Персонаж Марина Власова.png'};
 function e(x){return String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function btn(t,act,id='',cls=''){return `<button type="button" class="btn ${cls}" data-act="${e(act)}" data-id="${e(id)}">${e(t)}</button>`}
+/* In-game EDU feedback. Native browser alert() has browser-owned styling and
+   incorrectly appears as an external site confirmation on Android. */
+let eduFeedbackDialog=null,eduFeedbackReturnFocus=null;
+function showEduFeedback(message){
+  if(!eduFeedbackDialog){
+    const dlg=document.createElement('dialog');
+    dlg.className='edu-feedback-dialog';
+    dlg.setAttribute('aria-labelledby','edu-feedback-heading');
+    dlg.setAttribute('aria-describedby','edu-feedback-message');
+    dlg.innerHTML='<div class="edu-feedback-dialog__top"><span class="edu-feedback-dialog__tag">ЦЕХ 404 · EDU-01</span><h2 id="edu-feedback-heading">Проверь расчёт</h2></div><p id="edu-feedback-message"></p><div class="edu-feedback-dialog__actions"><button type="button" class="edu-feedback-dialog__button">ПОПРОБОВАТЬ ЕЩЁ РАЗ</button></div>';
+    dlg.querySelector('.edu-feedback-dialog__button').addEventListener('click',()=>dlg.close());
+    dlg.addEventListener('close',()=>{
+      if(eduFeedbackReturnFocus&&eduFeedbackReturnFocus.isConnected){
+        eduFeedbackReturnFocus.focus({preventScroll:true});
+      }
+    });
+    document.body.appendChild(dlg);
+    eduFeedbackDialog=dlg;
+  }
+  eduFeedbackReturnFocus=document.activeElement;
+  eduFeedbackDialog.querySelector('#edu-feedback-heading').textContent=
+    message.startsWith('Вы неправильно рассчитали')?'Проверь расчёт':'Проверь ответ';
+  eduFeedbackDialog.querySelector('#edu-feedback-message').textContent=message;
+  if(!eduFeedbackDialog.open)eduFeedbackDialog.showModal();
+  eduFeedbackDialog.querySelector('.edu-feedback-dialog__button').focus({preventScroll:true});
+}
 function frame(bg,content,cls=''){return `<section class="stage-scene ${cls}" style="--bg:url('${bg}')"><div class="scene-content">${content}</div></section>`}
 function chapterDialogue(key,speaker,role,text,portrait,finish,variant='scene'){return D.render({key,speaker,role,text,portrait,finish,variant})}
 /* S00 desktop cover: keep the Start hitbox aligned with the 16:9 artwork
@@ -110,10 +136,10 @@ function act(action,id){if(['dlgMore','dlgBack','dlgStart'].includes(action)){co
  else if(action==='review'&&s.selected.length&&L.spent(s)<=100)s.showReview=true;
  else if(action==='finish'&&L.spent(s)<=100&&s.selected.length){if(s.returnToReview){s.returnToReview=false;s.showReview=false;s.s04Mode='reviewFinal'}else{s.initialSelected=[...s.selected];s.eduStep=1;s.eduMessage='';s.s04Mode='eduIntro'}}
  else if(action==='startEdu')s.s04Mode='edu';
- else if(action==='edu1'){const low=Number((document.getElementById('edu-low')?.value||'').replace(',','.'));const high=Number((document.getElementById('edu-high')?.value||'').replace(',','.'));if(Math.abs(low-19.95)<0.00001&&Math.abs(high-20.05)<0.00001){s.eduStep=2;s.eduMessage=''}else{window.alert('Вы неправильно рассчитали. Попробуйте ещё раз.');return}}
- else if(action==='edu2'){const part=app.querySelector('input[name="edu-part"]:checked')?.value;const excess=Number((document.getElementById('edu-excess')?.value||'').replace(',','.'));if(part==='2'&&Math.abs(excess-0.03)<0.00001){s.eduStep=3;s.eduMessage=''}else{window.alert('Вы неправильно рассчитали. Попробуйте ещё раз.');return}}
- else if(action==='edu3'){const conclusion=app.querySelector('input[name="edu-conclusion"]:checked')?.value;if(conclusion==='2'){s.eduStep=4;s.eduMessage=''}else{window.alert('Неверный ответ. Попробуйте ещё раз.');return}}
- else if(action==='edu4'){const chosen=[...app.querySelectorAll('input[name="edu-info"]:checked')].map(x=>x.value).sort();if(chosen.join(',')==='1,2,3,4'){s.s04Mode='gromov';s.eduGromovIndex=0;s.eduMessage=''}else{window.alert('Неверный ответ. Попробуйте ещё раз.');return}}
+ else if(action==='edu1'){const low=Number((document.getElementById('edu-low')?.value||'').replace(',','.'));const high=Number((document.getElementById('edu-high')?.value||'').replace(',','.'));if(Math.abs(low-19.95)<0.00001&&Math.abs(high-20.05)<0.00001){s.eduStep=2;s.eduMessage=''}else{showEduFeedback('Вы неправильно рассчитали. Попробуйте ещё раз.');return}}
+ else if(action==='edu2'){const part=app.querySelector('input[name="edu-part"]:checked')?.value;const excess=Number((document.getElementById('edu-excess')?.value||'').replace(',','.'));if(part==='2'&&Math.abs(excess-0.03)<0.00001){s.eduStep=3;s.eduMessage=''}else{showEduFeedback('Вы неправильно рассчитали. Попробуйте ещё раз.');return}}
+ else if(action==='edu3'){const conclusion=app.querySelector('input[name="edu-conclusion"]:checked')?.value;if(conclusion==='2'){s.eduStep=4;s.eduMessage=''}else{showEduFeedback('Неверный ответ. Попробуйте ещё раз.');return}}
+ else if(action==='edu4'){const chosen=[...app.querySelectorAll('input[name="edu-info"]:checked')].map(x=>x.value).sort();if(chosen.join(',')==='1,2,3,4'){s.s04Mode='gromov';s.eduGromovIndex=0;s.eduMessage=''}else{showEduFeedback('Неверный ответ. Попробуйте ещё раз.');return}}
  else if(action==='gromovNext'){if(s.eduGromovIndex<2)s.eduGromovIndex++;else s.s04Mode='reviewFinal'}
  else if(action==='revisePortfolio'){s.returnToReview=true;s.s04Mode='catalog';s.showReview=false;s.budgetMessage=''}
  else if(action==='saveFinal'){s.finalSelected=[...s.selected];s.s04Mode='savedFinal'}
