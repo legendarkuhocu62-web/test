@@ -21,7 +21,9 @@ boxes:choices.map(x=>{const r=x.getBoundingClientRect();return {left:r.left,righ
 assert.ok(view.background.includes(width<=430?'CH1-IMG-022_S03_meeting_three_characters_mobile.png':'CH1-IMG-020_S03_three_characters.jpeg'));
 if(width<=430){
 assert.ok(view.scrollW<=width+2&&view.scrollH<=height+2,'S03 overflow at '+width);
-assert.ok(view.boxes.every((b,i)=>b.left>=-2&&b.right<=width+2&&b.bottom<=height+2&&b.scrollW<=b.clientW+2&&b.scrollH<=b.clientH+2&&b.wordBreak==='normal'&&(i===0||b.left>=view.boxes[i-1].right-1)),'S03 clipped buttons at '+width);
+assert.ok(view.boxes.every(b=>b.left>=-2&&b.right<=width+2&&b.bottom<=height+2&&b.scrollW<=b.clientW+2&&b.scrollH<=b.clientH+2&&b.wordBreak==='normal'),'S03 clipped buttons at '+width);
+const sequence=await page.locator('.s03-group-scene button[data-act="person"]').evaluateAll(nodes=>nodes.map(n=>({id:n.dataset.id,left:n.getBoundingClientRect().left})).sort((a,b)=>a.left-b.left).map(x=>x.id));
+assert.deepEqual(sequence,['andrey','irina','marina'],'mobile captions do not align with seated people');
 }
 await page.screenshot({path:'tests/screenshot-s03-'+width+'x'+height+'.png'});
 for(let i=0;i<3;i++){
