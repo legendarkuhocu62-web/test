@@ -22,9 +22,10 @@ function syncStartHitbox(){
 
 function render(){document.body.classList.toggle('s00-mobile-cover-active',s.scene==='S00'&&s.s00===0);document.body.classList.toggle('s00-desktop-cover-active',s.scene==='S00'&&s.s00===0);document.body.classList.toggle('dialogue-mode-active',s.scene==='S01'||(s.scene==='S03'&&!!s.s03Person)||(s.scene==='S02'&&['intro','feedback'].includes(s.s02Step)));document.body.classList.toggle('s02-view-active',s.scene==='S02');let html='';if(s.scene==='S00'){
  if(s.s00===0)html=frame(A.title,`<div class="desktop-start-visual"><img src="${A.title}" alt="ЦЕХ 404 — производственная игра-симулятор. Начало игры." fetchpriority="high"><button type="button" class="desktop-start-hitbox" data-act="s00next" aria-label="Начать игру"></button></div><div class="mobile-start-visual"><img src="assets/backgrounds/CH1-IMG-021_S00_start_mobile_composite.jpeg" alt="ЦЕХ 404 — производственная игра-симулятор, мобильная стартовая заставка" fetchpriority="high"><button type="button" class="mobile-start-hitbox" data-act="s00next" aria-label="Начать игру"></button></div>`,'cover mobile-cover-s00');
- if(s.s00===1)html=frame(A.gate,`<div class="glass"><h1>Первый день на предприятии</h1><p>Сегодня твой первый день на машиностроительном предприятии «ЦЕХ 404».<br>За проходной уже началась рабочая смена.<br>Тебе предстоит познакомиться с людьми, оборудованием и процессами, от которых зависит работа всего предприятия.</p>${btn('Подойти к проходной','s00next','','primary')}</div>`);
- if(s.s00===2)html=frame(A.entry,`<div class="glass"><h1>ДОПУСК НА ПРЕДПРИЯТИЕ</h1><p>Для входа на территорию необходимо оформить персональный пропуск.</p><label for="name">Как тебя зовут?</label><input id="name" maxlength="40" placeholder="Введите имя" value="${e(s.name)}">${btn('Получить пропуск','badge','','primary')}</div>`,'entrance-scene');
- if(s.s00===3)html=frame(A.entry,`<div class="glass"><h1>Пропуск получен</h1><div class="badge-card"><img src="${A.badge}" alt="Пропуск техника-технолога"><div class="badge-overlay"><strong>${e(s.name)}</strong></div></div>${btn('Пройти через турникет','next','S01','primary')}</div>`,'entrance-scene');
+ if(s.s00===1)html=frame(A.gate,chapterDialogue('S00:gate:1','ЦЕХ 404','Первый рабочий день','Сегодня твой первый день на машиностроительном предприятии «ЦЕХ 404». За проходной уже началась рабочая смена.', '',btn('Далее','s00next','','primary'),'inline'),'gate-scene');
+ if(s.s00===2)html=frame(A.gate,chapterDialogue('S00:gate:2','ЦЕХ 404','Первый рабочий день','Тебе предстоит познакомиться с людьми, оборудованием и процессами, от которых зависит работа всего предприятия.', '',btn('Подойти к проходной','s00next','','primary'),'inline'),'gate-scene');
+ if(s.s00===3)html=frame(A.entry,`<div class="glass"><h1>ДОПУСК НА ПРЕДПРИЯТИЕ</h1><p>Для входа на территорию необходимо оформить персональный пропуск.</p><label for="name">Как тебя зовут?</label><input id="name" maxlength="40" placeholder="Введите имя" value="${e(s.name)}">${btn('Получить пропуск','badge','','primary')}</div>`,'entrance-scene');
+ if(s.s00===4)html=frame(A.entry,`<div class="glass badge-screen"><h1>Пропуск получен</h1><div class="badge-card"><img src="${A.badge}" alt="Пропуск техника-технолога"><div class="badge-overlay"><strong>${e(s.name)}</strong></div></div>${btn('Пройти через турникет','next','S01','primary')}</div>`,'entrance-scene');
  }else if(s.scene==='S01'){
  const speaker=d.characters.irina;
  let text='';
@@ -48,23 +49,41 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
    html=frame(A.meeting,content,'dialogue-stage dialogue-stage--meeting');
  }else{
    const buttons=d.people.map(p=>`<button type="button" class="btn person-choice ${s.asked03.includes(p.id)?'seen':''}" data-act="person" data-id="${e(p.id)}"><span class="person-choice__name">${s.asked03.includes(p.id)?'✓ ':''}${e(p.name)}</span><span class="person-choice__role">${e(p.role)}</span></button>`).join('');
-   const content='<div class="glass s03-chooser"><h1>Три профессиональные позиции</h1><p>Перед подготовкой рекомендаций выслушай специалистов.</p><div class="choices">'+buttons+'</div>'+btn('Перейти к инвестициям','next','S04','primary')+'</div>';
+   const content='<div class="s03-chooser"><div class="s03-chooser__intro"><h1>Три профессиональные позиции</h1><p>Перед подготовкой рекомендаций выслушай специалистов.</p></div><div class="choices">'+buttons+'</div><div class="s03-chooser__next">'+btn('Перейти к инвестициям','next','S04','primary')+'</div></div>';
    html=frame(A.group,content,'s03-group-scene');
  }
  }else if(s.scene==='S04'){
  let h='<div class="glass document"><h1>Инвестиционное предложение</h1>';
- if(s.s04Mode==='priority'){h+='<p>При желании выбери основной приоритет инвестиционной программы. Это ориентир для анализа, а не условие допуска к формированию портфеля.</p><div class="choices">'+d.goals.map(x=>btn((s.priority===x.id?'✓ ':'')+x.label,'priority',x.id,s.priority===x.id?'selected':'')).join('')+'</div>'+btn('Перейти к выбору мероприятий','catalog','','primary')}
- else if(s.s04Mode==='catalog'){
- const spent=L.spent(s);h+=s.budgetMessage?`<p class="warning budget-message" role="alert">${e(s.budgetMessage)}</p>`:'';h+=`<div class="budget"><span>Бюджет <b>100 млн у.е.</b></span><span>Выбрано <b>${spent} млн у.е.</b></span><span>Осталось <b>${100-spent} млн у.е.</b></span></div><p>Все инициативы A–M доступны. Можно отменять выбор. Стоимость L и M в бюджете равна нулю, но это не означает отсутствия затрат и рисков.</p><div class="invest-grid">`;
- h+=d.initiatives.map(x=>`<article class="investment"><div class="invest-head"><b>${x.id}</b><strong>${x.cost} млн у.е.</strong></div><h3>${e(x.title)}</h3><p>${e(x.focus)}</p><details><summary>Условия и риски</summary><p><b>Условия:</b> ${e(x.conditions)}</p><p><b>Риски:</b> ${e(x.risks)}</p><p><b>Не гарантирует:</b> ${e(x.not)}</p></details>${btn(s.selected.includes(x.id)?'✓ Убрать из портфеля':'Добавить','toggle',x.id,s.selected.includes(x.id)?'selected':'')}</article>`).join('')+'</div>';
- if(spent>100)h+='<p class="warning">Бюджет превышен. Убери одну или несколько инициатив.</p>';
- h+=btn('Подтвердить предварительный портфель','review','','primary');
- if(s.showReview){h+=`<div class="feedback"><h2>Подтверждение предварительного портфеля</h2><p>Выбрано: ${e(s.selected.join(', '))}.</p><p>Общая стоимость: <b>${spent} млн у.е.</b></p><p>Остаток бюджета: <b>${100-spent} млн у.е.</b></p><p>Приоритет: ${e(d.goals.find(x=>x.id===s.priority)?.label||'не выбран')}.</p><p>Вы действительно хотите сохранить этот предварительный портфель?</p></div>`;
- if(spent<=100&&s.selected.length)h+=btn('Вернуться к выбору','catalog','','')+btn('Подтвердить и продолжить','finish','','primary')}
- }else{h+='<h2>Предварительное предложение сохранено</h2><p>Портфель: '+e(s.selected.join(', '))+'</p><p>Сумма: '+L.spent(s)+' млн у.е. из 100 млн у.е.</p><p>Продолжение S04 (EDU-01 и пересмотр портфеля) пока не интегрировано. Следующие события не выдаются за утверждённые.</p>'+btn('Вернуться к редактору','catalog','','primary')}
+ if(s.s04Mode==='priority'){
+  h+='<p>Выбери основной приоритет инвестиционной программы. Это ориентир для анализа, а не условие допуска к формированию портфеля.</p><div class="choices">'+d.goals.map(x=>btn((s.priority===x.id?'✓ ':'')+x.label,'priority',x.id,s.priority===x.id?'selected':'')).join('')+'</div>'+btn('Перейти к выбору мероприятий','catalog','','primary');
+ }else if(s.s04Mode==='catalog'){
+  const spent=L.spent(s);
+  h+=s.budgetMessage?'<p class="warning budget-message" role="alert">'+e(s.budgetMessage)+'</p>':'';
+  h+='<div class="budget"><span>Бюджет <b>100 млн у.е.</b></span><span>Выбрано <b>'+spent+' млн у.е.</b></span><span>Осталось <b>'+(100-spent)+' млн у.е.</b></span></div><p>Все инициативы A–M доступны. Можно отменять выбор. Стоимость L и M в бюджете равна нулю, но это не означает отсутствия затрат и рисков.</p><div class="invest-grid">';
+  h+=d.initiatives.map(x=>'<article class="investment"><div class="invest-head"><b>'+e(x.id)+'</b><strong>'+x.cost+' млн у.е.</strong></div><h3>'+e(x.title)+'</h3><p>'+e(x.focus)+'</p><details><summary>Условия и риски</summary><p><b>Условия:</b> '+e(x.conditions)+'</p><p><b>Риски:</b> '+e(x.risks)+'</p><p><b>Не гарантирует:</b> '+e(x.not)+'</p></details>'+btn(s.selected.includes(x.id)?'✓ Убрать из портфеля':'Добавить','toggle',x.id,s.selected.includes(x.id)?'selected':'')+'</article>').join('')+'</div>';
+  h+=btn(s.returnToReview?'Подтвердить пересмотренный портфель':'Подтвердить предварительный портфель','review','','primary');
+  if(s.showReview){h+='<div class="feedback"><h2>Подтверждение портфеля</h2><p>Выбрано: '+e(s.selected.join(', '))+'</p><p>Общая стоимость: <b>'+spent+' млн у.е.</b></p><p>Остаток бюджета: <b>'+(100-spent)+' млн у.е.</b></p><p>Приоритет: '+e(d.goals.find(x=>x.id===s.priority)?.label||'не выбран')+'</p><p>Вы действительно хотите сохранить этот предварительный портфель?</p>'+btn('Вернуться к редактору','catalog','','')+btn('Сохранить и продолжить','finish','','primary')+'</div>'}
+ }else if(s.s04Mode==='eduIntro'){
+  h+='<h2>Проверка документов ОТК</h2><p>Ты уже выбрал, куда предложить вложить средства. Перед отправкой открой документы ОТК. Они помогут проверить, какие выводы из отчёта действительно подтверждаются, а что пока остаётся предположением.</p><p><b>Документы:</b> схема контроля наружного диаметра ЭК-В20-01 и акт о несоответствии № НС-008/26.</p>'+btn('Проверить документы','startEdu','','primary');
+ }else if(s.s04Mode==='edu'){
+  h+='<h2>EDU-01 · Проверка технических документов</h2><div class="edu-doc"><b>СХЕМА КОНТРОЛЯ НАРУЖНОГО ДИАМЕТРА</b><p>ЭК-В20-01 · Вал В-20</p><p>Контролируемый размер: <b>Ø20,00 ±0,05 мм</b></p><hr><b>АКТ О НЕСООТВЕТСТВИИ ПРОДУКЦИИ № НС-008/26</b><p>Изделие: Вал В-20 · Партия П-0811-04 · Место выявления: окончательный контроль</p><table><tr><th>Деталь</th><th>Измеренный диаметр</th></tr><tr><td>В-20-01</td><td>20,02 мм</td></tr><tr><td>В-20-02</td><td>20,08 мм</td></tr></table></div>';
+  if(s.eduMessage)h+='<p class="warning" role="alert">'+e(s.eduMessage)+'</p>';
+  if(s.eduStep===1)h+='<h3>Задание 1. Проверь размер</h3><p>Введи нижний и верхний предельные размеры в миллиметрах.</p><label>Нижний предел, мм<input id="edu-low" inputmode="decimal" placeholder="19,95"></label><label>Верхний предел, мм<input id="edu-high" inputmode="decimal" placeholder="20,05"></label>'+btn('Проверить расчёт','edu1','','primary');
+  if(s.eduStep===2)h+='<h3>Задание 2. Проверь результат контроля</h3><p>Какая деталь имеет записанный диаметр выше верхнего предела?</p><div class="choices"><label><input type="radio" name="edu-part" value="1"> 1 — В-20-01</label><label><input type="radio" name="edu-part" value="2"> 2 — В-20-02</label><label><input type="radio" name="edu-part" value="3"> 3 — ни одна</label></div><label>На сколько миллиметров превышен предел?<input id="edu-excess" inputmode="decimal" placeholder="0,03"></label>'+btn('Проверить ответ','edu2','','primary');
+  if(s.eduStep===3)h+='<h3>Задание 3. Какой вывод обоснован?</h3><div class="choices"><label><input type="radio" name="edu-conclusion" value="1"> 1. Вся партия бракованная, причина — неисправный станок.</label><label><input type="radio" name="edu-conclusion" value="2"> 2. В акте зарегистрировано несоответствие детали В-20-02; её изолировали. Партия задержана до дополнительных проверок, но причина отклонения не установлена.</label><label><input type="radio" name="edu-conclusion" value="3"> 3. Оба диаметра соответствуют заданному размеру.</label></div>'+btn('Проверить вывод','edu3','','primary');
+  if(s.eduStep===4)h+='<h3>Задание 4. Чего не хватает для инвестиционного вывода?</h3><p>Отметь все полезные направления дополнительной проверки.</p><div class="choices"><label><input type="checkbox" name="edu-info" value="1"> 1. На какой операции размер мог выйти за пределы?</label><label><input type="checkbox" name="edu-info" value="2"> 2. Как часто детали возвращаются на доработку?</label><label><input type="checkbox" name="edu-info" value="3"> 3. Есть ли ожидание и перегрузка на финальном контроле?</label><label><input type="checkbox" name="edu-info" value="4"> 4. Где можно обнаружить отклонение раньше?</label><label><input type="checkbox" name="edu-info" value="5"> 5. Раз один вал не соответствует, нужно немедленно купить новый станок.</label></div>'+btn('Проверить заключение','edu4','','primary');
+ }else if(s.s04Mode==='gromov'){
+  const lines=['Видишь, по этому акту одну деталь изолировали, а партию задержали до дополнительной проверки. Подобные случаи у нас бывают: после окончательного контроля часть деталей возвращается на доработку. Это время, которое производство теряет.','Где именно возникают отклонения, мы пока не установили.','Я по-прежнему считаю, что нам нужно обновлять оборудование. Но прежде чем защищать инвестиционные предложения, стоит учесть и эти потери.'];
+  h+='<h2>Андрей Громов · Начальник производства</h2><p class="edu-gromov">'+lines[s.eduGromovIndex]+'</p>'+btn(s.eduGromovIndex===2?'Перейти к пересмотру портфеля':'Далее','gromovNext','','primary');
+ }else if(s.s04Mode==='reviewFinal'){
+  const initial=Array.isArray(s.initialSelected)?s.initialSelected:[];
+  h+='<h2>Сохранить или пересмотреть?</h2><p>Теперь у тебя больше информации. Готов оставить первоначальный инвестиционный портфель или хочешь его пересмотреть?</p><p><b>Первоначальный портфель:</b> '+e(initial.join(', '))+' · '+initial.reduce((sum,id)=>sum+(d.initiatives.find(x=>x.id===id)?.cost||0),0)+' млн у.е.</p><p><b>Текущий портфель:</b> '+e(s.selected.join(', '))+' · '+L.spent(s)+' млн у.е.</p>'+btn('Сохранить и обосновать','saveFinal','','primary')+btn('Пересмотреть портфель','revisePortfolio','','');
+ }else if(s.s04Mode==='savedFinal'){
+  h+='<h2>Портфель сохранён</h2><p>Окончательный портфель: '+e((s.finalSelected||s.selected).join(', '))+' · '+L.spent({...s,selected:s.finalSelected||s.selected})+' млн у.е.</p><p>EDU-01 пройден. Следующий этап сценария — S05 «Инвесткомитет». Его сценарий пока не интегрирован в эту сборку.</p>';
+ }
  html=frame(A.engineer,h+'</div>');
  }
- app.innerHTML=`<div class="statusline"><span>Глава 1 · ${e(s.scene)}</span><span>Восстановленная тестовая сборка</span></div>${html}<div class="reset">${btn('Начать заново','reset')}</div>`;
+ app.innerHTML=`${html}<div class="reset">${btn('Начать заново','reset')}</div>`;
  try{localStorage.setItem(key,JSON.stringify(s))}catch(_){}
  requestAnimationFrame(()=>{D.fit();syncStartHitbox();if(s.scene==='S02'&&s.s02Step==='report')app.querySelector('.s02-report-close')?.focus({preventScroll:true});});
 }
@@ -72,8 +91,8 @@ function act(action,id){if(['dlgMore','dlgBack','dlgStart'].includes(action)){co
  else if(action==='s02Open'&&s.scene==='S02'&&s.s02Step==='intro'){s.s02ReportSeen=true;s.s02Step='report'}
  else if(action==='s02Close'&&s.scene==='S02'&&s.s02Step==='report')s.s02Step='intro';
  else if(action==='s02Conclude'&&s.scene==='S02'&&s.s02ReportSeen&&['intro','report'].includes(s.s02Step))s.s02Step='conclusion';
- else if(action==='s00next')s.s00=Math.min(2,s.s00+1);
- else if(action==='badge'){const name=L.cleanName(document.getElementById('name')?.value);if(!name){alert('Введите имя');return}s.name=name;s.s00=3}
+ else if(action==='s00next')s.s00=Math.min(3,s.s00+1);
+ else if(action==='badge'){const name=L.cleanName(document.getElementById('name')?.value);if(!name){alert('Введите имя');return}s.name=name;s.s00=4}
  else if(action==='next'){const next={S00:'S01',S01:'S02',S02:'S03',S03:'S04'};if(next[s.scene]===id){if(s.scene==='S01'&&s.asked.length!==3)return;if(s.scene==='S02'&&(!s.hypothesisConfirmed||s.s02Step!=='feedback'))return;s.scene=id}}
  else if(action==='introNext')s.s01=Math.min(4,s.s01+1);
  else if(action==='ask'){s.reply=id;if(!s.asked.includes(id))s.asked.push(id)}
@@ -84,9 +103,17 @@ function act(action,id){if(['dlgMore','dlgBack','dlgStart'].includes(action)){co
  else if(action==='closePerson')s.s03Person=null;
  else if(action==='priority')s.priority=id;
  else if(action==='catalog'){s.s04Mode='catalog';s.showReview=false;s.finished=false;s.budgetMessage=''}
- else if(action==='toggle'){if(s.selected.includes(id)){s.selected=s.selected.filter(x=>x!==id);s.budgetMessage=''}else{const item=d.initiatives.find(x=>x.id===id);const remaining=100-L.spent(s);if(item&&L.spent(s)+item.cost>100){s.budgetMessage=`Нельзя добавить инициативу «${item.title}»: доступный бюджет — ${remaining} млн у.е., стоимость инициативы — ${item.cost} млн у.е. Общий лимит — 100 млн у.е. Выбранные инициативы сохранены.`}else{s.selected=[...s.selected,id];s.budgetMessage=''}}s.showReview=false}
+ else if(action==='toggle'){if(s.selected.includes(id)){s.selected=s.selected.filter(x=>x!==id);s.budgetMessage=''}else{const item=d.initiatives.find(x=>x.id===id);const remaining=100-L.spent(s);if(item&&L.spent(s)+item.cost>100){s.budgetMessage=`Нельзя добавить инициативу.\nДоступный бюджет — ${remaining} млн у.е.\nСтоимость инициативы — ${item.cost} млн у.е.`}else{s.selected=[...s.selected,id];s.budgetMessage=''}}s.showReview=false}
  else if(action==='review'&&s.selected.length&&L.spent(s)<=100)s.showReview=true;
- else if(action==='finish'&&L.spent(s)<=100&&s.selected.length)s.s04Mode='finished';
+ else if(action==='finish'&&L.spent(s)<=100&&s.selected.length){if(s.returnToReview){s.returnToReview=false;s.showReview=false;s.s04Mode='reviewFinal'}else{s.initialSelected=[...s.selected];s.eduStep=1;s.eduMessage='';s.s04Mode='eduIntro'}}
+ else if(action==='startEdu')s.s04Mode='edu';
+ else if(action==='edu1'){const low=Number((document.getElementById('edu-low')?.value||'').replace(',','.'));const high=Number((document.getElementById('edu-high')?.value||'').replace(',','.'));if(Math.abs(low-19.95)<0.00001&&Math.abs(high-20.05)<0.00001){s.eduStep=2;s.eduMessage=''}else s.eduMessage='Проверь расчёт: номинал 20,00 мм, допуск ±0,05 мм.'}
+ else if(action==='edu2'){const part=app.querySelector('input[name="edu-part"]:checked')?.value;const excess=Number((document.getElementById('edu-excess')?.value||'').replace(',','.'));if(part==='2'&&Math.abs(excess-0.03)<0.00001){s.eduStep=3;s.eduMessage=''}else s.eduMessage='Сверь измерение 20,08 мм с верхним пределом 20,05 мм.'}
+ else if(action==='edu3'){const conclusion=app.querySelector('input[name="edu-conclusion"]:checked')?.value;if(conclusion==='2'){s.eduStep=4;s.eduMessage=''}else s.eduMessage='Акт фиксирует конкретную деталь и не устанавливает причину отклонения.'}
+ else if(action==='edu4'){const chosen=[...app.querySelectorAll('input[name="edu-info"]:checked')].map(x=>x.value).sort();if(chosen.join(',')==='1,2,3,4'){s.s04Mode='gromov';s.eduGromovIndex=0;s.eduMessage=''}else s.eduMessage='Выбери направления, по которым нужны дополнительные данные. Один акт не доказывает необходимость немедленной покупки станка.'}
+ else if(action==='gromovNext'){if(s.eduGromovIndex<2)s.eduGromovIndex++;else s.s04Mode='reviewFinal'}
+ else if(action==='revisePortfolio'){s.returnToReview=true;s.s04Mode='catalog';s.showReview=false;s.budgetMessage=''}
+ else if(action==='saveFinal'){s.finalSelected=[...s.selected];s.s04Mode='savedFinal'}
  render()}
 app.addEventListener('click',ev=>{const b=ev.target.closest('[data-act]');if(b)act(b.dataset.act,b.dataset.id)});
 app.addEventListener('keydown',ev=>{
