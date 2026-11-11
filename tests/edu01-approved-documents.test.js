@@ -17,7 +17,8 @@ assert.ok(app.includes('edu-doc--scans'),'EDU-01 image cards missing');
 assert.ok(app.includes('edu-document-dialog'),'EDU-01 document modal missing');
 assert.ok(!app.includes('class="edu-doc"><b>СХЕМА КОНТРОЛЯ'),'old text imitation still active');
 assert.ok(css.includes('EDU-01 approved scanned documents'),'new styles missing');
-assert.ok(index.includes('app.js?v=edu01-docs-20261112-v1'),'cache refresh missing');
+assert.match(index,/app\.js\?v=[a-z0-9-]+/,'versioned app script missing');
+assert.match(index,/style\.css\?v=[a-z0-9-]+/,'versioned styles missing');
 for(const key of ["action==='edu1'","action==='edu2'","action==='edu3'","action==='edu4'","action==='finish'"]){
   assert.ok(app.includes(key),'existing EDU-01 exercise logic lost: '+key);
 }

@@ -28,8 +28,19 @@ assert.deepEqual(sequence,['andrey','irina','marina'],'mobile captions do not al
 await page.screenshot({path:'tests/screenshot-s03-'+width+'x'+height+'.png'});
 for(let i=0;i<3;i++){
 await buttons.nth(i).click();
-assert.ok(await page.locator('[data-act="closePerson"]').count());
-await page.locator('[data-act="closePerson"]').click();
+// Let requestAnimationFrame fit the dialogue into the shared fixed panel.
+await page.waitForTimeout(80);
+let fragments=0;
+while(await page.locator('[data-act="dlgMore"]').count()){
+  assert.equal(await page.locator('[data-act="closePerson"]').count(),0,'must read all text before closing');
+  await page.locator('[data-act="dlgMore"]').click();
+  await page.waitForTimeout(80);
+  assert.ok(++fragments<40,'S03 dialogue pagination loop');
+}
+assert.ok(await page.locator('[data-act="closePerson"]').count(),'S03 final action is missing');
+// The handler synchronously re-renders the whole scene and detaches its own button.
+await page.locator('[data-act="closePerson"]').dispatchEvent('click');
+await page.locator('.s03-chooser').waitFor();
 }
 assert.equal(await page.evaluate(()=>window.__CEH_TEST__.getState().asked03.length),3);
 await page.locator('[data-act="next"][data-id="S04"]').click();
