@@ -1,7 +1,6 @@
-/* ЦЕХ 404 — общий диалоговый компонент v2.1.
-   Сначала показываем всю реплику; делим по предложениям только если текст
-   действительно не помещается в доступную высоту панели.
-   Изменение страниц не затрагивает сценарий и игровое состояние. */
+/* ЦЕХ 404 — общий диалоговый компонент v2.2.
+   Фиксированная рамка персонажа; текст переносится на следующую страницу,
+   только когда не помещается. Сценарный текст и состояние не меняются. */
 (()=>{
 'use strict';
 let activeKey='',activeText='',page=0,segments=[''],lastOptions=null;
@@ -98,8 +97,11 @@ function fit(){
  const resolvedMax=rawMax.endsWith('%')
    ?(Number.isFinite(parentHeight)?parentHeight*(numericMax/100):Infinity)
    :(Number.isFinite(numericMax)?numericMax:Infinity);
- const maxPanelHeight=Math.min(resolvedMax,parentHeight);
- const room=Math.max(0,maxPanelHeight-panelVertical-headerHeight-footerHeight);
+ // The panel has a fixed visual height in all portrait scenes.
+ // Use its *actual* height (not an unrelated max-height) when splitting text.
+ const actualPanelHeight=panel.getBoundingClientRect().height;
+ const maxPanelHeight=Math.min(resolvedMax,parentHeight,actualPanelHeight);
+ const room=Math.max(0,maxPanelHeight-panelVertical-headerHeight-footerHeight-3);
  function fits(value){
    measure.innerHTML=escapeHTML(value).replace(/\n/g,'<br>');
    return measure.getBoundingClientRect().height<=room+0.5;
