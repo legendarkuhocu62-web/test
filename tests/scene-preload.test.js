@@ -30,7 +30,7 @@ const KEY='ceh404.rebuilt.qa50.20261108';
         localStorage.setItem(key,JSON.stringify({...base,...state}));
       },[KEY,state]);
       await page.reload({waitUntil:'load'});
-      await page.waitForFunction(()=>window.CEH_PRELOAD.stats().started.length>0,{timeout:6000});
+      await page.waitForFunction(expected=>window.CEH_PRELOAD.stats().started.some(url=>decodeURI(url).includes(expected)),expectations[i],{timeout:10000});
       const result=await page.evaluate(()=>({stats:window.CEH_PRELOAD.stats(),state:window.__CEH_TEST__.getState()}));
       assert.ok(result.stats.started.some(x=>decodeURI(x).includes(expectations[i])),'missing future asset '+expectations[i]+' at '+width+'x'+height+' '+JSON.stringify(result.stats));
       assert.ok(result.stats.started.length<=8,'preloaded too many images');
