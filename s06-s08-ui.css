@@ -45,3 +45,10 @@
  .order-paper{padding:17px}
  .order-screen>.btn.primary{width:100%;text-align:center}
 }
+
+/* The global reset footer must remain below the full new scene rather than
+   overlap the final action on narrow viewport heights. */
+.order-stage{display:block;min-height:calc(100dvh - 120px);height:auto;overflow:visible;padding-bottom:28px}
+.order-stage .scene-content{width:100%;position:relative;z-index:1}
+body:has(.order-stage) .reset{position:relative;clear:both;margin-top:0;padding:18px 22px 26px;z-index:0}
+.order-screen>.btn{margin-bottom:12px}
