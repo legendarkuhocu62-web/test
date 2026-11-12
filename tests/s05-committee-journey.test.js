@@ -1,0 +1,54 @@
+'use strict';
+const {chromium}=require('playwright');
+const assert=require('node:assert/strict');
+const key='ceh404.rebuilt.qa50.20261108';
+(async()=>{
+ const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
+ for(const [width,height] of [[360,640],[375,667],[390,844],[1366,768]]){
+  const page=await browser.newPage({viewport:{width,height}});
+  const errors=[];page.on('pageerror',e=>errors.push(e.message));
+  await page.goto('http://127.0.0.1:8765/');
+  await page.evaluate(k=>{
+   const st=window.CEH_LOGIC.initial();
+   localStorage.setItem(k,JSON.stringify({...st,scene:'S04',s04Mode:'savedFinal',name:'Тест',priority:'losses',selected:['A','C'],initialSelected:['A'],finalSelected:['A','C'],eduStep:4}));
+  },key);
+  await page.reload();
+  assert.equal(await page.locator('[data-act="toCommittee"]').count(),1,'must enter S05 from S04');
+  assert.equal(await page.locator('[data-act="orderStart"]').count(),0,'no S06 bypass from S04');
+  await page.locator('[data-act="toCommittee"]').click();
+  assert.equal((await page.evaluate(()=>window.__CEH_TEST__.getState())).scene,'S05');
+  assert.match(await page.locator('.document--committee').innerText(),/Заседание инвесткомитета/);
+  assert.match(await page.locator('.document--committee').innerText(),/Планируемые расходы/);
+  assert.equal(await page.locator('[data-act="committeeChoice"]').count(),3);
+  assert.equal(await page.locator('[data-act="orderStart"]').count(),0,'must argue before S06');
+  await page.reload();
+  assert.equal((await page.evaluate(()=>window.__CEH_TEST__.getState())).scene,'S05','S05 must survive reload');
+  await page.locator('[data-act="committeeChoice"][data-id="confidence"]').click();
+  assert.match(await page.locator('.document--committee').innerText(),/Гарантировать результат без проверки условий нельзя/);
+  const state=await page.evaluate(()=>window.__CEH_TEST__.getState());
+  assert.equal(state.committeeChoice,'confidence');
+  assert.deepEqual(state.finalSelected,['A','C']);
+  await page.locator('[data-act="committeeEdit"]').click();
+  assert.equal(await page.locator('[data-act="committeeChoice"]').count(),3);
+  await page.locator('[data-act="committeeChoice"][data-id="stage"]').click();
+  await page.locator('.ceh-materials-trigger').click();
+  await page.locator('[data-tab="decisions"]').click();
+  assert.match(await page.locator('.ceh-materials-content').innerText(),/Поэтапный запуск/);
+  await page.locator('.ceh-materials-close').click();
+  const state2=await page.evaluate(()=>window.__CEH_TEST__.getState());
+  assert.equal(state2.committeeChoice,'stage');
+  await page.locator('[data-act="orderStart"]').click();
+  assert.equal((await page.evaluate(()=>window.__CEH_TEST__.getState())).scene,'S06');
+  await page.reload();
+  const state3=await page.evaluate(()=>window.__CEH_TEST__.getState());
+  assert.equal(state3.committeeChoice,'stage','S05 response must be retained');
+  assert.deepEqual(state3.initialSelected,['A']);
+  assert.deepEqual(state3.finalSelected,['A','C']);
+  assert.equal(await page.locator('[data-act="orderTask"]:disabled').count(),1);
+  assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=width+3,'horizontal overflow '+width);
+  assert.deepEqual(errors,[],'JS runtime errors '+width);
+  console.log('PASS S04→S05→S06 plus persistence '+width+'x'+height);
+  await page.close();
+ }
+ await browser.close();
+})().catch(e=>{console.error(e);process.exit(1)});
