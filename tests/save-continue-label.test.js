@@ -13,7 +13,7 @@ const key='ceh404.rebuilt.qa50.20261108';
   await page.reload();
   const button=page.locator('[data-act="saveFinal"]');
   assert.equal(await button.count(),1);
-  assert.equal((await button.innerText()).trim(),'Сохранить и продолжить');
+  assert.equal((await button.textContent()).trim(),'Сохранить и продолжить');
   assert.equal(await page.getByText('Сохранить и обосновать').count(),0);
   await button.click();
   const s=await page.evaluate(()=>window.__CEH_TEST__.getState());
