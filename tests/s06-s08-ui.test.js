@@ -28,7 +28,7 @@ const key='ceh404.rebuilt.qa50.20261108';
    await page.locator('[data-order-answer="'+i+'"][value="'+v+'"]').check();
   }
   await page.locator('[data-act="orderSubmit"]').click();
-  assert.match(await page.locator('.order-feedback--error').innerText(),/двух других заказа/);
+  assert.match(await page.locator('.order-feedback--error').innerText(),/два других заказа/);
   const first=await page.evaluate(()=>window.__CEH_TEST__.getState().s0608.firstSubmitted);
   assert.equal(first.correct,false);
   await page.locator('[data-order-answer="1"][value="confirmed"]').check();
