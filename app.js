@@ -1,5 +1,5 @@
 (()=>{'use strict';
-const d=window.CEH_DATA,L=window.CEH_LOGIC,D=window.CEH_DIALOGUE,O=window.CEH_S06_S08_PREP,app=document.getElementById('app'),key='ceh404.rebuilt.qa50.20261108';
+const d=window.CEH_DATA,L=window.CEH_LOGIC,D=window.CEH_DIALOGUE,O=window.CEH_S06_S08_PREP,IC=window.CEH_INVESTMENT_CATALOG,app=document.getElementById('app'),key='ceh404.rebuilt.qa50.20261108';
 let s;try{s=L.validState(JSON.parse(localStorage.getItem(key)||'null'))}catch(_){s=L.initial()}
 const materialsUI=window.CEH_MATERIALS.create({getState:()=>s,data:d,root:app});
  const A={title:'assets/optimized/backgrounds/CH1-IMG-001_Главный-экран.webp',gate:'assets/optimized/backgrounds/CH1-IMG-006_Внешняя проходная.webp',entry:'assets/optimized/backgrounds/CH1-IMG-002_Входная зона и турникеты.webp?v=approved-20261109',office:'assets/optimized/backgrounds/CH1-IMG-005_Технологический отдел.webp',engineer:'assets/optimized/backgrounds/CH1-IMG-014_Инженерный кабинет.webp',group:'assets/backgrounds/CH1-IMG-020_S03_three_characters.jpeg',badge:'assets/optimized/icons/CH404-CH1-S00-001_employee_badge_technician.webp',irina:'assets/optimized/characters/CH1-IMG-013_Женский персонаж с планшетом.webp',irina_friendly:'assets/optimized/characters/CH1-IMG-015_irina_friendly.webp',irina_focused:'assets/optimized/characters/CH1-IMG-016_irina_focused.webp',meeting:'assets/backgrounds/CH1-IMG-019_S03_Переговорная_без_персонажей.jpeg',andrey:'assets/optimized/characters/CH1-IMG-012_Персонаж Андрей Громов.webp',marina:'assets/optimized/characters/CH1-IMG-011_Персонаж Марина Власова.webp'};
@@ -148,14 +148,14 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
    html=frame(A.group,content,'s03-group-scene');
  }
  }else if(s.scene==='S04'){
- let h='<div class="glass document document--'+e(s.s04Mode)+'"><h1>Инвестиционное предложение</h1>';
+ let h='<div class="glass document document--'+e(s.s04Mode)+'"><h1>'+(s.s04Mode==='catalog'?'Инвестиционные предложения (A–M)':'Инвестиционное предложение')+'</h1>';
  if(s.s04Mode==='priority'){
   h+='<p>Выбери основной приоритет инвестиционной программы. Это ориентир для анализа, а не условие допуска к формированию портфеля.</p><div class="choices">'+d.goals.map(x=>btn((s.priority===x.id?'✓ ':'')+x.label,'priority',x.id,s.priority===x.id?'selected':'')).join('')+'</div>'+btn('Перейти к выбору мероприятий','catalog','','primary');
  }else if(s.s04Mode==='catalog'){
   const spent=L.spent(s);
   h+=s.budgetMessage?'<p class="warning budget-message" role="alert">'+e(s.budgetMessage)+'</p>':'';
-  h+='<div class="budget"><span>Бюджет <b>100 млн у.е.</b></span><span>Выбрано <b>'+spent+' млн у.е.</b></span><span>Осталось <b>'+(100-spent)+' млн у.е.</b></span></div><p>Все инициативы A–M доступны. Можно отменять выбор. Стоимость L и M в бюджете равна нулю, но это не означает отсутствия затрат и рисков.</p><div class="invest-grid">';
-  h+=d.initiatives.map(x=>'<article class="investment"><div class="invest-head"><b>'+e(x.id)+'</b><strong>'+x.cost+' млн у.е.</strong></div><h3>'+e(x.title)+'</h3><p>'+e(x.focus)+'</p><details><summary>Условия и риски</summary><p><b>Условия:</b> '+e(x.conditions)+'</p><p><b>Риски:</b> '+e(x.risks)+'</p><p><b>Не гарантирует:</b> '+e(x.not)+'</p></details>'+btn(s.selected.includes(x.id)?'✓ Убрать из портфеля':'Добавить','toggle',x.id,s.selected.includes(x.id)?'selected':'')+'</article>').join('')+'</div>';
+  h+='<div class="budget"><span>Бюджет <b>100 млн у.е.</b></span><span>Выбрано <b>'+spent+' млн у.е.</b></span><span>Осталось <b>'+(100-spent)+' млн у.е.</b></span></div>';
+  h+=IC.render(s,d,e,btn);
   h+='<div class="portfolio-actions">'+btn(s.returnToReview?'Подтвердить пересмотренный портфель':'Подтвердить предварительный портфель','review','','primary')+'</div>';
   if(s.showReview){h+='<div class="feedback"><h2>Подтверждение портфеля</h2><p>Выбрано: '+e(s.selected.join(', '))+'</p><p>Общая стоимость: <b>'+spent+' млн у.е.</b></p><p>Остаток бюджета: <b>'+(100-spent)+' млн у.е.</b></p><p>Приоритет: '+e(d.goals.find(x=>x.id===s.priority)?.label||'не выбран')+'</p><p>Вы действительно хотите сохранить этот предварительный портфель?</p>'+btn('Вернуться к редактору','catalog','','')+btn('Сохранить и продолжить','finish','','primary')+'</div>'}
  }else if(s.s04Mode==='eduIntro'){
@@ -235,11 +235,12 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
  }
  app.innerHTML=`<div class="statusline" aria-hidden="true"></div>${html}<div class="reset">${btn('Начать заново','reset')}</div>`;
   materialsUI.attach();
+  IC.attach(app,render);
  try{localStorage.setItem(key,JSON.stringify(s))}catch(_){}
  requestAnimationFrame(()=>{D.fit();syncStartHitbox();if(s.scene==='S02'&&s.s02Step==='report')app.querySelector('.s02-report-close')?.focus({preventScroll:true});});
  window.CEH_PRELOAD?.afterRender(s,A);
 }
-function act(action,id){if(['dlgMore','dlgBack','dlgStart'].includes(action)){const node=app.querySelector('.game-dialogue');if(node){node.outerHTML=D.move(action);requestAnimationFrame(()=>D.fit());}return;}if(action==='reset'){if(confirm('Начать заново?'))s=L.initial()}
+function act(action,id){if(['dlgMore','dlgBack','dlgStart'].includes(action)){const node=app.querySelector('.game-dialogue');if(node){node.outerHTML=D.move(action);requestAnimationFrame(()=>D.fit());}return;}if(action==='reset'){if(confirm('Начать заново?')){s=L.initial();IC.reset()}}
  else if(action==='s02Open'&&s.scene==='S02'&&s.s02Step==='intro'){s.s02ReportSeen=true;s.s02Step='report'}
  else if(action==='s02Close'&&s.scene==='S02'&&s.s02Step==='report')s.s02Step='intro';
  else if(action==='s02Conclude'&&s.scene==='S02'&&s.s02ReportSeen&&['intro','report'].includes(s.s02Step))s.s02Step='conclusion';
@@ -256,6 +257,17 @@ function act(action,id){if(['dlgMore','dlgBack','dlgStart'].includes(action)){co
  else if(action==='closePerson'){s.s03Person=null;s.s03QuestionMode='speech'}
  else if(action==='priority')s.priority=id;
  else if(action==='catalog'){s.s04Mode='catalog';s.showReview=false;s.finished=false;s.budgetMessage=''}
+ else if(action==='catalogOpen'&&s.scene==='S04'&&s.s04Mode==='catalog'&&d.initiatives.some(x=>x.id===id)){IC.open(id)}
+ else if(action==='catalogClose'&&s.scene==='S04'&&s.s04Mode==='catalog'){IC.close()}
+ else if(action==='catalogPage'&&s.scene==='S04'&&s.s04Mode==='catalog'){IC.changePage(id==='next'?1:-1,d.initiatives.length)}
+ else if(action==='catalogAdd'&&s.scene==='S04'&&s.s04Mode==='catalog'&&d.initiatives.some(x=>x.id===id)){
+  IC.close();app.querySelector('.ic-detail')?.close();
+  if(!s.selected.includes(id))return act('toggle',id);
+ }
+ else if(action==='catalogDecline'&&s.scene==='S04'&&s.s04Mode==='catalog'&&d.initiatives.some(x=>x.id===id)){
+  IC.close();app.querySelector('.ic-detail')?.close();
+  if(s.selected.includes(id))return act('toggle',id);
+ }
  else if(action==='toggle'){if(s.selected.includes(id)){s.selected=s.selected.filter(x=>x!==id);s.budgetMessage=''}else{const item=d.initiatives.find(x=>x.id===id);const remaining=100-L.spent(s);if(item&&L.spent(s)+item.cost>100){s.budgetMessage='';showBudgetLimit(item,remaining);return}else if(item){s.selected=[...s.selected,id];s.budgetMessage=''}}s.showReview=false}
  else if(action==='review'&&s.selected.length&&L.spent(s)<=100)s.showReview=true;
  else if(action==='finish'&&L.spent(s)<=100&&s.selected.length){if(s.returnToReview){s.returnToReview=false;s.showReview=false;s.s04Mode='reviewFinal'}else{s.initialSelected=[...s.selected];s.eduStep=1;s.eduMessage='';s.eduPage='documents';s.eduResult=null;s.s04Mode='eduIntro'}}
