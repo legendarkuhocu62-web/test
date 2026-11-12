@@ -56,6 +56,7 @@ jobs:
           node tests/dialogue-fixed-frame.test.js
           node tests/dialogue-question-pages.test.js
           node tests/edu01-reference-flow.test.js
+          node tests/otk-industrial-hint.test.js
           node tests/entrance-asset.test.js
           node tests/s00-mobile-badge.test.js
           node tests/visual-fixes.test.js
