@@ -28,8 +28,7 @@ window.CEH_INVESTMENT_CATALOG = (() => {
     page=Math.max(0,Math.min(page,count-1));
     const visible=entries.slice(page*size,(page+1)*size);
     let html='<div class="ic-catalog" aria-label="Каталог инвестиционных предложений A–M">'+
-      '<div class="ic-catalog__head"><h2>Инвестиционные предложения (A–M)</h2>'+
-      '<p>Выберите инициативу, чтобы изучить условия и принять решение.</p></div>'+
+      '<div class="ic-catalog__head"><p>Выберите инициативу, чтобы изучить условия и принять решение.</p></div>'+
       '<div class="ic-grid invest-grid" aria-label="Карточки, страница '+(page+1)+' из '+count+'">';
     for(const x of visible){
       const chosen=state.selected.includes(x.id);
