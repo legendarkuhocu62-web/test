@@ -35,13 +35,15 @@ for path in SOURCE:
         original.load()
         before_size=original.size
         has_alpha="A" in original.getbands() or "transparency" in original.info
-        picture=original.convert("RGBA" if has_alpha else "RGB")
+        true_transparency=(original.convert("RGBA").getchannel("A").getextrema()[0]<255) if has_alpha else False
+        picture=original.convert("RGBA" if true_transparency else "RGB")
         use_lossless=path.startswith(LOSSLESS)
         picture.save(dest,format="WEBP",quality=90 if "/characters/" in path else 88,
-                     method=6,lossless=use_lossless,exact=has_alpha)
+                     method=6,lossless=use_lossless,exact=true_transparency)
     with Image.open(dest) as converted:
         assert converted.format=="WEBP" and converted.size==before_size
-        assert ("A" in converted.getbands())==has_alpha, f"Transparency changed: {path}"
+        if true_transparency:
+            assert "A" in converted.getbands(), f"Real transparency lost: {path}"
     old_size=src.stat().st_size
     new_size=dest.stat().st_size
     if new_size >= old_size*0.95:
@@ -53,7 +55,7 @@ for path in SOURCE:
     results.append({"original":path, "optimized":str(dest.relative_to(ROOT)),
                     "original_bytes":old_size,"optimized_bytes":new_size,
                     "saved_percent":ratio,"dimensions":list(before_size),
-                    "pixel_lossless":use_lossless,"alpha":has_alpha,
+                    "pixel_lossless":use_lossless,"alpha":true_transparency,
                     "sha256":hashlib.sha256(dest.read_bytes()).hexdigest()})
 report={"assets":results,"original_total_bytes":sum(x["original_bytes"] for x in results),
         "optimized_total_bytes":sum(x["optimized_bytes"] for x in results)}
