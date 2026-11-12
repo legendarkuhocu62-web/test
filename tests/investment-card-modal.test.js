@@ -1,0 +1,47 @@
+'use strict';
+const {chromium}=require('playwright'),assert=require('node:assert/strict');
+const key='ceh404.rebuilt.qa50.20261108';
+(async()=>{
+ const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
+ for(const [width,height] of [[390,844],[1366,768]]){
+  const page=await browser.newPage({viewport:{width,height}});
+  const errors=[];page.on('pageerror',e=>errors.push(e.message));
+  await page.goto('http://127.0.0.1:8765/');
+  await page.evaluate(key=>{const s=window.CEH_LOGIC.initial();localStorage.setItem(key,JSON.stringify({...s,name:'Каталог QA',scene:'S04',s04Mode:'catalog'}));},key);
+  await page.reload();
+  const count=width<=720?4:6;
+  assert.equal(await page.locator('.ic-grid .ic-card').count(),count);
+  assert.match(await page.locator('.ic-pager__counter').innerText(),width<=720?/1 \/ 4/:/1 \/ 3/);
+  await page.locator('[data-act="catalogOpen"][data-id="A"]').click();
+  const dlg=page.locator('.ic-detail');
+  await dlg.waitFor({state:'visible'});
+  assert.equal(await dlg.locator('img').getAttribute('src'),'assets/investments/CH1-VA-A-001.png');
+  assert.equal(await dlg.locator('img').evaluate(i=>i.complete&&i.naturalWidth>0),true);
+  assert.equal(await dlg.locator('[data-act="catalogAdd"]').count(),1);
+  await dlg.locator('[data-act="catalogAdd"]').click();
+  assert.deepEqual((await page.evaluate(()=>window.__CEH_TEST__.getState())).selected,['A']);
+  assert.match(await page.locator('.budget').innerText(),/Выбрано 60 млн у.е./);
+  await page.locator('[data-act="catalogOpen"][data-id="A"]').click();
+  await page.locator('[data-act="catalogAdd"]').click();
+  assert.deepEqual((await page.evaluate(()=>window.__CEH_TEST__.getState())).selected,['A'],'no double add');
+  await page.locator('[data-act="catalogOpen"][data-id="B"]').click();
+  await page.locator('[data-act="catalogAdd"]').click();
+  assert.deepEqual((await page.evaluate(()=>window.__CEH_TEST__.getState())).selected,['A','B']);
+  await page.locator('[data-act="catalogOpen"][data-id="C"]').click();
+  await page.locator('[data-act="catalogAdd"]').click();
+  assert.equal(await page.locator('.budget-limit-dialog:visible').count(),1,'budget limit');
+  assert.deepEqual((await page.evaluate(()=>window.__CEH_TEST__.getState())).selected,['A','B']);
+  await page.locator('.budget-limit-dialog .budget-limit-dialog__button').click();
+  await page.locator('[data-act="catalogDecline"]').click();
+  assert.equal(await page.locator('.ic-detail').count(),0);
+  await page.reload();
+  assert.deepEqual((await page.evaluate(()=>window.__CEH_TEST__.getState())).selected,['A','B'],'persist after reload');
+  assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=width+3,'no horizontal overflow');
+  await page.locator('[data-act="catalogPage"][data-id="next"]').click();
+  assert.match(await page.locator('.ic-pager__counter').innerText(),/2 \/ [34]/);
+  assert.deepEqual(errors,[],'page errors');
+  console.log('PASS investment full card '+width+'x'+height);
+  await page.close();
+ }
+ await browser.close();
+})().catch(e=>{console.error(e);process.exit(1)});
