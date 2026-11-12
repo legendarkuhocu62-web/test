@@ -1,5 +1,5 @@
 'use strict';
-/* S03 mirrors S01: listen → select an actual question → response → back to questions. */
+/* S03 has exactly one question per specialist: speech → question button → answer → specialist list. */
 const {chromium}=require('playwright'), assert=require('node:assert/strict');
 const key='ceh404.rebuilt.qa50.20261108';
 (async()=>{
@@ -23,15 +23,12 @@ const key='ceh404.rebuilt.qa50.20261108';
     await page.locator('[data-act="dlgMore"]').dispatchEvent('click');
     await page.waitForTimeout(50);
    }
-   assert.equal(await page.locator('[data-act="s03Question"]').count(),1,'missing ask-question action');
-   assert.equal(await page.locator('[data-act="s03Ask"]').count(),0,'question choice shown prematurely');
+   const question=page.locator('[data-act="s03Ask"]');
+   assert.equal(await question.count(),1,'one question button should be offered directly');
+   assert.equal((await question.textContent()).trim(),expected.question,'approved question text changed');
+   assert.equal(await page.locator('.s03-questions').count(),0,'redundant one-question screen remains');
    const spoken=await page.evaluate(()=>window.CEH_DIALOGUE.getReadState());
    assert.equal(spoken.joined,expected.speech,'specialist speech changed');
-   await page.locator('[data-act="s03Question"]').dispatchEvent('click');
-   const question=page.locator('.s03-questions [data-act="s03Ask"]');
-   await question.waitFor({state:'visible'});
-   assert.equal((await question.textContent()).trim(),expected.question,'approved question text changed');
-   assert.equal(await page.locator('.game-dialogue--scene').count(),0,'question menu should match S01');
    const before=await page.evaluate(()=>window.__CEH_TEST__.getState());
    assert.ok(!before.asked03.includes(id),'question not yet asked');
    await question.dispatchEvent('click');
@@ -47,9 +44,7 @@ const key='ceh404.rebuilt.qa50.20261108';
    }
    const answered=await page.evaluate(()=>window.CEH_DIALOGUE.getReadState());
    assert.equal(answered.joined,expected.reply,'specialist answer changed');
-   assert.equal(await page.locator('[data-act="s03BackToQuestion"]').count(),1,'answer must return to question menu');
-   await page.locator('[data-act="s03BackToQuestion"]').dispatchEvent('click');
-   assert.equal(await page.locator('.s03-questions [data-act="s03Ask"]').count(),1,'question menu was not restored');
+   assert.equal(await page.locator('[data-act="closePerson"]').count(),1,'answer must return directly to specialists');
    await page.locator('[data-act="closePerson"]').dispatchEvent('click');
    const final=await page.evaluate(()=>window.__CEH_TEST__.getState());
    assert.equal(final.s03Person,null);
