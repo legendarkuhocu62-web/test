@@ -97,3 +97,19 @@
  .ic-card__body{gap:3px}
 }
 @media (min-width:721px){.document--catalog .ic-grid .ic-card.investment{height:auto;min-height:132px}}
+
+/* Final catalog layout: no misleading print-button hotspots; actions live in modal footer. */
+.document--catalog .ic-grid .ic-card.investment{display:flex!important;flex-direction:row!important;min-width:0;overflow:hidden}
+.document--catalog .ic-grid .ic-card .ic-card__body{height:auto;min-width:0;display:flex;flex:1 1 auto;flex-direction:column}
+.document--catalog .ic-grid .ic-card .ic-card__open.btn{flex:0 0 auto;transform:none!important;box-shadow:0 2px 8px #0005}
+.document--catalog .ic-grid .ic-card .ic-card__photo{flex:0 0 31%;width:31%;align-self:stretch;height:auto;min-height:74px}
+.document--catalog .ic-grid .ic-card .ic-card__photo img{height:100%}
+.document--catalog .ic-grid .ic-card .ic-card__title{display:block;white-space:normal}
+.document--catalog .ic-grid .ic-card .ic-card__price{white-space:normal}
+.document--catalog .ic-grid .ic-card .ic-card__arrow{display:none}
+.document--catalog .ic-grid.invest-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.document--catalog .investment__media,.document--catalog .investment__focus{display:none}
+@media(max-width:720px){
+ .document--catalog .ic-grid.invest-grid{grid-template-columns:1fr!important}
+ .document--catalog .ic-grid .ic-card .ic-card__photo{flex-basis:31%;width:31%}
+}
