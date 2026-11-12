@@ -4,7 +4,7 @@ const assert=require('node:assert/strict');
 (async()=>{
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
 const sizes=[[375,667],[390,600],[390,844],[430,932],[1024,768],[1366,768],[1920,1080]];
-const expectedName='CH1-IMG-002_Входная зона и турникеты.png';
+const expectedName='CH1-IMG-002_Входная зона и турникеты.webp';
 const storageKey='ceh404.rebuilt.qa50.20261108';
 for(const [width,height] of sizes){
  const page=await browser.newPage({viewport:{width,height}});
