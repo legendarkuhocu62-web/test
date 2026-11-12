@@ -34,7 +34,7 @@ app.addEventListener('click',ev=>{
 });
 /* S04 investment catalogue: accessible in-game budget overflow notice.
    Keep portfolio state and scroll position unchanged when an addition is rejected. */
-let budgetDialog=null,budgetReturnFocus=null;
+let budgetDialog=null,budgetReturnFocus=null,budgetScrollY=0;
 function showBudgetLimit(item,remaining){
   if(!budgetDialog){
     const dlg=document.createElement('dialog');
@@ -47,16 +47,18 @@ function showBudgetLimit(item,remaining){
       '<p class="budget-limit-dialog__tip">Пересмотри уже выбранные мероприятия или выбери инициативу, которая помещается в оставшийся бюджет.</p>'+
       '<div class="budget-limit-dialog__actions"><button type="button" class="budget-limit-dialog__button">ПОНЯТНО</button></div>';
     dlg.querySelector('.budget-limit-dialog__button').addEventListener('click',()=>dlg.close());
-    dlg.addEventListener('close',()=>{if(budgetReturnFocus&&budgetReturnFocus.isConnected)budgetReturnFocus.focus({preventScroll:true});});
+    dlg.addEventListener('close',()=>{if(budgetReturnFocus&&budgetReturnFocus.isConnected)budgetReturnFocus.focus({preventScroll:true});window.scrollTo(0,budgetScrollY);});
     document.body.appendChild(dlg);budgetDialog=dlg;
   }
   budgetReturnFocus=document.activeElement;
+  budgetScrollY=window.scrollY;
   const name=item?.title||'инициативу';
   budgetDialog.querySelector('#budget-limit-summary').textContent='Нельзя добавить «'+name+'»: стоимость превышает оставшийся бюджет.';
   budgetDialog.querySelector('[data-budget-remaining]').textContent=remaining+' млн у.е.';
   budgetDialog.querySelector('[data-budget-cost]').textContent=item.cost+' млн у.е.';
   if(!budgetDialog.open)budgetDialog.showModal();
   budgetDialog.querySelector('.budget-limit-dialog__button').focus({preventScroll:true});
+  if(window.scrollY!==budgetScrollY)window.scrollTo(0,budgetScrollY);
 }
 /* In-game EDU feedback. Native browser alert() has browser-owned styling and
    incorrectly appears as an external site confirmation on Android. */
