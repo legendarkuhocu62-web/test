@@ -1,0 +1,23 @@
+name: S06–S08 staged module tests
+
+on:
+  push:
+    branches:
+      - feature/s06-s08-safe-package-20261112
+    paths:
+      - 'integration/s06-s08/**'
+      - '.github/workflows/s06-s08-staged-tests.yml'
+  pull_request:
+    paths:
+      - 'integration/s06-s08/**'
+      - '.github/workflows/s06-s08-staged-tests.yml'
+  workflow_dispatch:
+
+jobs:
+  module:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify isolated S06-S08 logic
+        run: node integration/s06-s08/module.test.js
