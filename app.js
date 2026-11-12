@@ -263,12 +263,16 @@ function act(action,id){if(['dlgMore','dlgBack','dlgStart'].includes(action)){co
  else if(action==='catalogClose'&&s.scene==='S04'&&s.s04Mode==='catalog'){window.CEH_INVESTMENT_CATALOG.close()}
  else if(action==='catalogPage'&&s.scene==='S04'&&s.s04Mode==='catalog'){window.CEH_INVESTMENT_CATALOG.changePage(id==='next'?1:-1)}
  else if(action==='catalogDecline'&&s.scene==='S04'&&s.s04Mode==='catalog'){
-  if(s.selected.includes(id))act('toggle',id);
+  if(s.selected.includes(id)){s.selected=s.selected.filter(x=>x!==id);s.budgetMessage='';s.showReview=false;}
   window.CEH_INVESTMENT_CATALOG.close();
  }
  else if(action==='catalogAdd'&&s.scene==='S04'&&s.s04Mode==='catalog'){
-  if(!s.selected.includes(id))act('toggle',id);
-  if(s.selected.includes(id))window.CEH_INVESTMENT_CATALOG.close();
+  if(!s.selected.includes(id)){
+   const item=d.initiatives.find(x=>x.id===id);
+   if(item&&L.spent(s)+item.cost>100){showBudgetLimit(item,100-L.spent(s));return}
+   if(item){s.selected=[...s.selected,id];s.budgetMessage='';s.showReview=false;}
+  }
+  window.CEH_INVESTMENT_CATALOG.close();
  }
 
  else if(action==='toggle'){if(s.selected.includes(id)){s.selected=s.selected.filter(x=>x!==id);s.budgetMessage=''}else{const item=d.initiatives.find(x=>x.id===id);const remaining=100-L.spent(s);if(item&&L.spent(s)+item.cost>100){s.budgetMessage='';showBudgetLimit(item,remaining);return}else if(item){s.selected=[...s.selected,id];s.budgetMessage=''}}s.showReview=false}
