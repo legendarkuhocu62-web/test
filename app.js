@@ -1,5 +1,5 @@
 (()=>{'use strict';
-const d=window.CEH_DATA,L=window.CEH_LOGIC,D=window.CEH_DIALOGUE,app=document.getElementById('app'),key='ceh404.rebuilt.qa50.20261108';
+const d=window.CEH_DATA,L=window.CEH_LOGIC,D=window.CEH_DIALOGUE,O=window.CEH_S06_S08_PREP,app=document.getElementById('app'),key='ceh404.rebuilt.qa50.20261108';
 let s;try{s=L.validState(JSON.parse(localStorage.getItem(key)||'null'))}catch(_){s=L.initial()}
 const materialsUI=window.CEH_MATERIALS.create({getState:()=>s,data:d,root:app});
  const A={title:'assets/optimized/backgrounds/CH1-IMG-001_Главный-экран.webp',gate:'assets/optimized/backgrounds/CH1-IMG-006_Внешняя проходная.webp',entry:'assets/optimized/backgrounds/CH1-IMG-002_Входная зона и турникеты.webp?v=approved-20261109',office:'assets/optimized/backgrounds/CH1-IMG-005_Технологический отдел.webp',engineer:'assets/optimized/backgrounds/CH1-IMG-014_Инженерный кабинет.webp',group:'assets/backgrounds/CH1-IMG-020_S03_three_characters.jpeg',badge:'assets/optimized/icons/CH404-CH1-S00-001_employee_badge_technician.webp',irina:'assets/optimized/characters/CH1-IMG-013_Женский персонаж с планшетом.webp',irina_friendly:'assets/optimized/characters/CH1-IMG-015_irina_friendly.webp',irina_focused:'assets/optimized/characters/CH1-IMG-016_irina_focused.webp',meeting:'assets/backgrounds/CH1-IMG-019_S03_Переговорная_без_персонажей.jpeg',andrey:'assets/optimized/characters/CH1-IMG-012_Персонаж Андрей Громов.webp',marina:'assets/optimized/characters/CH1-IMG-011_Персонаж Марина Власова.webp'};
@@ -204,9 +204,11 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
   const initial=Array.isArray(s.initialSelected)?s.initialSelected:[];
   h+='<h2>Сохранить или пересмотреть?</h2><p>Теперь у тебя больше информации. Готов оставить первоначальный инвестиционный портфель или хочешь его пересмотреть?</p><p><b>Первоначальный портфель:</b> '+e(initial.join(', '))+' · '+initial.reduce((sum,id)=>sum+(d.initiatives.find(x=>x.id===id)?.cost||0),0)+' млн у.е.</p><p><b>Текущий портфель:</b> '+e(s.selected.join(', '))+' · '+L.spent(s)+' млн у.е.</p>'+btn('Сохранить и продолжить','saveFinal','','primary')+btn('Пересмотреть портфель','revisePortfolio','','');
  }else if(s.s04Mode==='savedFinal'){
-  h+='<h2>Портфель сохранён</h2><p>Окончательный портфель: '+e((s.finalSelected||s.selected).join(', '))+' · '+L.spent({...s,selected:s.finalSelected||s.selected})+' млн у.е.</p><p>EDU-01 пройден. Следующий этап сценария — S05 «Инвесткомитет». Его сценарий пока не интегрирован в эту сборку.</p>';
+  h+='<h2>Портфель сохранён</h2><p>Окончательный портфель: '+e((s.finalSelected||s.selected).join(', '))+' · '+L.spent({...s,selected:s.finalSelected||s.selected})+' млн у.е.</p><p>EDU-01 пройден.</p><p class="order-feedback"><b>Тестовое прохождение:</b> сцена S05 «Инвесткомитет» в этой сборке пока отсутствует. Мы не подменяем её вымышленными результатами. Ниже можно перейти к учебной производственной ситуации S06–S08.</p>'+btn('Перейти к заказу З-214','orderStart','','primary');
  }
  if(s.s04Mode!=='gromov')html=frame(A.engineer,h+'</div>','investment-scene');
+ }else if(['S06','S07','S08'].includes(s.scene)){
+  html=window.CEH_ORDER_UI.render(s,d,A.engineer,frame);
  }
  app.innerHTML=`<div class="statusline" aria-hidden="true"></div>${html}<div class="reset">${btn('Начать заново','reset')}</div>`;
   materialsUI.attach();
@@ -245,8 +247,38 @@ function act(action,id){if(['dlgMore','dlgBack','dlgStart'].includes(action)){co
  else if(action==='gromovNext'){if(s.eduGromovIndex<2)s.eduGromovIndex++;else s.s04Mode='reviewFinal'}
  else if(action==='revisePortfolio'){s.returnToReview=true;s.s04Mode='catalog';s.showReview=false;s.budgetMessage=''}
  else if(action==='saveFinal'){s.finalSelected=[...s.selected];s.s04Mode='savedFinal'}
+ else if(action==='orderStart'&&s.scene==='S04'&&s.s04Mode==='savedFinal'){
+  s.s0608=O.clean(s.s0608);s.s06Page='documents';s.s06Message='';s.scene='S06';
+ }
+ else if(action==='orderDoc'&&s.scene==='S06'&&s.s06Page==='documents'&&O.DOCUMENTS.some(x=>x.id===id)){
+  s.s0608=O.openDocument(s.s0608,id);s.s06OpenDoc=id;
+ }
+ else if(action==='orderCloseDoc'&&s.scene==='S06'){s.s06OpenDoc=null}
+ else if(action==='orderDocs'&&s.scene==='S06'){s.s06Page='documents';s.s06OpenDoc=null;s.s06Message=''}
+ else if(action==='orderTask'&&s.scene==='S06'&&O.canStart(s.s0608)){
+  s.s06Page='task';s.s06OpenDoc=null;s.s06Message='';
+ }
+ else if(action==='orderAnswer'&&s.scene==='S06'&&s.s06Page==='task'){
+  const [index,value]=String(id).split(':');
+  s.s0608=O.setAnswer(s.s0608,Number(index),value);s.s06Message='';
+ }
+ else if(action==='orderSubmit'&&s.scene==='S06'&&s.s06Page==='task'){
+  const result=O.submit(s.s0608);s.s0608=result.state;s.s06Message=result.reason;
+  if(result.accepted&&O.canMoveToS07(s.s0608))s.s06Page='result';
+ }
+ else if(action==='orderToS07'&&s.scene==='S06'&&s.s06Page==='result'&&O.canMoveToS07(s.s0608)){
+  s.scene='S07';s.s07Page='decision';
+ }
+ else if(action==='orderChoose'&&s.scene==='S07'&&s.s07Page==='decision'){
+  s.s0608=O.selectS07(s.s0608,id);
+  if(O.canMoveToS08(s.s0608))s.s07Page='result';
+ }
+ else if(action==='orderToS08'&&s.scene==='S07'&&s.s07Page==='result'&&O.canMoveToS08(s.s0608)){
+  s.scene='S08';
+ }
  render()}
 app.addEventListener('click',ev=>{const b=ev.target.closest('[data-act]');if(b)act(b.dataset.act,b.dataset.id)});
+app.addEventListener('change',ev=>{const input=ev.target.closest('input[data-order-answer]');if(input&&s.scene==='S06')act('orderAnswer',input.dataset.orderAnswer+':'+input.value)});
 app.addEventListener('keydown',ev=>{
  if(s.scene==='S02'&&s.s02Step==='report'){
    if(ev.key==='Escape'){ev.preventDefault();act('s02Close','');return}
