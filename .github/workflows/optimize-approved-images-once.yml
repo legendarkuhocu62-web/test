@@ -5,6 +5,7 @@ on:
       - perf/optimized-local-assets-20261112
     paths:
       - .github/workflows/optimize-approved-images-once.yml
+      - scripts/build-webp-assets.py
 permissions:
   contents: write
 jobs:
