@@ -204,9 +204,32 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
   const initial=Array.isArray(s.initialSelected)?s.initialSelected:[];
   h+='<h2>Сохранить или пересмотреть?</h2><p>Теперь у тебя больше информации. Готов оставить первоначальный инвестиционный портфель или хочешь его пересмотреть?</p><p><b>Первоначальный портфель:</b> '+e(initial.join(', '))+' · '+initial.reduce((sum,id)=>sum+(d.initiatives.find(x=>x.id===id)?.cost||0),0)+' млн у.е.</p><p><b>Текущий портфель:</b> '+e(s.selected.join(', '))+' · '+L.spent(s)+' млн у.е.</p>'+btn('Сохранить и продолжить','saveFinal','','primary')+btn('Пересмотреть портфель','revisePortfolio','','');
  }else if(s.s04Mode==='savedFinal'){
-  h+='<h2>Портфель сохранён</h2><p>Окончательный портфель: '+e((s.finalSelected||s.selected).join(', '))+' · '+L.spent({...s,selected:s.finalSelected||s.selected})+' млн у.е.</p><p>EDU-01 пройден.</p><p class="order-feedback"><b>Тестовое прохождение:</b> сцена S05 «Инвесткомитет» в этой сборке пока отсутствует. Мы не подменяем её вымышленными результатами. Ниже можно перейти к учебной производственной ситуации S06–S08.</p>'+btn('Перейти к заказу З-214','orderStart','','primary');
+  h+='<h2>Портфель сохранён</h2><p>Окончательный портфель: '+e((s.finalSelected||s.selected).join(', '))+' · '+L.spent({...s,selected:s.finalSelected||s.selected})+' млн у.е.</p><p>EDU-01 пройден.</p><p>Рекомендация подготовлена. Следующий этап — заседание инвестиционного комитета.</p>'+btn('Перейти к заседанию','committeeStart','','primary');
  }
  if(s.s04Mode!=='gromov')html=frame(A.engineer,h+'</div>','investment-scene');
+ }else if(s.scene==='S05'){
+  const choices=[
+   {id:'conditions',label:'Обозначить предположения и предложить проверку условий'},
+   {id:'confidence',label:'Утверждать, что эффект гарантирован независимо от условий'},
+   {id:'stage',label:'Предложить поэтапный запуск и наблюдение за результатом'}
+  ];
+  const final=Array.isArray(s.finalSelected)?s.finalSelected:s.selected;
+  const total=final.reduce((sum,id)=>sum+(d.initiatives.find(x=>x.id===id)?.cost||0),0);
+  const comments={
+   conditions:'Комитет принимает аргументацию к рассмотрению: перед вложениями необходимо подтвердить предположения и проверить условия.',
+   confidence:'Комитет обращает внимание: гарантировать эффект без проверки исходных условий нельзя. Решение требует обоснования.',
+   stage:'Комитет отмечает преимущество поэтапного запуска: результаты можно оценивать до дальнейших вложений.'
+  };
+  let h='<div class="panel"><h2>Заседание инвесткомитета</h2><p>Вы представляете рекомендацию. Коллеги оценивают не только выбранные мероприятия, но и условия, при которых они принесут пользу.</p>'+
+   '<p><b>Окончательный портфель:</b> '+e(final.join(', ')||'Не выбран')+' · '+total+' млн у.е.</p>';
+  if(!comments[s.committeeDecision]){
+   h+='<h3>Какие риски вы готовы объяснить комитету?</h3>'+choices.map(x=>btn(x.label,'committeeChoose',x.id)).join('');
+  }else{
+   h+='<h3>Ваш ответ комитету</h3><p>'+e(choices.find(x=>x.id===s.committeeDecision).label)+'</p><p>'+e(comments[s.committeeDecision])+'</p>'+
+    '<p>Это учебная проектная версия заседания. Решение комитета об инвестициях не моделируется как подтверждённое.</p>'+
+    btn('Изменить ответ','committeeRevise')+btn('Перейти к заказу З-214','orderStart','','primary');
+  }
+  html=frame(A.meeting,h+'</div>','investment-scene');
  }else if(['S06','S07','S08'].includes(s.scene)){
   html=window.CEH_ORDER_UI.render(s,d,A.engineer,frame);
  }
@@ -247,6 +270,12 @@ function act(action,id){if(['dlgMore','dlgBack','dlgStart'].includes(action)){co
  else if(action==='gromovNext'){if(s.eduGromovIndex<2)s.eduGromovIndex++;else s.s04Mode='reviewFinal'}
  else if(action==='revisePortfolio'){s.returnToReview=true;s.s04Mode='catalog';s.showReview=false;s.budgetMessage=''}
  else if(action==='saveFinal'){s.finalSelected=[...s.selected];s.s04Mode='savedFinal'}
+ else if(action==='committeeStart'&&s.scene==='S04'&&s.s04Mode==='savedFinal'){s.scene='S05';s.committeeDecision=null}
+ else if(action==='committeeChoose'&&s.scene==='S05'&&['conditions','confidence','stage'].includes(id)){s.committeeDecision=id}
+ else if(action==='committeeRevise'&&s.scene==='S05'){s.committeeDecision=null}
+ else if(action==='orderStart'&&s.scene==='S05'&&['conditions','confidence','stage'].includes(s.committeeDecision)){
+  s.s0608=O.clean(s.s0608);s.s06Page='documents';s.s06Message='';s.scene='S06';
+ }
  else if(action==='orderStart'&&s.scene==='S04'&&s.s04Mode==='savedFinal'){
   s.s0608=O.clean(s.s0608);s.s06Page='documents';s.s06Message='';s.scene='S06';
  }
