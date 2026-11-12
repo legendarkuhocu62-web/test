@@ -57,22 +57,20 @@ const key='ceh404.rebuilt.qa50.20261108';
 
   await page.evaluate(k=>localStorage.setItem(k,JSON.stringify({
    scene:'S04',s04Mode:'edu',selected:['C'],initialSelected:['C'],
-   eduStep:1,name:'Тест',eduMessage:''
+   eduStep:1,eduPage:'documents',name:'Тест',eduMessage:''
   })),key);
   await page.reload({waitUntil:'load'});
+  const docs=page.locator('.edu-reference .edu-document-card--row');
+  await docs.first().waitFor();
+  assert.equal(await docs.count(),2,'documents screen must contain both approved scans');
+  assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=width+3,'EDU-01 document screen horizontal overflow '+width);
+  await page.locator('[data-act="eduGoTask"]').click();
   const low=page.locator('#edu-low'),high=page.locator('#edu-high');
   await low.waitFor();
-  assert.equal(await low.getAttribute('placeholder'),'Введите ответ');
-  assert.equal(await high.getAttribute('placeholder'),'Введите ответ');
-  const layout=await page.evaluate(()=>{
-   const doc=document.querySelector('.edu-doc').getBoundingClientRect();
-   const task=document.querySelector('.edu-task').getBoundingClientRect();
-   return {horizontal:doc.right<=task.left+3,vertical:doc.bottom<=task.top+3,
-    pageWidth:document.documentElement.scrollWidth,viewport:innerWidth};
-  });
-  assert.ok(layout.pageWidth<=layout.viewport+3,'EDU-01 horizontal overflow '+width);
-  if(width>930)assert.ok(layout.horizontal,'EDU-01 source and task should be side by side at '+width);
-  else assert.ok(layout.vertical,'EDU-01 source should be above task at '+width);
+  assert.equal(await low.getAttribute('placeholder'),'Введите значение');
+  assert.equal(await high.getAttribute('placeholder'),'Введите значение');
+  assert.equal(await page.locator('.edu-doc').count(),0,'task and scans should be on separate screens');
+  assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=width+3,'EDU-01 task horizontal overflow '+width);
 
   // A wrong value must open a branded game dialog instead of Android's native
   // site-confirmation alert. Closing it must preserve both form values.
@@ -102,6 +100,9 @@ const key='ceh404.rebuilt.qa50.20261108';
   await page.locator('[data-act="edu1"]').click();
   assert.equal(await page.evaluate(()=>window.__CEH_TEST__.getState().eduStep),2,
    'EDU-01 calculation failed');
+  assert.equal(await page.locator('.edu-reference--result').count(),1,'success must show a separate result screen');
+  await page.locator('[data-act="eduContinue"]').click();
+  await page.locator('[data-act="eduGoTask"]').click();
   assert.equal(await page.locator('#edu-excess').getAttribute('placeholder'),'Введите ответ',
    'EDU-01 step 2 must not reveal numerical answer');
   assert.deepEqual(errors,[],'browser errors at '+width+'x'+height);
