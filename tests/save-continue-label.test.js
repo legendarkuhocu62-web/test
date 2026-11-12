@@ -19,6 +19,9 @@ const key='ceh404.rebuilt.qa50.20261108';
   const s=await page.evaluate(()=>window.__CEH_TEST__.getState());
   assert.equal(s.s04Mode,'savedFinal');
   assert.deepEqual(s.finalSelected,['A']);
+  assert.equal(await page.locator('[data-act="toCommittee"]').count(),1,'saved portfolio must offer S05');
+  await page.locator('[data-act="toCommittee"]').click();
+  assert.equal((await page.evaluate(()=>window.__CEH_TEST__.getState())).scene,'S05');
   console.log('PASS save portfolio wording '+width+'x'+height);
   await page.close();
  }

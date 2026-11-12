@@ -60,6 +60,7 @@ jobs:
           node tests/save-continue-label.test.js
           node integration/s06-s08/module.test.js
           node tests/s06-s08-ui.test.js
+          node tests/s05-committee-journey.test.js
           node tests/otk-industrial-hint.test.js
           node tests/entrance-asset.test.js
           node tests/s00-mobile-badge.test.js

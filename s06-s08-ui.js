@@ -68,7 +68,7 @@ function renderS08(s,data){
   finalSelected:s.finalSelected,
   finalCost:Array.isArray(s.finalSelected)?s.finalSelected.reduce((sum,id)=>sum+((data.initiatives||[]).find(x=>x.id===id)?.cost||0),0):null,
   edu01Result:Array.isArray(s.finalSelected)&&s.eduStep===4?'Задание EDU-01 пройдено, расчёт и выводы проверены.':null,
-  s05:null
+  s05:({conditions:'Обозначить предположения и предложить проверку условий',confidence:'Утверждать, что эффект гарантирован независимо от условий',stage:'Предложить поэтапный запуск и наблюдение за результатом'})[s.committeeChoice]??null
  };
  const sections=M.buildS08(z,history);
  let h='<div class="glass order-screen order-screen--report"><div class="order-kicker">ПЕРСОНАЛЬНЫЙ ИТОГ · ГЛАВА 01</div><h1>Твоё производственное заключение</h1>';
