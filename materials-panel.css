@@ -41,6 +41,7 @@ body:has(#app .ceh-materials-trigger) .masthead{
 body:has(#app .ceh-materials-trigger) .masthead .stage{
   min-width:0;
   text-align:right;
+  flex:0 1 auto;
 }
 @media(max-width:720px){
   body:has(#app .ceh-materials-trigger) .masthead .stage{
