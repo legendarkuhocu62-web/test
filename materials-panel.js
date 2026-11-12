@@ -73,6 +73,10 @@
           portfolio(s.finalSelected)+'\n'+(before===after?
           'Первоначальный портфель сохранён.':'Портфель пересмотрен.'));
       }
+      if(s.committeeChoice&&['S05','S06','S07','S08'].includes(s.scene)){
+        const options={conditions:'Обозначить предположения и предложить проверку условий',confidence:'Утверждать, что эффект гарантирован независимо от условий',stage:'Предложить поэтапный запуск и наблюдение за результатом'};
+        add(box,'S05 · Ответ инвестиционному комитету',options[s.committeeChoice]);
+      }
       if(['S06','S07','S08'].includes(s.scene)&&window.CEH_S06_S08_PREP){
         const M=window.CEH_S06_S08_PREP,order=M.clean(s.s0608);
         add(box,'Заказ З-214','Изучено '+order.docsOpened.length+' из 3 документов.');
