@@ -113,3 +113,17 @@
  .document--catalog .ic-grid.invest-grid{grid-template-columns:1fr!important}
  .document--catalog .ic-grid .ic-card .ic-card__photo{flex-basis:31%;width:31%}
 }
+
+/* Intermediate tablet width: prevent horizontal overflow inside 3-column pages. */
+.document--catalog .ic-catalog,.document--catalog .ic-grid,.document--catalog .ic-grid .ic-card{min-width:0;max-width:100%;box-sizing:border-box}
+.document--catalog .ic-grid .ic-card .ic-card__body{min-width:0;max-width:100%}
+.document--catalog .ic-grid .ic-card .ic-card__title,.document--catalog .ic-grid .ic-card .ic-card__price{overflow-wrap:anywhere;word-break:normal}
+@media(min-width:721px) and (max-width:1000px){
+ .document--catalog .ic-grid.invest-grid{gap:6px!important}
+ .document--catalog .ic-grid .ic-card.investment{padding:5px!important;gap:3px!important}
+ .document--catalog .ic-grid .ic-card .ic-card__photo{flex-basis:25%;width:25%;min-width:0}
+ .document--catalog .ic-grid .ic-card .ic-card__body{padding-left:3px;gap:2px}
+ .document--catalog .ic-grid .ic-card .ic-card__open.btn{font-size:10px;padding:6px 3px}
+ .document--catalog .ic-grid .ic-card .ic-card__title{font-size:11px}
+ .document--catalog .ic-grid .ic-card .ic-card__price{font-size:10px}
+}
