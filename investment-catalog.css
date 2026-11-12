@@ -68,3 +68,32 @@
  .ic-card__price{font-size:11px}
 }
 @media(prefers-reduced-motion:reduce){.ic-card{transition:none}}
+
+/* 12.11: explicit open-card button; keep full artwork legible on Android and desktop. */
+.document--catalog .ic-grid .ic-card.investment{cursor:default;padding:8px;gap:8px}
+.document--catalog .ic-grid .ic-card:hover{transform:none}
+.document--catalog .ic-grid .ic-card .ic-card__open.btn{margin:4px 0 0!important;width:100%;min-width:0;max-width:100%;padding:8px 10px;font-weight:800;font-size:clamp(11px,1.1vw,14px);line-height:1.25;text-align:center;border:1px solid #d4a827;background:linear-gradient(#ffd138,#eeb008);color:#102033;border-radius:7px;white-space:normal;display:block}
+.document--catalog .ic-grid .ic-card .ic-card__open.btn:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.document--catalog .ic-grid .ic-card .ic-card__open.btn::before,.document--catalog .ic-grid .ic-card .ic-card__open.btn::after{content:none!important}
+.document--catalog .ic-grid .ic-card .ic-card__chosen{font-weight:800;font-size:12px;color:#f9db6a}
+.ic-detail{display:none;flex-direction:column;max-height:calc(100dvh - 14px)}
+.ic-detail[open]{display:flex}
+.ic-detail__head{flex:0 0 52px}
+.ic-detail__body{flex:1 1 auto;min-height:0;max-height:none;overflow:auto;align-items:flex-start}
+.ic-poster{width:min(100%,calc((100dvh - 190px)*.6666667));aspect-ratio:2/3;margin:0 auto}
+.ic-detail__actions{flex:0 0 auto;display:flex;justify-content:space-between;gap:12px;padding:10px 12px;background:#0a1929;border-top:1px solid #6a7d91}
+#app .ic-detail__actions>.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;flex:1 1 0;width:50%;margin:0!important;text-align:center;white-space:normal}
+#app .ic-detail__decline.btn{background:#25384d;color:#fff;border:1px solid #8fa0b0}
+#app .ic-detail__add.btn{background:linear-gradient(#ffda46,#eeae00);color:#13202d;border:1px solid #f7d14f;font-weight:900}
+.ic-poster__hit{display:none}
+@media (max-width:720px){
+ .ic-detail{width:100vw;max-width:100vw;max-height:100dvh;height:100dvh;border:0;border-radius:0}
+ .ic-detail__head{flex-basis:49px}
+ .ic-detail__body{overflow:auto;min-height:0;flex:1 1 auto;display:block;padding:8px 4px}
+ .ic-poster{width:100%;max-width:100%;height:auto;aspect-ratio:1024/1536}
+ .ic-detail__actions{position:relative;padding:8px max(8px,env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left));gap:8px}
+ .document--catalog .ic-grid .ic-card.investment{height:auto;min-height:95px;padding:7px}
+ .document--catalog .ic-grid .ic-card .ic-card__open.btn{font-size:12px;padding:7px 5px}
+ .ic-card__body{gap:3px}
+}
+@media (min-width:721px){.document--catalog .ic-grid .ic-card.investment{height:auto;min-height:132px}}
