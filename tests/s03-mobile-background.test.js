@@ -37,8 +37,19 @@ while(await page.locator('[data-act="dlgMore"]').count()){
   await page.waitForTimeout(80);
   assert.ok(++fragments<40,'S03 dialogue pagination loop');
 }
-assert.ok(await page.locator('[data-act="closePerson"]').count(),'S03 final action is missing');
-// The handler synchronously re-renders the whole scene and detaches its own button.
+assert.ok(await page.locator('[data-act="s03Question"]').count(),'S03 question offer is missing');
+await page.locator('[data-act="s03Question"]').dispatchEvent('click');
+assert.ok(await page.locator('.s03-questions [data-act="s03Ask"]').count(),'S03 selectable question is missing');
+await page.locator('[data-act="s03Ask"]').dispatchEvent('click');
+await page.waitForTimeout(80);
+let answerPages=0;
+while(await page.locator('[data-act="dlgMore"]').count()){
+  await page.locator('[data-act="dlgMore"]').dispatchEvent('click');
+  await page.waitForTimeout(80);
+  assert.ok(++answerPages<40,'S03 answer pagination loop');
+}
+assert.ok(await page.locator('[data-act="s03BackToQuestion"]').count(),'S03 answer final action is missing');
+await page.locator('[data-act="s03BackToQuestion"]').dispatchEvent('click');
 await page.locator('[data-act="closePerson"]').dispatchEvent('click');
 await page.locator('.s03-chooser').waitFor();
 }

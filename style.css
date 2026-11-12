@@ -1392,3 +1392,12 @@ body.dialogue-mode-active #app .game-dialogue__text--question p{
   .budget-limit-dialog__tip{margin:14px 17px 4px}
   .budget-limit-dialog__actions{padding:14px 17px 19px}
 }
+
+
+/* S03 specialist question menu mirrors S01 questions, without moving portraits. */
+.s03-question-choice-scene{align-items:flex-end}
+.s03-question-choice-scene .scene-content{padding:clamp(12px,3vw,38px)}
+.s03-questions{margin-inline:auto;width:min(100%,900px);background:rgba(10,23,39,.94)}
+.s03-questions .choices{display:grid;grid-template-columns:1fr;gap:12px}
+.s03-questions .choices .btn{display:block;width:100%;min-height:58px;white-space:normal;overflow-wrap:anywhere}
+.s03-questions>.btn{margin-top:14px}
