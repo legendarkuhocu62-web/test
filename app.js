@@ -156,7 +156,7 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
   const spent=L.spent(s);
   h+=s.budgetMessage?'<p class="warning budget-message" role="alert">'+e(s.budgetMessage)+'</p>':'';
   h+='<div class="budget"><span>Бюджет <b>100 млн у.е.</b></span><span>Выбрано <b>'+spent+' млн у.е.</b></span><span>Осталось <b>'+(100-spent)+' млн у.е.</b></span></div><p>Все инициативы A–M доступны. Можно отменять выбор. Стоимость L и M в бюджете равна нулю, но это не означает отсутствия затрат и рисков.</p><div class="invest-grid">';
-  h+=d.initiatives.map(x=>'<article class="investment investment--visual"><div class="investment__top"><div class="invest-head"><b>'+e(x.id)+'</b><strong>'+x.cost+' млн у.е.</strong></div><h3>'+e(x.title)+'</h3></div><div class="investment__media"><img src="https://drive.google.com/thumbnail?id='+encodeURIComponent(INVESTMENT_IMAGE_IDS[x.id])+'&sz=w640" alt="Иллюстрация инициативы '+e(x.id)+': '+e(x.title)+'" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.hidden=true;this.parentElement.classList.add(\'investment__media--missing\')"></div><p class="investment__focus">'+e(x.focus)+'</p><details><summary>Условия и ограничения</summary><p><b>Условия:</b> '+e(x.conditions)+'</p><p><b>Риски:</b> '+e(x.risks)+'</p><p><b>Не гарантирует:</b> '+e(x.not)+'</p></details>'+btn(s.selected.includes(x.id)?'✓ Убрать из портфеля':'Добавить','toggle',x.id,s.selected.includes(x.id)?'selected':'')+'</article>').join('')+'</div>';
+  h+=window.CEH_INVESTMENT_CATALOG.render(s,d,e,btn);
   h+='<div class="portfolio-actions">'+btn(s.returnToReview?'Подтвердить пересмотренный портфель':'Подтвердить предварительный портфель','review','','primary')+'</div>';
   if(s.showReview){h+='<div class="feedback"><h2>Подтверждение портфеля</h2><p>Выбрано: '+e(s.selected.join(', '))+'</p><p>Общая стоимость: <b>'+spent+' млн у.е.</b></p><p>Остаток бюджета: <b>'+(100-spent)+' млн у.е.</b></p><p>Приоритет: '+e(d.goals.find(x=>x.id===s.priority)?.label||'не выбран')+'</p><p>Вы действительно хотите сохранить этот предварительный портфель?</p>'+btn('Вернуться к редактору','catalog','','')+btn('Сохранить и продолжить','finish','','primary')+'</div>'}
  }else if(s.s04Mode==='eduIntro'){
@@ -235,6 +235,8 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
   html=window.CEH_ORDER_UI.render(s,d,A.engineer,frame);
  }
  app.innerHTML=`<div class="statusline" aria-hidden="true"></div>${html}<div class="reset">${btn('Начать заново','reset')}</div>`;
+ if(s.scene==='S04'&&s.s04Mode==='catalog')window.CEH_INVESTMENT_CATALOG.attach(app,()=>render());
+
   materialsUI.attach();
  try{localStorage.setItem(key,JSON.stringify(s))}catch(_){}
  requestAnimationFrame(()=>{D.fit();syncStartHitbox();if(s.scene==='S02'&&s.s02Step==='report')app.querySelector('.s02-report-close')?.focus({preventScroll:true});});
@@ -256,7 +258,23 @@ function act(action,id){if(['dlgMore','dlgBack','dlgStart'].includes(action)){co
  else if(action==='s03Ask'&&s.scene==='S03'&&s.s03Person===id){s.s03QuestionMode='answer';if(!s.asked03.includes(id))s.asked03.push(id)}
  else if(action==='closePerson'){s.s03Person=null;s.s03QuestionMode='speech'}
  else if(action==='priority')s.priority=id;
- else if(action==='catalog'){s.s04Mode='catalog';s.showReview=false;s.finished=false;s.budgetMessage=''}
+ else if(action==='catalog'){window.CEH_INVESTMENT_CATALOG.reset();s.s04Mode='catalog';s.showReview=false;s.finished=false;s.budgetMessage=''}
+ else if(action==='catalogOpen'&&s.scene==='S04'&&s.s04Mode==='catalog'){window.CEH_INVESTMENT_CATALOG.open(id)}
+ else if(action==='catalogClose'&&s.scene==='S04'&&s.s04Mode==='catalog'){window.CEH_INVESTMENT_CATALOG.close()}
+ else if(action==='catalogPage'&&s.scene==='S04'&&s.s04Mode==='catalog'){window.CEH_INVESTMENT_CATALOG.changePage(id==='next'?1:-1)}
+ else if(action==='catalogDecline'&&s.scene==='S04'&&s.s04Mode==='catalog'){
+  if(s.selected.includes(id)){s.selected=s.selected.filter(x=>x!==id);s.budgetMessage='';s.showReview=false;}
+  window.CEH_INVESTMENT_CATALOG.close();
+ }
+ else if(action==='catalogAdd'&&s.scene==='S04'&&s.s04Mode==='catalog'){
+  if(!s.selected.includes(id)){
+   const item=d.initiatives.find(x=>x.id===id);
+   if(item&&L.spent(s)+item.cost>100){showBudgetLimit(item,100-L.spent(s));return}
+   if(item){s.selected=[...s.selected,id];s.budgetMessage='';s.showReview=false;}
+  }
+  window.CEH_INVESTMENT_CATALOG.close();
+ }
+
  else if(action==='toggle'){if(s.selected.includes(id)){s.selected=s.selected.filter(x=>x!==id);s.budgetMessage=''}else{const item=d.initiatives.find(x=>x.id===id);const remaining=100-L.spent(s);if(item&&L.spent(s)+item.cost>100){s.budgetMessage='';showBudgetLimit(item,remaining);return}else if(item){s.selected=[...s.selected,id];s.budgetMessage=''}}s.showReview=false}
  else if(action==='review'&&s.selected.length&&L.spent(s)<=100)s.showReview=true;
  else if(action==='finish'&&L.spent(s)<=100&&s.selected.length){if(s.returnToReview){s.returnToReview=false;s.showReview=false;s.s04Mode='reviewFinal'}else{s.initialSelected=[...s.selected];s.eduStep=1;s.eduMessage='';s.eduPage='documents';s.eduResult=null;s.s04Mode='eduIntro'}}

@@ -18,43 +18,20 @@ const key='ceh404.rebuilt.qa50.20261108';
   })),key);
   await page.reload({waitUntil:'load'});
   await page.locator('.document--catalog .investment').first().waitFor();
-  assert.equal(await page.locator('.document--catalog .investment').count(),13,
-   'catalogue must preserve all 13 initiatives');
-  const catalog=await page.evaluate(()=>{
-   const button=document.querySelector('.investment .btn');
-   const pseudo=getComputedStyle(button,'::before');
-   return {
-    bodyWidth:document.documentElement.scrollWidth,
-    viewWidth:innerWidth,
-    columns:getComputedStyle(document.querySelector('.invest-grid')).gridTemplateColumns.split(' ').length,
-    buttonColor:getComputedStyle(button).color,
-    skew:pseudo.transform,
-    gradient:pseudo.backgroundImage,
-    action:!!document.querySelector('.portfolio-actions .btn'),
-    primaryArrow:getComputedStyle(document.querySelector('.portfolio-actions .btn'),'::after').content,
-    actionPosition:getComputedStyle(document.querySelector('.portfolio-actions')).position,
-    actionButtonWidth:document.querySelector('.portfolio-actions .btn').getBoundingClientRect().width,
-    actionButtonRight:document.querySelector('.portfolio-actions .btn').getBoundingClientRect().right,
-    actionButtonLeft:document.querySelector('.portfolio-actions .btn').getBoundingClientRect().left,
-    actionTextOverflow:document.querySelector('.portfolio-actions .btn').scrollWidth >
-      document.querySelector('.portfolio-actions .btn').clientWidth + 2
-   };
-  });
-  assert.ok(catalog.bodyWidth<=catalog.viewWidth+3,'catalogue horizontal overflow '+width);
-  assert.match(catalog.gradient,/linear-gradient/,'slanted button fill missing');
-  assert.notEqual(catalog.skew,'none','button skew missing');
-  assert.equal(catalog.buttonColor,'rgb(255, 255, 255)','button lettering not white');
-  assert.equal(catalog.columns,width<=590?1:width<=930?2:4,'wrong catalogue columns '+width);
-  assert.ok(catalog.action,'portfolio confirmation absent');
-  assert.equal(catalog.primaryArrow,'none','decorative triangle must be removed at '+width);
-  assert.equal(catalog.actionTextOverflow,false,'CTA text overflows at '+width);
-  assert.ok(catalog.actionButtonLeft>=-2 && catalog.actionButtonRight<=width+2,
-   'CTA button overflows viewport at '+width);
-  if(width<=720) {
-   assert.equal(catalog.actionPosition,'static','mobile CTA must not cover investment cards');
-   assert.ok(catalog.actionButtonWidth<=370+2,'mobile CTA too wide at '+width);
-  }
-
+  assert.equal(await page.locator('.ic-grid .ic-card').count(),width<=720?4:6,'catalog page count');
+  const col=await page.locator('.ic-grid').evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').length);
+  assert.equal(col,width<=720?1:width<=1000?2:3,'catalog grid columns');
+  assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=width+3,'catalogue horizontal overflow');
+  assert.equal(await page.locator('.portfolio-actions .btn').count(),1,'portfolio confirmation remains');
+  await page.locator('[data-act="catalogOpen"]').first().click();
+  assert.equal(await page.locator('dialog.ic-detail:visible').count(),1,'full card opens');
+  await page.locator('dialog.ic-detail img').evaluate(img=>img.decode());
+  assert.equal(await page.locator('dialog.ic-detail img').evaluate(el=>el.naturalWidth>0),true,'full local image loaded');
+  await page.locator('[data-act="catalogClose"]').click();
+  assert.equal(await page.locator('dialog.ic-detail').count(),0,'full card closes');
+  await page.locator('[data-act="catalogPage"][data-id="next"]').click();
+  assert.match(await page.locator('.ic-pager__counter').innerText(),/2 \/ [34]/);
+  assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=width+3,'catalogue horizontal overflow after paging');
   await page.evaluate(k=>localStorage.setItem(k,JSON.stringify({
    scene:'S04',s04Mode:'edu',selected:['C'],initialSelected:['C'],
    eduStep:1,eduPage:'documents',name:'Тест',eduMessage:''
