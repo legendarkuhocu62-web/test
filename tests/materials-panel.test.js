@@ -16,6 +16,19 @@ const KEY='ceh404.rebuilt.qa50.20261108';
   })),KEY);
   await page.reload();
   assert.equal(await page.locator('.ceh-materials-trigger').count(),1,'only one entry');
+  const compact=await page.locator('.ceh-materials-trigger').evaluate(el=>{
+    const b=el.getBoundingClientRect();
+    return {w:b.width,h:b.height,x:b.x,y:b.y,label:el.getAttribute('aria-label'),
+      icon:!!el.querySelector('svg')};
+  });
+  assert.equal(compact.w,44,'materials launcher must be square');
+  assert.equal(compact.h,44,'materials launcher must be square');
+  assert.equal(compact.label,'Материалы предприятия');
+  assert.ok(compact.icon,'materials icon must be present');
+  assert.ok(compact.x>=0&&compact.x+compact.w<=width,'launcher must stay on-screen');
+  assert.ok(compact.y>=0&&compact.y+compact.h<=height,'launcher must stay on-screen');
+  assert.equal((await page.locator('.ceh-materials-trigger').innerText()).trim(),'',
+    'large visible text must be removed');
   await page.locator('.ceh-materials-trigger').click();
   const dlg=page.locator('dialog.ceh-materials-dialog');
   await dlg.waitFor({state:'visible'});
