@@ -1483,3 +1483,19 @@ body.dialogue-mode-active #app .game-dialogue__text--question p{
  .otk-intro__doc-symbol{height:48px;font-size:29px}
  .otk-intro__doc img{width:74px;height:62px}
 }
+
+/* S04 visual initiative cards; preserve existing selection and budget actions. */
+.document--catalog .investment--visual{display:flex;flex-direction:column;gap:9px;overflow:hidden;background:linear-gradient(145deg,#142c45,#091827);border:1px solid #54708b;box-shadow:inset 0 1px #ffffff18,0 5px 18px #0003}
+.document--catalog .investment--visual:has(.btn.selected){border-color:#ffca22;box-shadow:0 0 0 1px #ffca2266,0 0 20px #ffca2229}
+.document--catalog .investment__top{display:flex;flex-direction:column;gap:4px}
+.document--catalog .investment--visual .invest-head{align-items:center;justify-content:space-between}
+.document--catalog .investment--visual .invest-head b{display:grid;place-items:center;background:#ffcc17;color:#111b26;width:34px;height:34px;border-radius:7px;font-size:20px;box-shadow:0 2px 8px #0008}
+.document--catalog .investment--visual .invest-head strong{color:#ffd75c;font-size:clamp(14px,1.3vw,19px)}
+.document--catalog .investment--visual h3{margin:0;font-size:clamp(17px,1.4vw,21px);color:#fff}
+.document--catalog .investment__media{aspect-ratio:16/9;background:linear-gradient(145deg,#243e57,#09131e);border:1px solid #7a9bb2;border-radius:8px;overflow:hidden;position:relative}
+.document--catalog .investment__media img{display:block;width:100%;height:100%;object-fit:cover}
+.document--catalog .investment__media--missing::after{content:'Иллюстрация временно недоступна';position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:12px;color:#d4e2f1;font-size:13px}
+.document--catalog .investment__focus{margin:0;color:#dce8f6;font-size:14px}
+.document--catalog .investment--visual details{margin-top:auto}
+.document--catalog .investment--visual>.btn{width:100%;text-align:center;justify-content:center;margin:0!important;min-height:44px}
+@media(max-width:590px){.document--catalog .investment--visual{padding:12px}.document--catalog .investment__media{aspect-ratio:16/8}.document--catalog .investment--visual h3{font-size:18px}}
