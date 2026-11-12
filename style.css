@@ -1332,3 +1332,13 @@ body.dialogue-mode-active #app .game-dialogue--scene .dialogue-control{
   line-height:1.45;
 }
 .document--edu .edu-task .edu-subtle-hint span{margin-right:4px}
+
+
+/* S03: the specialist's question is its own dialogue page, not a footnote
+   after an explanation. The frame geometry and buttons remain unchanged. */
+body.dialogue-mode-active #app .game-dialogue__text--question p{
+  border-left:3px solid #f0a43d;
+  padding-left:12px;
+  color:#fff8ec;
+  font-weight:650;
+}
