@@ -202,7 +202,7 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
   html=frame(A.meeting,content,'dialogue-stage dialogue-stage--meeting');
  }else if(s.s04Mode==='reviewFinal'){
   const initial=Array.isArray(s.initialSelected)?s.initialSelected:[];
-  h+='<h2>Сохранить или пересмотреть?</h2><p>Теперь у тебя больше информации. Готов оставить первоначальный инвестиционный портфель или хочешь его пересмотреть?</p><p><b>Первоначальный портфель:</b> '+e(initial.join(', '))+' · '+initial.reduce((sum,id)=>sum+(d.initiatives.find(x=>x.id===id)?.cost||0),0)+' млн у.е.</p><p><b>Текущий портфель:</b> '+e(s.selected.join(', '))+' · '+L.spent(s)+' млн у.е.</p>'+btn('Сохранить и обосновать','saveFinal','','primary')+btn('Пересмотреть портфель','revisePortfolio','','');
+  h+='<h2>Сохранить или пересмотреть?</h2><p>Теперь у тебя больше информации. Готов оставить первоначальный инвестиционный портфель или хочешь его пересмотреть?</p><p><b>Первоначальный портфель:</b> '+e(initial.join(', '))+' · '+initial.reduce((sum,id)=>sum+(d.initiatives.find(x=>x.id===id)?.cost||0),0)+' млн у.е.</p><p><b>Текущий портфель:</b> '+e(s.selected.join(', '))+' · '+L.spent(s)+' млн у.е.</p>'+btn('Сохранить и продолжить','saveFinal','','primary')+btn('Пересмотреть портфель','revisePortfolio','','');
  }else if(s.s04Mode==='savedFinal'){
   h+='<h2>Портфель сохранён</h2><p>Окончательный портфель: '+e((s.finalSelected||s.selected).join(', '))+' · '+L.spent({...s,selected:s.finalSelected||s.selected})+' млн у.е.</p><p>EDU-01 пройден. Следующий этап сценария — S05 «Инвесткомитет». Его сценарий пока не интегрирован в эту сборку.</p>';
  }
