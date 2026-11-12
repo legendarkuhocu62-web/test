@@ -12,8 +12,14 @@ function showEduDocument(src,title){
     const dlg=document.createElement('dialog');
     dlg.className='edu-document-dialog';
     dlg.setAttribute('aria-labelledby','edu-document-dialog-title');
-    dlg.innerHTML='<div class="edu-document-dialog__header"><h2 id="edu-document-dialog-title"></h2><button type="button" class="edu-document-dialog__close" aria-label="Закрыть документ">Закрыть ✕</button></div><div class="edu-document-dialog__body"><img alt="" loading="eager"></div><a class="edu-document-dialog__original" target="_blank" rel="noopener">Открыть оригинал для увеличения</a>';
+    dlg.innerHTML='<div class="edu-document-dialog__header"><h2 id="edu-document-dialog-title"></h2><button type="button" class="edu-document-dialog__close" aria-label="Закрыть документ">✕</button></div><div class="edu-document-dialog__body"><img alt="" loading="eager"></div><div class="edu-document-dialog__zoom"><button type="button" data-zoom-out aria-label="Уменьшить документ">−</button><output data-zoom-level>100%</output><button type="button" data-zoom-in aria-label="Увеличить документ">+</button></div><a class="edu-document-dialog__original" target="_blank" rel="noopener">Открыть оригинал для увеличения</a>';
     dlg.querySelector('.edu-document-dialog__close').addEventListener('click',()=>dlg.close());
+    let zoom=1;
+    const photo=dlg.querySelector('.edu-document-dialog__body img');
+    const updateZoom=(value)=>{zoom=Math.max(1,Math.min(3,Math.round(value*4)/4));photo.style.width=(zoom*100)+'%';dlg.querySelector('[data-zoom-level]').textContent=Math.round(zoom*100)+'%';};
+    dlg.querySelector('[data-zoom-in]').addEventListener('click',()=>updateZoom(zoom+.25));
+    dlg.querySelector('[data-zoom-out]').addEventListener('click',()=>updateZoom(zoom-.25));
+    dlg.addEventListener('close',()=>updateZoom(1));
     dlg.addEventListener('close',()=>{if(eduDocumentReturnFocus&&eduDocumentReturnFocus.isConnected)eduDocumentReturnFocus.focus({preventScroll:true});});
     document.body.appendChild(dlg);
     eduDocumentDialog=dlg;
