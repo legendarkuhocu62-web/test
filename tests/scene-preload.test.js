@@ -34,7 +34,7 @@ const KEY='ceh404.rebuilt.qa50.20261108';
       const result=await page.evaluate(()=>({stats:window.CEH_PRELOAD.stats(),state:window.__CEH_TEST__.getState()}));
       assert.ok(result.stats.started.some(x=>decodeURI(x).includes(expectations[i])),'missing future asset '+expectations[i]+' at '+width+'x'+height+' '+JSON.stringify(result.stats));
       assert.ok(result.stats.started.length<=8,'preloaded too many images');
-      assert.ok(result.stats.started.every(x=>new URL(x).origin===location.origin),'external image prefetch forbidden');
+      assert.ok(result.stats.started.every(x=>new URL(x).origin==='http://127.0.0.1:8765'),'external image prefetch forbidden');
       assert.equal(result.state.scene,state.scene,'preloader changed game state');
       assert.ok(result.stats.active<=2,'exceeded concurrent preloads');
    }
