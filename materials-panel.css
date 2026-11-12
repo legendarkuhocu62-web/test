@@ -32,18 +32,19 @@
   .ceh-materials-item{padding:11px}
   .ceh-materials-item p{font-size:14px}
 }
-/* Keep the shortcut inside the header without ever covering its chapter title.
-   Reserve a dedicated icon column at every mobile viewport width. */
-.masthead:has(~ #app .ceh-materials-trigger){
-  padding-right:70px;
+/* Header keeps its own text; the shortcut sits in a reserved third column.
+   The launcher is fixed to the right but remains exactly inside the header row. */
+body:has(#app .ceh-materials-trigger) .masthead{
+  position:relative;
+  padding-right:70px !important;
+}
+body:has(#app .ceh-materials-trigger) .masthead .stage{
+  min-width:0;
+  text-align:right;
 }
 @media(max-width:720px){
-  .masthead:has(~ #app .ceh-materials-trigger){
-    padding-right:70px;
-  }
-  .masthead:has(~ #app .ceh-materials-trigger) .stage{
-    min-width:0;
-    text-align:right;
-    overflow-wrap:normal;
+  body:has(#app .ceh-materials-trigger) .masthead .stage{
+    font-size:clamp(8px,1.5vw,12px);
+    letter-spacing:0;
   }
 }
