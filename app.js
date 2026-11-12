@@ -145,6 +145,7 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
   materialsUI.attach();
  try{localStorage.setItem(key,JSON.stringify(s))}catch(_){}
  requestAnimationFrame(()=>{D.fit();syncStartHitbox();if(s.scene==='S02'&&s.s02Step==='report')app.querySelector('.s02-report-close')?.focus({preventScroll:true});});
+ window.CEH_PRELOAD?.afterRender(s,A);
 }
 function act(action,id){if(['dlgMore','dlgBack','dlgStart'].includes(action)){const node=app.querySelector('.game-dialogue');if(node){node.outerHTML=D.move(action);requestAnimationFrame(()=>D.fit());}return;}if(action==='reset'){if(confirm('Начать заново?'))s=L.initial()}
  else if(action==='s02Open'&&s.scene==='S02'&&s.s02Step==='intro'){s.s02ReportSeen=true;s.s02Step='report'}
