@@ -34,7 +34,7 @@ const KEY='ceh404.rebuilt.qa50.20261108';
   assert.equal(await dlg.evaluate(el=>el.open),false);
   assert.equal(await page.evaluate(()=>document.activeElement.classList.contains('ceh-materials-trigger')),true,'focus must return to trigger');
   await page.evaluate(key=>localStorage.setItem(key,JSON.stringify({
-   scene:'S04',s04Mode:'edu',name:'Миша',eduStep:1,eduMessage:'',
+   scene:'S04',s04Mode:'edu',name:'Миша',eduStep:1,eduPage:'task',eduMessage:'',
    priority:'losses',selected:['C','F'],initialSelected:['C','F'],
    s02ReportSeen:true,asked03:['andrey']
   })),KEY);

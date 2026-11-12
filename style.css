@@ -1401,3 +1401,53 @@ body.dialogue-mode-active #app .game-dialogue__text--question p{
 .s03-questions .choices{display:grid;grid-template-columns:1fr;gap:12px}
 .s03-questions .choices .btn{display:block;width:100%;min-height:58px;white-space:normal;overflow-wrap:anywhere}
 .s03-questions>.btn{margin-top:14px}
+
+
+/* EDU-01 reference: one self-contained mobile screen for documents, task, result. */
+.document--edu:has(.edu-reference){min-height:0}
+.document--edu .edu-reference{display:flex;flex-direction:column;gap:16px;max-width:840px;margin:0 auto}
+.document--edu .edu-reference__eyebrow{align-self:flex-start;background:#112840;border:1px solid #e69f39;border-radius:30px;padding:10px 20px;color:#fff;font-size:clamp(13px,2vw,17px);font-weight:800;letter-spacing:.02em}
+.document--edu .edu-reference__heading{margin:0;font-size:clamp(23px,3vw,36px);line-height:1.15}
+.document--edu .edu-reference__lead{margin:0 0 4px;line-height:1.45}
+.document--edu .edu-reference .edu-doc.edu-doc--scans{display:flex;flex-direction:column;gap:11px;padding:0;max-height:none;overflow:visible;background:transparent;border:0}
+.document--edu .edu-reference .edu-document-card--row{display:grid;grid-template-columns:40px minmax(0,1fr) 80px 22px;align-items:center;gap:12px;min-height:90px;padding:12px 14px;background:linear-gradient(115deg,#244765,#142941);border:1px solid #86a5bb;border-radius:15px;color:white;text-decoration:none;box-shadow:0 3px 7px #0002}
+.document--edu .edu-reference .edu-document-card--row:focus-visible{outline:3px solid #ffb432;outline-offset:3px}
+.document--edu .edu-reference .edu-document-card__icon{font-size:31px;text-align:center;color:#f9c47c}
+.document--edu .edu-reference .edu-document-card__label{font-weight:760;line-height:1.25;font-size:clamp(15px,2vw,20px)}
+.document--edu .edu-reference .edu-document-card--row img{width:80px;height:74px;max-height:none;object-fit:contain;background:white;border-radius:7px}
+.document--edu .edu-reference .edu-document-card__arrow{font-size:32px;color:#f3ba62}
+.document--edu .edu-reference>.btn.primary,.document--edu .edu-reference--task .edu-task>.btn.primary{align-self:stretch;min-height:56px}
+.document--edu .edu-reference--task .edu-task{margin:0;padding:20px}
+.document--edu .edu-reference--task .edu-task__hint{margin:18px 0!important;background:#25405c;border:1px solid #7192ad;border-radius:12px;padding:12px 15px;color:#e5eefa;font-size:clamp(13px,2vw,16px)}
+.document--edu .edu-reference--task>.btn{align-self:center;font-size:clamp(14px,2vw,17px)}
+.document--edu .edu-reference--result .edu-reference__result-card{padding:clamp(18px,3vw,30px);border-radius:18px;background:#f0f5f9;color:#132336}
+.document--edu .edu-reference--result h2{color:#17652e;font-size:clamp(23px,3vw,34px);margin:0 0 12px}
+.document--edu .edu-reference--result h3{font-size:clamp(18px,2vw,24px);margin:18px 0 8px}
+.document--edu .edu-reference--result .edu-reference__result-card p{margin:8px 0;line-height:1.5}
+.document--edu .edu-reference__result-data{padding:12px 15px;margin:14px 0;border:1px solid #6bb78a;border-radius:12px;background:#fff}
+.document--edu .edu-reference__result-data>div{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid #ddd}
+.document--edu .edu-reference__result-data>div:last-child{border:0}
+.document--edu .edu-reference__result-data strong{white-space:nowrap}
+.edu-document-dialog__zoom{display:flex;justify-content:center;gap:10px;padding:8px 12px;background:#102238}
+.edu-document-dialog__zoom button{border:1px solid #d89a3c;background:#1c3855;color:#fff;border-radius:10px;min-width:48px;min-height:40px;font-weight:750}
+.edu-document-dialog__zoom output{min-width:50px;text-align:center;color:white;align-self:center}
+.edu-document-dialog__body{overflow:auto;touch-action:pan-x pan-y}
+.edu-document-dialog__body img{transform-origin:top center;max-width:none}
+@media(max-width:590px){
+ .document--edu .edu-reference{gap:13px}
+ .document--edu .edu-reference .edu-document-card--row{grid-template-columns:29px minmax(0,1fr) 67px 16px;gap:8px;padding:10px;min-height:80px}
+ .document--edu .edu-reference .edu-document-card__icon{font-size:24px}
+ .document--edu .edu-reference .edu-document-card--row img{width:67px;height:62px}
+ .document--edu .edu-reference .edu-document-card__label{font-size:14px}
+ .document--edu .edu-reference--task .edu-task{padding:17px}
+ .document--edu .edu-reference--result .edu-reference__result-card{padding:18px}
+}
+
+/* Keep the original EDU-01 headline from crowding the guided mobile screen. */
+.document--edu:has(.edu-reference)>h1{font-size:clamp(20px,3vw,30px);margin-bottom:10px}
+.document--edu:has(.edu-reference) .edu-reference__eyebrow{margin-top:2px}
+@media(max-width:590px){
+ .document--edu:has(.edu-reference)>h1{display:none}
+ .document--edu .edu-reference--task .edu-answer-fields{gap:12px}
+ .document--edu .edu-reference--task .edu-task input[inputmode="decimal"]{min-height:48px}
+}

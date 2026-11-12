@@ -15,6 +15,9 @@ for(const path of ['assets/edu01/schema-ek-v20-01.jpg','assets/edu01/act-ns-008-
 }
 assert.ok(app.includes('edu-doc--scans'),'EDU-01 image cards missing');
 assert.ok(app.includes('edu-document-dialog'),'EDU-01 document modal missing');
+assert.ok(app.includes('edu-reference--result'),'EDU-01 feedback page missing');
+assert.ok(app.includes("action==='eduContinue'"),'EDU-01 continue after result missing');
+assert.ok(app.includes('data-zoom-in'),'EDU-01 document zoom missing');
 assert.ok(!app.includes('class="edu-doc"><b>СХЕМА КОНТРОЛЯ'),'old text imitation still active');
 assert.ok(css.includes('EDU-01 approved scanned documents'),'new styles missing');
 assert.ok(app.includes('class="edu-subtle-hint"'),'EDU-01 step 4 hint missing');
