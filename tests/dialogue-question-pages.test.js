@@ -30,7 +30,7 @@ const key='ceh404.rebuilt.qa50.20261108';
    await page.locator('[data-act="s03Question"]').dispatchEvent('click');
    const question=page.locator('.s03-questions [data-act="s03Ask"]');
    await question.waitFor({state:'visible'});
-   assert.equal((await question.innerText()).trim(),expected.question,'approved question text changed');
+   assert.equal((await question.textContent()).trim(),expected.question,'approved question text changed');
    assert.equal(await page.locator('.game-dialogue--scene').count(),0,'question menu should match S01');
    const before=await page.evaluate(()=>window.__CEH_TEST__.getState());
    assert.ok(!before.asked03.includes(id),'question not yet asked');
