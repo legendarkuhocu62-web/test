@@ -1,5 +1,13 @@
 /* Approved 11.11.2026: a single enterprise materials entry and two read-only tabs. */
-.ceh-materials-trigger{position:fixed;z-index:35;right:clamp(10px,2vw,26px);top:clamp(64px,9vh,96px);max-width:190px;padding:10px 14px;border:1px solid #efad50;border-radius:11px;background:#10263e;color:#fff;font:650 14px/1.25 system-ui,sans-serif;box-shadow:0 8px 25px #0008;cursor:pointer;touch-action:manipulation}
+.ceh-materials-trigger{
+  position:fixed;z-index:35;right:max(10px,env(safe-area-inset-right,0px));
+  top:max(10px,env(safe-area-inset-top,0px));width:44px;height:44px;
+  display:grid;place-items:center;padding:9px;
+  border:1px solid #efad50;border-radius:10px;
+  background:#10263e;color:#ffcf89;
+  box-shadow:0 5px 14px #0006;cursor:pointer;touch-action:manipulation;
+}
+.ceh-materials-trigger svg{display:block;width:24px;height:24px}
 .ceh-materials-trigger:focus-visible,.ceh-materials-dialog button:focus-visible{outline:3px solid #ffb031;outline-offset:3px}
 .ceh-materials-dialog{box-sizing:border-box;width:min(92vw,840px);max-width:none;max-height:87dvh;margin:auto;padding:0;border:1px solid #e7a54e;border-radius:17px;background:#0b2138;color:#f6f8fc;box-shadow:0 18px 52px #0009;overflow:hidden}
 .ceh-materials-dialog::backdrop{background:#020910cc}
@@ -13,7 +21,7 @@
 .ceh-materials-item h3{margin:0 0 9px;font-size:16px}
 .ceh-materials-item p{margin:0;line-height:1.5;font-size:15px;overflow-wrap:anywhere}
 @media(max-width:600px){
-  .ceh-materials-trigger{top:64px;right:8px;max-width:165px;padding:8px 10px;font-size:12px}
+  .ceh-materials-trigger{top:max(10px,env(safe-area-inset-top,0px));right:max(8px,env(safe-area-inset-right,0px));width:44px;height:44px;padding:9px}
   .ceh-materials-dialog{width:96vw;max-height:88dvh}
   .ceh-materials-header{padding:12px}
   .ceh-materials-header h2{font-size:18px}
