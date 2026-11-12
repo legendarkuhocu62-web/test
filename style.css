@@ -1342,3 +1342,53 @@ body.dialogue-mode-active #app .game-dialogue__text--question p{
   color:#fff8ec;
   font-weight:650;
 }
+
+
+/* S04: same navy/orange visual language as the dialogue and EDU feedback. */
+.budget-limit-dialog{
+  box-sizing:border-box;
+  width:min(92vw,530px);
+  max-width:530px;
+  max-height:90dvh;
+  overflow:auto;
+  padding:0;
+  border:2px solid #ef9b26;
+  border-radius:22px;
+  background:#0c1d32;
+  color:#f5f7fc;
+  box-shadow:0 22px 80px #000a;
+}
+.budget-limit-dialog::backdrop{background:rgba(2,9,20,.78)}
+.budget-limit-dialog__top{padding:22px 24px 12px;background:linear-gradient(140deg,#173251,#0c1d32)}
+.budget-limit-dialog__tag{color:#e9b66e;font-size:12px;font-weight:800;letter-spacing:.08em}
+.budget-limit-dialog__top h2{font-size:clamp(25px,5vw,32px);line-height:1.16;margin:12px 0 0;color:#fff}
+.budget-limit-dialog #budget-limit-summary{padding:0 24px;margin:16px 0;line-height:1.45;font-size:clamp(16px,3.7vw,19px)}
+.budget-limit-dialog__numbers{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 24px}
+.budget-limit-dialog__numbers>div{min-width:0;padding:12px;border:1px solid #486581;border-radius:12px;background:#192e47}
+.budget-limit-dialog__numbers span{display:block;font-size:13px;color:#d9e3f2;margin-bottom:7px}
+.budget-limit-dialog__numbers strong{display:block;color:#f6c177;font-size:clamp(16px,3.8vw,21px);overflow-wrap:anywhere}
+.budget-limit-dialog__tip{margin:17px 24px 6px;font-size:15px;line-height:1.45;color:#d9e4f2}
+.budget-limit-dialog__actions{display:flex;justify-content:flex-end;padding:15px 24px 24px}
+.budget-limit-dialog__button{
+  min-height:48px;
+  border:1px solid #ffd485;
+  border-radius:12px;
+  padding:12px 25px;
+  background:linear-gradient(125deg,#ffb43c,#f18405);
+  box-shadow:0 4px 0 #9f4903;
+  color:#fff;
+  text-shadow:0 1px 2px #623908;
+  font:italic 800 16px/1.2 system-ui,sans-serif;
+  cursor:pointer;
+}
+.budget-limit-dialog__button:focus-visible{outline:3px solid white;outline-offset:3px}
+@media(max-width:420px){
+  .budget-limit-dialog{width:94vw}
+  .budget-limit-dialog__top{padding:18px 17px 8px}
+  .budget-limit-dialog #budget-limit-summary{padding:0 17px}
+  .budget-limit-dialog__numbers{padding:0 17px;gap:8px}
+  .budget-limit-dialog__numbers>div{padding:9px}
+  .budget-limit-dialog__numbers span{font-size:12px}
+  .budget-limit-dialog__tip{margin:14px 17px 4px}
+  .budget-limit-dialog__actions{padding:14px 17px 19px}
+}
