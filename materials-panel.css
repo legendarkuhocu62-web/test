@@ -21,7 +21,7 @@
 .ceh-materials-item h3{margin:0 0 9px;font-size:16px}
 .ceh-materials-item p{margin:0;line-height:1.5;font-size:15px;overflow-wrap:anywhere}
 @media(max-width:600px){
-  .ceh-materials-trigger{top:max(10px,env(safe-area-inset-top,0px));right:max(8px,env(safe-area-inset-right,0px));width:44px;height:44px;padding:9px}
+  .ceh-materials-trigger{top:max(8px,env(safe-area-inset-top,0px));right:max(8px,env(safe-area-inset-right,0px));width:44px;height:44px;padding:9px}
   .ceh-materials-dialog{width:96vw;max-height:88dvh}
   .ceh-materials-header{padding:12px}
   .ceh-materials-header h2{font-size:18px}
@@ -31,4 +31,19 @@
   .ceh-materials-content{max-height:calc(88dvh - 146px);padding:0 12px 16px}
   .ceh-materials-item{padding:11px}
   .ceh-materials-item p{font-size:14px}
+}
+/* Keep the shortcut inside the header without ever covering its chapter title.
+   Reserve a dedicated icon column at every mobile viewport width. */
+.masthead:has(~ #app .ceh-materials-trigger){
+  padding-right:70px;
+}
+@media(max-width:720px){
+  .masthead:has(~ #app .ceh-materials-trigger){
+    padding-right:70px;
+  }
+  .masthead:has(~ #app .ceh-materials-trigger) .stage{
+    min-width:0;
+    text-align:right;
+    overflow-wrap:normal;
+  }
 }
