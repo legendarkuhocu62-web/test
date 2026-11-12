@@ -11,7 +11,7 @@
   function create({getState,data,root}){
     if(typeof getState!=='function'||!data||!root)throw new Error('CEH_MATERIALS: missing dependencies');
     let dialog=null,opener=null,tab='materials';
-    const eligible=s=>s.scene==='S04'||s.scene==='S03'||(s.scene==='S02'&&s.s02ReportSeen);
+    const eligible=s=>['S04','S05','S06','S07','S08'].includes(s.scene)||s.scene==='S03'||(s.scene==='S02'&&s.s02ReportSeen);
     const eduSeen=s=>Array.isArray(s.initialSelected)&&
       (s.returnToReview===true||!['priority','catalog','eduIntro'].includes(s.s04Mode));
     function add(box,title,detail){
@@ -45,6 +45,10 @@
           'Деталь В-20-01 — измеренный диаметр 20,02 мм.\n'+
           'Деталь В-20-02 — измеренный диаметр 20,08 мм.');
       }
+      if(['S06','S07','S08'].includes(s.scene)&&window.CEH_S06_S08_PREP){
+        const M=window.CEH_S06_S08_PREP,order=M.clean(s.s0608);
+        for(const item of M.materialsForExistingPanel(order))add(box,item.title,item.body);
+      }
       if(!box.children.length)add(box,'Материалы ещё не изучены',
         'Полученные по сюжету документы и позиции специалистов появятся здесь.');
     }
@@ -68,6 +72,14 @@
         add(box,'Окончательный инвестиционный портфель',
           portfolio(s.finalSelected)+'\n'+(before===after?
           'Первоначальный портфель сохранён.':'Портфель пересмотрен.'));
+      }
+      if(['S06','S07','S08'].includes(s.scene)&&window.CEH_S06_S08_PREP){
+        const M=window.CEH_S06_S08_PREP,order=M.clean(s.s0608);
+        add(box,'Заказ З-214','Изучено '+order.docsOpened.length+' из 3 документов.');
+        if(order.firstSubmitted)add(box,'Первая попытка профессионального заключения',
+          order.firstSubmitted.correct?'Все пять утверждений подтверждены корректно.':'Первоначальные выводы содержали '+order.firstSubmitted.errors.length+' ошибок.');
+        if(order.finalConclusion?.correct)add(box,'Заключение по заказу','Проверка пяти утверждений пройдена.');
+        if(order.s07Decision){const o=M.S07_OPTIONS.find(x=>x.id===order.s07Decision);if(o)add(box,'Оперативное решение',o.title);}
       }
       if(!box.children.length)add(box,'Мои решения',
         'Здесь появятся решения, которые ты уже принял в игре.');

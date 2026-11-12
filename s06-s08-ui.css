@@ -1,0 +1,54 @@
+
+/* S06–S08: responsive production-order sequence */
+.order-stage{align-items:flex-start;min-height:calc(100dvh - 120px)}
+.order-stage .scene-content{padding:clamp(14px,3vw,32px)}
+.order-screen{max-width:940px!important;margin:0 auto;padding:clamp(19px,3vw,32px);border:1px solid #667f98;background:rgba(8,23,41,.94)}
+.order-screen h1{font-size:clamp(25px,3.6vw,42px);line-height:1.18;margin:8px 0 20px}
+.order-screen h2{font-size:clamp(19px,2.5vw,28px);line-height:1.25}
+.order-screen p{line-height:1.55}
+.order-kicker{display:inline-block;padding:9px 15px;border:1px solid #dfa750;background:#122e48;border-radius:40px;color:#ffd49a;font-size:13px;font-weight:800;letter-spacing:.03em}
+.order-progress{border-radius:10px;padding:12px 16px;background:#203850;color:#f9e1c0}
+.order-doc-list,.order-options{display:grid;gap:13px;margin:18px 0}
+.order-doc-card{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px;border:1px solid #698eab;border-radius:13px;background:#1c3953}
+.order-doc-card h3{font-size:clamp(16px,2vw,21px);margin:0 0 5px}
+.order-doc-card small{color:#d7bd8b}
+.order-doc-card .btn{margin:0}
+.order-doc-icon{font-size:31px;text-align:center;color:#f6b94f}
+.order-paper{color:#152536;background:#f1f5f8;border-radius:13px;padding:24px;margin:14px 0;box-shadow:inset 0 0 0 1px #9fa9b5}
+.order-paper-top{font-size:12px;letter-spacing:.1em;border-bottom:2px solid #51616d;padding-bottom:9px}
+.order-paper h2{color:#19283c}
+.order-paper p{white-space:pre-line;color:#19283c}
+.order-paper-note{font-size:13px;opacity:.8;border-top:1px solid #bcc5d2;padding-top:12px}
+.order-statements{display:grid;gap:13px}
+.order-statement{border:1px solid #7f9ab4;border-radius:13px;background:#142c44;margin:0;padding:14px}
+.order-statement legend{font-weight:720;line-height:1.45;padding:0 5px}
+.order-statement label{display:flex;gap:10px;align-items:center;cursor:pointer;border:1px solid #49677e;border-radius:9px;background:#203c57;padding:10px 13px;margin:8px 0}
+.order-statement label:has(input:checked){background:#344e55;border-color:#e6b251}
+.order-statement input[type=radio]{width:21px;height:21px;margin:0;accent-color:#f7a921;flex:none}
+.order-feedback{padding:15px;border-radius:12px;border:1px solid #73a79c;background:#173c46;margin:17px 0}
+.order-feedback--error{border-color:#dfab59;background:#3f3028}
+.order-feedback ul{padding-left:22px}
+.order-option{border:1px solid #597f9e;border-radius:14px;padding:19px;background:#1a344d}
+.order-option h2{margin:0 0 10px}
+.order-option p{margin:7px 0}
+.order-report-sections{display:grid;gap:13px}
+.order-report-sections section{border:1px solid #5b7f9c;background:#172e47;border-radius:12px;padding:18px}
+.order-report-sections h2{margin:0;font-size:clamp(18px,2.4vw,23px);color:#ffcc7a}
+.order-report-sections p{margin:9px 0 0;white-space:pre-line}
+@media(max-width:600px){
+ .order-stage .scene-content{padding:10px}
+ .order-screen{padding:17px}
+ .order-doc-card{grid-template-columns:36px minmax(0,1fr);gap:9px}
+ .order-doc-card .btn{grid-column:2;justify-self:start}
+ .order-doc-icon{font-size:25px}
+ .order-doc-card h3{font-size:16px}
+ .order-paper{padding:17px}
+ .order-screen>.btn.primary{width:100%;text-align:center}
+}
+
+/* The global reset footer must remain below the full new scene rather than
+   overlap the final action on narrow viewport heights. */
+.order-stage{display:block;min-height:calc(100dvh - 120px);height:auto;overflow:visible;padding-bottom:28px}
+.order-stage .scene-content{width:100%;position:relative;z-index:1}
+body:has(.order-stage) .reset{position:relative;clear:both;margin-top:0;padding:18px 22px 26px;z-index:0}
+.order-screen>.btn{margin-bottom:12px}
