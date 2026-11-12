@@ -13,13 +13,16 @@ function resource(url){
    return parsed.href;
  }catch(_){return null}
 }
-function load(url,token){
+function load(url){
  if(cache.has(url)){cache.get(url).last=Date.now();return}
  const img=new Image();
  const state={img,last:Date.now(),status:'loading'};
  cache.set(url,state);
  started.push(url);
+ let done=false;
  const settle=(ok)=>{
+   if(done)return;
+   done=true;
    state.status=ok?'ready':'failed';
    finished.push({url,ok});
    active=Math.max(0,active-1);
@@ -40,7 +43,7 @@ function pump(){
    const {url,token}=queue.shift();queued.delete(url);
    if(token!==generation||cache.has(url))continue;
    active++;
-   load(url,token);
+   load(url);
  }
 }
 function enqueue(paths){
