@@ -24,15 +24,13 @@ const lines=[
    assert.equal(await page.locator('.game-dialogue__speaker').count()>0,true,'speaker label missing');
    assert.match(await page.locator('.game-dialogue').innerText(),/Андрей Громов/);
    assert.equal(await page.locator('.dialogue-stage--meeting').count(),1,'character scene not used');
-   const portrait=await page.locator('.game-dialogue').evaluate(node=>{
-     const image=node.querySelector('img[src*="andrey"],img[src*="Громов"]');
-     const scene=document.querySelector('.dialogue-stage--meeting');
-     const imageNodes=[...document.querySelectorAll('img')].filter(n=>n.getAttribute('src')?.includes('Громов'));
-     const cssBackground=getComputedStyle(scene).backgroundImage;
-     const visibleImage=[image,...imageNodes].filter(Boolean).some(n=>n.getBoundingClientRect().width>80);
-     return {visibleImage,cssBackground,markup:node.outerHTML.slice(0,500)};
-   });
-   assert.ok(portrait.visibleImage,'Andrey portrait should be present in character dialogue');
+   const portrait=await page.locator('.game-dialogue__character').evaluate(node=>({
+     width:node.getBoundingClientRect().width,
+     height:node.getBoundingClientRect().height,
+     src:node.getAttribute('src')
+   }));
+   assert.match(portrait.src,/Громов/,'wrong character portrait');
+   assert.ok(portrait.width>80&&portrait.height>100,'Andrey portrait should be visible on character scene');
    let count=0;
    while(await page.locator('[data-act="dlgMore"]').count()){
      assert.ok(++count<30,'Gromov pagination loop');
