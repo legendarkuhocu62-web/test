@@ -9,6 +9,7 @@ on:
       - 'assets/backgrounds/**'
       - 'data.js'
       - 'dialogue-ui.js'
+      - 'scene-preload.js'
       - 'materials-panel.js'
       - 'materials-panel.css'
       - 'logic.js'
@@ -50,6 +51,7 @@ jobs:
           python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/ceh404-http.log 2>&1 &
           sleep 2
           node tests/dialogue-browser.test.js
+          node tests/scene-preload.test.js
           node tests/dialogue-fixed-frame.test.js
           node tests/entrance-asset.test.js
           node tests/s00-mobile-badge.test.js
