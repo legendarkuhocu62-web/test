@@ -1430,7 +1430,7 @@ body.dialogue-mode-active #app .game-dialogue__text--question p{
 .document--edu .edu-reference__result-data strong{white-space:nowrap}
 .edu-document-dialog__zoom{display:flex;justify-content:center;gap:10px;padding:8px 12px;background:#102238}
 .edu-document-dialog__zoom button{border:1px solid #d89a3c;background:#1c3855;color:#fff;border-radius:10px;min-width:48px;min-height:40px;font-weight:750}
-.edu-document-dialog__zoomoutput{min-width:50px;text-align:center;color:white;align-self:center}
+.edu-document-dialog__zoom output{min-width:50px;text-align:center;color:white;align-self:center}
 .edu-document-dialog__body{overflow:auto;touch-action:pan-x pan-y}
 .edu-document-dialog__body img{transform-origin:top center;max-width:none}
 @media(max-width:590px){
@@ -1441,4 +1441,13 @@ body.dialogue-mode-active #app .game-dialogue__text--question p{
  .document--edu .edu-reference .edu-document-card__label{font-size:14px}
  .document--edu .edu-reference--task .edu-task{padding:17px}
  .document--edu .edu-reference--result .edu-reference__result-card{padding:18px}
+}
+
+/* Keep the original EDU-01 headline from crowding the guided mobile screen. */
+.document--edu:has(.edu-reference)>h1{font-size:clamp(20px,3vw,30px);margin-bottom:10px}
+.document--edu:has(.edu-reference) .edu-reference__eyebrow{margin-top:2px}
+@media(max-width:590px){
+ .document--edu:has(.edu-reference)>h1{display:none}
+ .document--edu .edu-reference--task .edu-answer-fields{gap:12px}
+ .document--edu .edu-reference--task .edu-task input[inputmode="decimal"]{min-height:48px}
 }
