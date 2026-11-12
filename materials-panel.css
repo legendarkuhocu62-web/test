@@ -21,7 +21,7 @@
 .ceh-materials-item h3{margin:0 0 9px;font-size:16px}
 .ceh-materials-item p{margin:0;line-height:1.5;font-size:15px;overflow-wrap:anywhere}
 @media(max-width:600px){
-  .ceh-materials-trigger{top:max(10px,env(safe-area-inset-top,0px));right:max(8px,env(safe-area-inset-right,0px));width:44px;height:44px;padding:9px}
+  .ceh-materials-trigger{top:max(8px,env(safe-area-inset-top,0px));right:max(8px,env(safe-area-inset-right,0px));width:44px;height:44px;padding:9px}
   .ceh-materials-dialog{width:96vw;max-height:88dvh}
   .ceh-materials-header{padding:12px}
   .ceh-materials-header h2{font-size:18px}
@@ -32,3 +32,24 @@
   .ceh-materials-item{padding:11px}
   .ceh-materials-item p{font-size:14px}
 }
+/* Header keeps its own text; the shortcut sits in a reserved third column.
+   The launcher is fixed to the right but remains exactly inside the header row. */
+body:has(#app .ceh-materials-trigger) .masthead{
+  position:relative;
+  padding-right:70px !important;
+}
+body:has(#app .ceh-materials-trigger) .masthead .stage{
+  min-width:0;
+  text-align:right;
+  flex:0 1 auto;
+}
+@media(max-width:720px){
+  body:has(#app .ceh-materials-trigger) .masthead .stage{
+    font-size:clamp(8px,1.5vw,12px);
+    letter-spacing:0;
+  }
+}
+
+/* Align the 44px launcher to the actual header, not the screen/top of a page.
+   Its position is set by the attach() routine from the header's live bounds. */
+.ceh-materials-trigger{top:var(--ceh-header-icon-top,10px)}

@@ -159,6 +159,14 @@
         dlg.querySelector('.ceh-materials-close').focus({preventScroll:true});
       });
       root.append(trigger);
+      // Header may move with viewport size and browser toolbars; follow its
+      // actual on-screen row while keeping the title's right column free.
+      const header=document.querySelector('.masthead');
+      if(header){
+        const box=header.getBoundingClientRect();
+        trigger.style.setProperty('--ceh-header-icon-top',
+          Math.max(0,Math.round(box.top+(box.height-44)/2))+'px');
+      }
     }
     return {attach};
   }

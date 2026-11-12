@@ -21,6 +21,16 @@ const KEY='ceh404.rebuilt.qa50.20261108';
     return {w:b.width,h:b.height,x:b.x,y:b.y,label:el.getAttribute('aria-label'),
       icon:!!el.querySelector('svg')};
   });
+  const overlap=await page.evaluate(()=>{
+    const icon=document.querySelector('.ceh-materials-trigger').getBoundingClientRect();
+    const title=document.querySelector('.masthead .stage').getBoundingClientRect();
+    return {titleRight:title.right,iconLeft:icon.left,
+      titleBottom:title.bottom,titleTop:title.top,iconTop:icon.top,
+      intersects:icon.left<title.right&&icon.right>title.left&&icon.top<title.bottom&&icon.bottom>title.top};
+  });
+  assert.ok(!overlap.intersects,'launcher covers chapter text: '+JSON.stringify(overlap));
+  assert.ok(overlap.iconLeft>=overlap.titleRight-2,'launcher must be to the right of chapter');
+  assert.ok(Math.abs(overlap.iconTop-overlap.titleTop)<=20,'launcher should align with heading');
   assert.equal(compact.w,44,'materials launcher must be square');
   assert.equal(compact.h,44,'materials launcher must be square');
   assert.equal(compact.label,'Материалы предприятия');
