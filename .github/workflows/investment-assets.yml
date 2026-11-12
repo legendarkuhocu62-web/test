@@ -1,27 +1,34 @@
-name: Verify approved investment images source
+name: Import approved A–M investment images (test branch only)
 on:
   push:
     branches: [feat/investment-catalog-a-m-20261112]
-    paths: ['.github/workflows/investment-assets.yml']
+    paths:
+      - '.github/workflows/investment-assets.yml'
+      - 'scripts/import-investment-assets.py'
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
-  check:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
+  import-images:
+    if: github.ref == 'refs/heads/feat/investment-catalog-a-m-20261112'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      - name: Check linked Drive image A is accessible and byte-identical
+        with:
+          persist-credentials: true
+      - name: Download approved originals; verify SHA-256; crop only photographic areas
         run: |
-          python -m pip install --quiet gdown
-          python - <<'PY'
-          import gdown, hashlib, os
-          path='/tmp/CH1-VA-A-001.png'
-          url='https://drive.google.com/uc?id=15D-LxpZJ6TM6Okyj9d7hGycq9B5chkGo'
-          downloaded=gdown.download(url, path, quiet=True)
-          if not downloaded: raise RuntimeError('Drive download unavailable')
-          digest=hashlib.sha256(open(path,'rb').read()).hexdigest()
-          assert digest=='b0d8518596bb040ff00f0eac562d6b184ba3c078d78d688b5e3eeb0e04f00fc4',f'Asset A hash mismatch: {digest}'
-          print('PASS: approved current A image', os.path.getsize(path), 'bytes')
-          PY
+          python -m pip install --quiet gdown pillow
+          python scripts/import-investment-assets.py
+      - name: Commit files to the test feature branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/investments/
+          if git diff --cached --quiet; then
+            echo 'Approved assets already present, no changes.'
+          else
+            git commit -m 'assets(investments): add verified 13 original cards and cropped photo thumbnails'
+            git push origin HEAD:feat/investment-catalog-a-m-20261112
+          fi
