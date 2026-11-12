@@ -1,7 +1,7 @@
 window.CEH_S02={render:function renderS02(s,d,A,frame,btn,chapterDialogue,e){
  const phase=s.s02Step||'intro', who=d.characters.irina;
- const desktopReport='assets/objects/CH1-S02-production-report-desktop.png?v=approved-20261109';
- const mobileReport='assets/objects/CH1-S02-production-report-mobile.png?v=mobile-png-20261109';
+ const desktopReport='assets/optimized/objects/CH1-S02-production-report-desktop.webp?v=webp-lossless-20261112';
+ const mobileReport='assets/optimized/objects/CH1-S02-production-report-mobile.webp?v=webp-lossless-20261112';
  if(phase==='intro'){
    const buttons=btn('Открыть отчёт','s02Open','','primary')+(s.s02ReportSeen?btn('Перейти к выводам','s02Conclude','','primary'):'');
    return frame(A.office,chapterDialogue('S02:intro',who.name,who.role,d.s02Prompt,A.irina,buttons),'dialogue-stage dialogue-stage--office s02-scene s02-intro');
