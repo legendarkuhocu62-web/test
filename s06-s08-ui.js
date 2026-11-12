@@ -67,7 +67,7 @@ function renderS08(s,data){
   initialSelected:s.initialSelected,
   finalSelected:s.finalSelected,
   finalCost:Array.isArray(s.finalSelected)?s.finalSelected.reduce((sum,id)=>sum+((data.initiatives||[]).find(x=>x.id===id)?.cost||0),0):null,
-  edu01Result:s.s04Mode==='savedFinal'&&s.eduStep===4?'Задание EDU-01 пройдено, расчёт и выводы проверены.':null,
+  edu01Result:Array.isArray(s.finalSelected)&&s.eduStep===4?'Задание EDU-01 пройдено, расчёт и выводы проверены.':null,
   s05:null
  };
  const sections=M.buildS08(z,history);
