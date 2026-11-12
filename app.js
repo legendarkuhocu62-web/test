@@ -32,6 +32,32 @@ app.addEventListener('click',ev=>{
   ev.preventDefault();
   showEduDocument(link.getAttribute('href'),link.dataset.title||'Документ ОТК');
 });
+/* S04 investment catalogue: accessible in-game budget overflow notice.
+   Keep portfolio state and scroll position unchanged when an addition is rejected. */
+let budgetDialog=null,budgetReturnFocus=null;
+function showBudgetLimit(item,remaining){
+  if(!budgetDialog){
+    const dlg=document.createElement('dialog');
+    dlg.className='budget-limit-dialog';
+    dlg.setAttribute('aria-labelledby','budget-limit-heading');
+    dlg.setAttribute('aria-describedby','budget-limit-summary');
+    dlg.innerHTML='<div class="budget-limit-dialog__top"><span class="budget-limit-dialog__tag">ЦЕХ 404 · ИНВЕСТКОМИТЕТ</span><h2 id="budget-limit-heading">Бюджет превышен</h2></div>'+
+      '<p id="budget-limit-summary">Эту инициативу пока нельзя добавить в портфель.</p>'+
+      '<div class="budget-limit-dialog__numbers"><div><span>Доступно</span><strong data-budget-remaining></strong></div><div><span>Стоимость инициативы</span><strong data-budget-cost></strong></div></div>'+
+      '<p class="budget-limit-dialog__tip">Пересмотри уже выбранные мероприятия или выбери инициативу, которая помещается в оставшийся бюджет.</p>'+
+      '<div class="budget-limit-dialog__actions"><button type="button" class="budget-limit-dialog__button">ПОНЯТНО</button></div>';
+    dlg.querySelector('.budget-limit-dialog__button').addEventListener('click',()=>dlg.close());
+    dlg.addEventListener('close',()=>{if(budgetReturnFocus&&budgetReturnFocus.isConnected)budgetReturnFocus.focus({preventScroll:true});});
+    document.body.appendChild(dlg);budgetDialog=dlg;
+  }
+  budgetReturnFocus=document.activeElement;
+  const name=item?.title||'инициативу';
+  budgetDialog.querySelector('#budget-limit-summary').textContent='Нельзя добавить «'+name+'»: стоимость превышает оставшийся бюджет.';
+  budgetDialog.querySelector('[data-budget-remaining]').textContent=remaining+' млн у.е.';
+  budgetDialog.querySelector('[data-budget-cost]').textContent=item.cost+' млн у.е.';
+  if(!budgetDialog.open)budgetDialog.showModal();
+  budgetDialog.querySelector('.budget-limit-dialog__button').focus({preventScroll:true});
+}
 /* In-game EDU feedback. Native browser alert() has browser-owned styling and
    incorrectly appears as an external site confirmation on Android. */
 let eduFeedbackDialog=null,eduFeedbackReturnFocus=null;
@@ -163,7 +189,7 @@ function act(action,id){if(['dlgMore','dlgBack','dlgStart'].includes(action)){co
  else if(action==='closePerson')s.s03Person=null;
  else if(action==='priority')s.priority=id;
  else if(action==='catalog'){s.s04Mode='catalog';s.showReview=false;s.finished=false;s.budgetMessage=''}
- else if(action==='toggle'){if(s.selected.includes(id)){s.selected=s.selected.filter(x=>x!==id);s.budgetMessage=''}else{const item=d.initiatives.find(x=>x.id===id);const remaining=100-L.spent(s);if(item&&L.spent(s)+item.cost>100){s.budgetMessage=`Нельзя добавить инициативу.\nДоступный бюджет — ${remaining} млн у.е.\nСтоимость инициативы — ${item.cost} млн у.е.`}else{s.selected=[...s.selected,id];s.budgetMessage=''}}s.showReview=false}
+ else if(action==='toggle'){if(s.selected.includes(id)){s.selected=s.selected.filter(x=>x!==id);s.budgetMessage=''}else{const item=d.initiatives.find(x=>x.id===id);const remaining=100-L.spent(s);if(item&&L.spent(s)+item.cost>100){s.budgetMessage='';showBudgetLimit(item,remaining);return}else if(item){s.selected=[...s.selected,id];s.budgetMessage=''}}s.showReview=false}
  else if(action==='review'&&s.selected.length&&L.spent(s)<=100)s.showReview=true;
  else if(action==='finish'&&L.spent(s)<=100&&s.selected.length){if(s.returnToReview){s.returnToReview=false;s.showReview=false;s.s04Mode='reviewFinal'}else{s.initialSelected=[...s.selected];s.eduStep=1;s.eduMessage='';s.s04Mode='eduIntro'}}
  else if(action==='startEdu')s.s04Mode='edu';
