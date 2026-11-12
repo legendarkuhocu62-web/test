@@ -1,0 +1,217 @@
+{
+  "assets": [
+    {
+      "original": "assets/backgrounds/CH1-IMG-001_Главный-экран.png",
+      "optimized": "assets/optimized/backgrounds/CH1-IMG-001_Главный-экран.webp",
+      "original_bytes": 3077726,
+      "optimized_bytes": 191930,
+      "saved_percent": 93.8,
+      "dimensions": [
+        1672,
+        941
+      ],
+      "pixel_lossless": false,
+      "alpha": false,
+      "sha256": "e85b80ff1c96930ba92f2e5ce1c9323024756f791079ee738729313eb2e66a8a"
+    },
+    {
+      "original": "assets/backgrounds/CH1-IMG-006_Внешняя проходная.png",
+      "optimized": "assets/optimized/backgrounds/CH1-IMG-006_Внешняя проходная.webp",
+      "original_bytes": 3659520,
+      "optimized_bytes": 333140,
+      "saved_percent": 90.9,
+      "dimensions": [
+        1672,
+        941
+      ],
+      "pixel_lossless": false,
+      "alpha": false,
+      "sha256": "b9710e63faf357bd3f1c28bebf1f68e21e0b38a0d3f48e44a71eae6625fbc710"
+    },
+    {
+      "original": "assets/backgrounds/CH1-IMG-002_Входная зона и турникеты.png",
+      "optimized": "assets/optimized/backgrounds/CH1-IMG-002_Входная зона и турникеты.webp",
+      "original_bytes": 2042394,
+      "optimized_bytes": 189078,
+      "saved_percent": 90.7,
+      "dimensions": [
+        1671,
+        941
+      ],
+      "pixel_lossless": false,
+      "alpha": false,
+      "sha256": "c57e152889918af453ff5e5bbf6400d67cadc93ac7e410888736919d4e416286"
+    },
+    {
+      "original": "assets/backgrounds/CH1-IMG-005_Технологический отдел.png",
+      "optimized": "assets/optimized/backgrounds/CH1-IMG-005_Технологический отдел.webp",
+      "original_bytes": 3399466,
+      "optimized_bytes": 270180,
+      "saved_percent": 92.1,
+      "dimensions": [
+        1672,
+        941
+      ],
+      "pixel_lossless": false,
+      "alpha": false,
+      "sha256": "f58ff86070f2fc092c25bbc9b6bbb91ad015b18e2f9b7479bb9959b901dda06a"
+    },
+    {
+      "original": "assets/backgrounds/CH1-IMG-014_Инженерный кабинет.png",
+      "optimized": "assets/optimized/backgrounds/CH1-IMG-014_Инженерный кабинет.webp",
+      "original_bytes": 3497331,
+      "optimized_bytes": 279864,
+      "saved_percent": 92.0,
+      "dimensions": [
+        1672,
+        941
+      ],
+      "pixel_lossless": false,
+      "alpha": false,
+      "sha256": "54ea6ef9a7df8ebb46030b941b6bad3f2e33fd16dce0e9a2fc1908a4275d1f55"
+    },
+    {
+      "original": "assets/backgrounds/CH1-IMG-022_S03_meeting_three_characters_mobile.png",
+      "optimized": "assets/optimized/backgrounds/CH1-IMG-022_S03_meeting_three_characters_mobile.webp",
+      "original_bytes": 2134509,
+      "optimized_bytes": 165278,
+      "saved_percent": 92.3,
+      "dimensions": [
+        941,
+        1672
+      ],
+      "pixel_lossless": false,
+      "alpha": false,
+      "sha256": "2023c22d4e76f25d3eecc8b0d3b1a1df4ede626e7dc6625a38aea45719c7704a"
+    },
+    {
+      "original": "assets/backgrounds/CH1-IMG-023_S00_turnstiles_lobby_mobile.png",
+      "optimized": "assets/optimized/backgrounds/CH1-IMG-023_S00_turnstiles_lobby_mobile.webp",
+      "original_bytes": 1959949,
+      "optimized_bytes": 142026,
+      "saved_percent": 92.8,
+      "dimensions": [
+        941,
+        1672
+      ],
+      "pixel_lossless": false,
+      "alpha": false,
+      "sha256": "94e6d2ad8f5e997bf772dd15d7dac4c10b7e099733bad18dfc401613c4b480a7"
+    },
+    {
+      "original": "assets/characters/CH1-IMG-011_Персонаж Марина Власова.png",
+      "optimized": "assets/optimized/characters/CH1-IMG-011_Персонаж Марина Власова.webp",
+      "original_bytes": 2073163,
+      "optimized_bytes": 190068,
+      "saved_percent": 90.8,
+      "dimensions": [
+        1086,
+        1448
+      ],
+      "pixel_lossless": false,
+      "alpha": true,
+      "sha256": "5320ab2ee6d4b2fc3bff362b39f6980cac679ee1a41272ccff9500ad4ef5eaaf"
+    },
+    {
+      "original": "assets/characters/CH1-IMG-012_Персонаж Андрей Громов.png",
+      "optimized": "assets/optimized/characters/CH1-IMG-012_Персонаж Андрей Громов.webp",
+      "original_bytes": 2201782,
+      "optimized_bytes": 205018,
+      "saved_percent": 90.7,
+      "dimensions": [
+        1086,
+        1448
+      ],
+      "pixel_lossless": false,
+      "alpha": true,
+      "sha256": "c028ed5297845ed10560d7c2ce8c3c508836b35313fbdb84a6cfd6e2f3ed0922"
+    },
+    {
+      "original": "assets/characters/CH1-IMG-013_Женский персонаж с планшетом.png",
+      "optimized": "assets/optimized/characters/CH1-IMG-013_Женский персонаж с планшетом.webp",
+      "original_bytes": 1798009,
+      "optimized_bytes": 175258,
+      "saved_percent": 90.3,
+      "dimensions": [
+        1086,
+        1448
+      ],
+      "pixel_lossless": false,
+      "alpha": true,
+      "sha256": "86f7e71433b941052c66ef8c5ea31fb91518c4a548d648317467e30aa0bfccca"
+    },
+    {
+      "original": "assets/characters/CH1-IMG-015_irina_friendly.png",
+      "optimized": "assets/optimized/characters/CH1-IMG-015_irina_friendly.webp",
+      "original_bytes": 1593660,
+      "optimized_bytes": 186038,
+      "saved_percent": 88.3,
+      "dimensions": [
+        1086,
+        1448
+      ],
+      "pixel_lossless": false,
+      "alpha": true,
+      "sha256": "032841624cc439d748d26cf962588b0a53ae38a6259b94a71d77d32f0fc73352"
+    },
+    {
+      "original": "assets/characters/CH1-IMG-016_irina_focused.png",
+      "optimized": "assets/optimized/characters/CH1-IMG-016_irina_focused.webp",
+      "original_bytes": 1596569,
+      "optimized_bytes": 180896,
+      "saved_percent": 88.7,
+      "dimensions": [
+        1086,
+        1448
+      ],
+      "pixel_lossless": false,
+      "alpha": true,
+      "sha256": "0f3d7b902d10b1b038911c3bbcccabc409774f8f324ca7d3e786bcc961473053"
+    },
+    {
+      "original": "assets/icons/CH404-CH1-S00-001_employee_badge_technician.png",
+      "optimized": "assets/optimized/icons/CH404-CH1-S00-001_employee_badge_technician.webp",
+      "original_bytes": 1698740,
+      "optimized_bytes": 1069182,
+      "saved_percent": 37.1,
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "pixel_lossless": true,
+      "alpha": false,
+      "sha256": "019268e75ca129af3642a1a60dbe0c154dc7b5a64f8b8643223c374d2cd5385e"
+    },
+    {
+      "original": "assets/objects/CH1-S02-production-report-desktop.png",
+      "optimized": "assets/optimized/objects/CH1-S02-production-report-desktop.webp",
+      "original_bytes": 1637138,
+      "optimized_bytes": 1076802,
+      "saved_percent": 34.2,
+      "dimensions": [
+        1149,
+        1369
+      ],
+      "pixel_lossless": true,
+      "alpha": true,
+      "sha256": "019fdf81a44fcb9e4ba3629086b2de76e1f7894a7e7eaeb27f6c8b21070a98cf"
+    },
+    {
+      "original": "assets/objects/CH1-S02-production-report-mobile.png",
+      "optimized": "assets/optimized/objects/CH1-S02-production-report-mobile.webp",
+      "original_bytes": 1429016,
+      "optimized_bytes": 938126,
+      "saved_percent": 34.4,
+      "dimensions": [
+        1024,
+        1536
+      ],
+      "pixel_lossless": true,
+      "alpha": true,
+      "sha256": "a95382c6e758ed38bde4a5b40f4d6b1b3bef848d4174684cdd5fd0cfed12e12d"
+    }
+  ],
+  "original_total_bytes": 33798972,
+  "optimized_total_bytes": 5592884,
+  "saved_percent": 83.5
+}

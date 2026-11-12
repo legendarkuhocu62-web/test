@@ -54,9 +54,9 @@ for(const [width,height] of sizes){
  const state=await report.evaluate(img=>({src:img.currentSrc||img.src,loaded:img.complete&&img.naturalWidth>0,
   w:img.naturalWidth,h:img.naturalHeight}));
  assert.ok(state.loaded,'S02 report image failed to load');
- assert.ok(state.src.includes('production-report-'+(width<=720?'mobile':'desktop')+'.png'),
-   'S02 report is not a PNG at '+width+'x'+height+': '+state.src);
- assert.ok(!state.src.includes('.jpeg'),'S02 still uses JPEG');
+ assert.ok(state.src.includes('production-report-'+(width<=720?'mobile':'desktop')+'.webp'),
+   'S02 report is not a lossless WebP at '+width+'x'+height+': '+state.src);
+ assert.ok(state.src.includes('/assets/optimized/objects/'),'S02 report must use the lossless local copy');
  const scene=await page.evaluate(()=>{
   const x=document.querySelector('.s02-report-sheet'),r=x.getBoundingClientRect();
   return {top:r.top,bottom:r.bottom,left:r.left,right:r.right,

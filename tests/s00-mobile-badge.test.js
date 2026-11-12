@@ -42,7 +42,7 @@ const KEY='ceh404.rebuilt.qa50.20261108';
   assert.ok(x.image.left>=0&&x.image.right<=width+2,'badge clipped horizontally '+JSON.stringify(x));
   assert.ok(x.image.top>=0&&x.image.bottom<=height+2,'badge clipped vertically '+JSON.stringify(x));
   if(width<=720){
-    assert.match(x.background,/CH1-IMG-023_S00_turnstiles_lobby_mobile\.png/,'wrong mobile lobby');
+    assert.match(x.background,/CH1-IMG-023_S00_turnstiles_lobby_mobile\.webp/,'wrong mobile lobby');
     assert.match(x.sizing,/cover/,'mobile background must not stretch');
     assert.match(x.repeat,/no-repeat/);
     assert.ok(x.card.top>=x.headerBottom-2,'card hides under header '+JSON.stringify(x));

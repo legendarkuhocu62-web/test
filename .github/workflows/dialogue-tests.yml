@@ -32,6 +32,7 @@ jobs:
           node tests/dialogue-ui.test.js
           node tests/dialogue-punctuation.test.js
           node tests/edu01-approved-documents.test.js
+          node tests/asset-performance.test.js
   browser:
     runs-on: ubuntu-24.04
     timeout-minutes: 15

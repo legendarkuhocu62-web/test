@@ -18,7 +18,7 @@ return {background:getComputedStyle(scene).backgroundImage,
 scrollW:document.documentElement.scrollWidth,scrollH:document.documentElement.scrollHeight,
 boxes:choices.map(x=>{const r=x.getBoundingClientRect();return {left:r.left,right:r.right,bottom:r.bottom,scrollW:x.scrollWidth,clientW:x.clientWidth,scrollH:x.scrollHeight,clientH:x.clientHeight,wordBreak:getComputedStyle(x).wordBreak}})};
 });
-assert.ok(view.background.includes(width<=430?'CH1-IMG-022_S03_meeting_three_characters_mobile.png':'CH1-IMG-020_S03_three_characters.jpeg'));
+assert.ok(view.background.includes(width<=430?'CH1-IMG-022_S03_meeting_three_characters_mobile.webp':'CH1-IMG-020_S03_three_characters.jpeg'));
 if(width<=430){
 assert.ok(view.scrollW<=width+2&&view.scrollH<=height+2,'S03 overflow at '+width);
 assert.ok(view.boxes.every(b=>b.left>=-2&&b.right<=width+2&&b.bottom<=height+2&&b.scrollW<=b.clientW+2&&b.scrollH<=b.clientH+2&&b.wordBreak==='normal'),'S03 clipped buttons at '+width);

@@ -4,28 +4,33 @@
   "assets": {
     "bg_title": {
       "type": "background",
-      "path": "assets/backgrounds/CH1-IMG-001_Главный-экран.png",
-      "status": "approved"
+      "path": "assets/optimized/backgrounds/CH1-IMG-001_Главный-экран.webp",
+      "status": "approved",
+      "original_path": "assets/backgrounds/CH1-IMG-001_Главный-экран.png"
     },
     "bg_gate": {
       "type": "background",
-      "path": "assets/backgrounds/CH1-IMG-006_Внешняя проходная.png",
-      "status": "approved"
+      "path": "assets/optimized/backgrounds/CH1-IMG-006_Внешняя проходная.webp",
+      "status": "approved",
+      "original_path": "assets/backgrounds/CH1-IMG-006_Внешняя проходная.png"
     },
     "bg_registration": {
       "type": "background",
-      "path": "assets/backgrounds/CH1-IMG-002_Входная зона и турникеты.png",
-      "status": "approved"
+      "path": "assets/optimized/backgrounds/CH1-IMG-002_Входная зона и турникеты.webp",
+      "status": "approved",
+      "original_path": "assets/backgrounds/CH1-IMG-002_Входная зона и турникеты.png"
     },
     "bg_office": {
       "type": "background",
-      "path": "assets/backgrounds/CH1-IMG-005_Технологический отдел.png",
-      "status": "approved"
+      "path": "assets/optimized/backgrounds/CH1-IMG-005_Технологический отдел.webp",
+      "status": "approved",
+      "original_path": "assets/backgrounds/CH1-IMG-005_Технологический отдел.png"
     },
     "bg_engineer": {
       "type": "background",
-      "path": "assets/backgrounds/CH1-IMG-014_Инженерный кабинет.png",
-      "status": "candidate"
+      "path": "assets/optimized/backgrounds/CH1-IMG-014_Инженерный кабинет.webp",
+      "status": "candidate",
+      "original_path": "assets/backgrounds/CH1-IMG-014_Инженерный кабинет.png"
     },
     "bg_meeting_group": {
       "type": "background",
@@ -34,48 +39,56 @@
     },
     "irina_neutral": {
       "type": "character",
-      "path": "assets/characters/CH1-IMG-013_Женский персонаж с планшетом.png",
-      "status": "approved"
+      "path": "assets/optimized/characters/CH1-IMG-013_Женский персонаж с планшетом.webp",
+      "status": "approved",
+      "original_path": "assets/characters/CH1-IMG-013_Женский персонаж с планшетом.png"
     },
     "irina_friendly": {
       "type": "character",
-      "path": "assets/characters/CH1-IMG-015_irina_friendly.png",
-      "status": "approved"
+      "path": "assets/optimized/characters/CH1-IMG-015_irina_friendly.webp",
+      "status": "approved",
+      "original_path": "assets/characters/CH1-IMG-015_irina_friendly.png"
     },
     "irina_focused": {
       "type": "character",
-      "path": "assets/characters/CH1-IMG-016_irina_focused.png",
-      "status": "approved"
+      "path": "assets/optimized/characters/CH1-IMG-016_irina_focused.webp",
+      "status": "approved",
+      "original_path": "assets/characters/CH1-IMG-016_irina_focused.png"
     },
     "andrey_neutral": {
       "type": "character",
-      "path": "assets/characters/CH1-IMG-012_Персонаж Андрей Громов.png",
-      "status": "approved"
+      "path": "assets/optimized/characters/CH1-IMG-012_Персонаж Андрей Громов.webp",
+      "status": "approved",
+      "original_path": "assets/characters/CH1-IMG-012_Персонаж Андрей Громов.png"
     },
     "marina_neutral": {
       "type": "character",
-      "path": "assets/characters/CH1-IMG-011_Персонаж Марина Власова.png",
-      "status": "approved"
+      "path": "assets/optimized/characters/CH1-IMG-011_Персонаж Марина Власова.webp",
+      "status": "approved",
+      "original_path": "assets/characters/CH1-IMG-011_Персонаж Марина Власова.png"
     },
     "employee_badge": {
       "type": "object",
-      "path": "assets/icons/CH404-CH1-S00-001_employee_badge_technician.png",
-      "status": "approved"
+      "path": "assets/optimized/icons/CH404-CH1-S00-001_employee_badge_technician.webp",
+      "status": "approved",
+      "original_path": "assets/icons/CH404-CH1-S00-001_employee_badge_technician.png"
     },
     "report_desktop": {
       "type": "object",
-      "path": "assets/objects/CH1-S02-production-report-desktop.png",
+      "path": "assets/optimized/objects/CH1-S02-production-report-desktop.webp",
       "scene": "S02",
       "screen": "desktop",
-      "status": "uploaded_visual_check_pending"
+      "status": "uploaded_visual_check_pending",
+      "original_path": "assets/objects/CH1-S02-production-report-desktop.png"
     },
     "report_mobile": {
       "type": "object",
-      "path": "assets/objects/CH1-S02-production-report-mobile.png",
+      "path": "assets/optimized/objects/CH1-S02-production-report-mobile.webp",
       "scene": "S02",
       "screen": "mobile",
       "status": "converted_from_source_jpeg_visual_check_pending",
-      "note": "PNG conversion from the existing mobile JPEG without altering report numbers or wording; verified source on Google Drive: 17PT4pxILCV3NxEW2-ZYjyqpPQYlRIjXb"
+      "note": "PNG conversion from the existing mobile JPEG without altering report numbers or wording; verified source on Google Drive: 17PT4pxILCV3NxEW2-ZYjyqpPQYlRIjXb",
+      "original_path": "assets/objects/CH1-S02-production-report-mobile.png"
     },
     "s00_mobile_start": {
       "type": "background",
@@ -94,12 +107,13 @@
     "bg_meeting_group_mobile": {
       "id": "CH1-IMG-022",
       "type": "background",
-      "path": "assets/backgrounds/CH1-IMG-022_S03_meeting_three_characters_mobile.png",
+      "path": "assets/optimized/backgrounds/CH1-IMG-022_S03_meeting_three_characters_mobile.webp",
       "scene": "S03",
       "screen": "mobile",
       "status": "user_approved",
       "source": "https://drive.google.com/file/d/1wCsQ17ABO-9l1P8f6yx3SSclXW4JvyYR/view",
-      "note": "941 × 1672; used only at viewport widths <=430px; HTML labels/buttons remain interactive."
+      "note": "941 × 1672; used only at viewport widths <=430px; HTML labels/buttons remain interactive.",
+      "original_path": "assets/backgrounds/CH1-IMG-022_S03_meeting_three_characters_mobile.png"
     }
   }
 }
