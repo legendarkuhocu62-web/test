@@ -1,4 +1,4 @@
-/* ЦЕХ 404 — общий диалоговый компонент v2.2.
+/* ЦЕХ 404 — общий диалоговый компонент v2.3.
    Фиксированная рамка персонажа; текст переносится на следующую страницу,
    только когда не помещается. Сценарный текст и состояние не меняются. */
 (()=>{
@@ -21,6 +21,19 @@ function semanticUnits(value){
  }
  if(start<s.length)out.push(s.slice(start));
  return out.length?out:[''];
+}
+/* Keep the specialist's speech, question and answer on separate screens.
+   The delimiters remain part of the segments for lossless navigation/state. */
+function semanticBlocks(value){
+ const raw=String(value??'');
+ const question=raw.indexOf('\n\nВопрос: ');
+ if(question<0)return [raw];
+ const answer=raw.indexOf('\nОтвет: ',question+2);
+ if(answer<0)return [raw];
+ return [raw.slice(0,question),raw.slice(question,answer),raw.slice(answer)].filter(Boolean);
+}
+function visibleText(value){
+ return /^\n+(?:Вопрос|Ответ):\s/.test(value)?value.replace(/^\n+/,''):value;
 }
 /* Совместимость с прежним API: лимит используется только как ориентир;
    предпочтение всегда отдаётся границам предложений. */
@@ -57,12 +70,14 @@ function render(options){
    // on short phones and squeezed the text out of the fixed frame.
  }
  controls+=final?finish:button('Читать далее','dlgMore',true);
+ const segment=segments[page],visible=visibleText(segment);
+ const tone=/^Вопрос:\s/.test(visible)?' game-dialogue__text--question':(/^Ответ:\s/.test(visible)?' game-dialogue__text--answer':'');
  const avatar=variant==='inline'||!portrait?'':'<img class="game-dialogue__character" src="'+escapeHTML(portrait)+'" alt="'+escapeHTML(alt||speaker)+'">';
  return '<div class="game-dialogue '+(variant==='inline'?'game-dialogue--inline':'game-dialogue--scene')+'">'+avatar+
    '<section class="game-dialogue__panel" aria-label="Диалог">'+
    '<div class="game-dialogue__speaker"><span class="game-dialogue__name">'+escapeHTML(speaker)+'</span>'+
    (role?'<span class="game-dialogue__role">'+escapeHTML(role)+'</span>':'')+'</div>'+
-   '<div class="game-dialogue__text" aria-live="polite"><p>'+escapeHTML(segments[page]).replace(/\n/g,'<br>')+'</p></div>'+
+   '<div class="game-dialogue__text'+tone+'" aria-live="polite"><p>'+escapeHTML(visible).replace(/\n/g,'<br>')+'</p></div>'+
    '<div class="game-dialogue__footer">'+(segments.length>1?'<span class="dialogue-counter">'+(page+1)+' / '+segments.length+'</span>':'')+
    '<div class="game-dialogue__actions">'+controls+'</div></div></section></div>';
 }
@@ -104,13 +119,14 @@ function fit(){
  const maxPanelHeight=Math.min(resolvedMax,parentHeight,actualPanelHeight);
  const room=Math.max(0,maxPanelHeight-panelVertical-headerHeight-footerHeight-3);
  function fits(value){
-   measure.innerHTML=escapeHTML(value).replace(/\n/g,'<br>');
+   measure.innerHTML=escapeHTML(visibleText(value)).replace(/\n/g,'<br>');
    return measure.getBoundingClientRect().height<=room+0.5;
  }
  let next=[];
- if(fits(raw))next=[raw];
- else{
-   const units=semanticUnits(raw);let buffer='';
+ for(const block of semanticBlocks(raw)){
+   // A question/answer boundary is mandatory even when all three fit.
+   if(fits(block)){next.push(block);continue}
+   const units=semanticUnits(block);let buffer='';
    for(const unit of units){
      if(fits(buffer+unit)){buffer+=unit;continue}
      if(buffer){next.push(buffer);buffer=''}
@@ -121,7 +137,7 @@ function fit(){
        buffer+=word;
      }
    }
-   if(buffer||!next.length)next.push(buffer);
+   if(buffer)next.push(buffer);
  }
  measure.remove();
  paragraph.innerHTML=oldHTML;
