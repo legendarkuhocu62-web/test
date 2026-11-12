@@ -29,7 +29,7 @@ const key='ceh404.rebuilt.qa50.20261108';
   await page.locator('[data-act="catalogClose"]').click();
   assert.equal(await page.locator('dialog.ic-detail').count(),0,'full card closes');
   await page.locator('[data-act="catalogPage"][data-id="next"]').click();
-  assert.match(await page.locator('.ic-pager__counter').innerText(),/2 \\/ [34]/);
+  assert.match(await page.locator('.ic-pager__counter').innerText(),/2 \/ [34]/);
   assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=width+3,'catalogue horizontal overflow after paging');
   await page.evaluate(k=>localStorage.setItem(k,JSON.stringify({
    scene:'S04',s04Mode:'edu',selected:['C'],initialSelected:['C'],
