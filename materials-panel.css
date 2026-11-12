@@ -48,3 +48,7 @@ body:has(#app .ceh-materials-trigger) .masthead .stage{
     letter-spacing:0;
   }
 }
+
+/* Align the 44px launcher to the actual header, not the screen/top of a page.
+   Its position is set by the attach() routine from the header's live bounds. */
+.ceh-materials-trigger{top:var(--ceh-header-icon-top,10px)}
