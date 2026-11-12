@@ -143,7 +143,11 @@
       // close control in the top-right corner. Do not cover that control.
       // Materials remain available as soon as the report is closed.
       if(!eligible(s)||(s.scene==='S02'&&s.s02Step==='report'))return;
-      const trigger=el('button','ceh-materials-trigger','Материалы предприятия');
+      const trigger=el('button','ceh-materials-trigger');
+      // Only the small icon stays visible; the full label remains accessible.
+      trigger.setAttribute('aria-label','Материалы предприятия');
+      trigger.setAttribute('title','Материалы предприятия');
+      trigger.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 3.75h9l3 3V20.25H6a1 1 0 0 1-1-1V4.75a1 1 0 0 1 1-1Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M15 3.75V7h3M8 11h7M8 14h7M8 17h5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>';
       trigger.type='button';
       trigger.setAttribute('aria-haspopup','dialog');
       trigger.addEventListener('click',()=>{
