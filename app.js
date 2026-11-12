@@ -102,7 +102,7 @@ function syncStartHitbox(){
  hit.style.height='100%';
 }
 
-function render(){document.body.classList.toggle('s00-mobile-cover-active',s.scene==='S00'&&s.s00===0);document.body.classList.toggle('s00-desktop-cover-active',s.scene==='S00'&&s.s00===0);document.body.classList.toggle('s00-mobile-badge-active',s.scene==='S00'&&s.s00===4);document.body.classList.toggle('dialogue-mode-active',s.scene==='S01'||(s.scene==='S03'&&!!s.s03Person)||(s.scene==='S02'&&['intro','feedback'].includes(s.s02Step)));document.body.classList.toggle('s02-view-active',s.scene==='S02');document.body.classList.toggle('s03-mobile-choice-active',s.scene==='S03'&&!s.s03Person);let html='';if(s.scene==='S00'){
+function render(){document.body.classList.toggle('s00-mobile-cover-active',s.scene==='S00'&&s.s00===0);document.body.classList.toggle('s00-desktop-cover-active',s.scene==='S00'&&s.s00===0);document.body.classList.toggle('s00-mobile-badge-active',s.scene==='S00'&&s.s00===4);document.body.classList.toggle('dialogue-mode-active',s.scene==='S01'||(s.scene==='S03'&&!!s.s03Person&&s.s03QuestionMode!=='choice')||(s.scene==='S02'&&['intro','feedback'].includes(s.s02Step)));document.body.classList.toggle('s02-view-active',s.scene==='S02');document.body.classList.toggle('s03-mobile-choice-active',s.scene==='S03'&&!s.s03Person);let html='';if(s.scene==='S00'){
  if(s.s00===0)html=frame(A.title,`<div class="desktop-start-visual"><img src="${A.title}" alt="ЦЕХ 404 — производственная игра-симулятор. Начало игры." fetchpriority="high"><button type="button" class="desktop-start-hitbox" data-act="s00next" aria-label="Начать игру"></button></div><div class="mobile-start-visual"><img src="assets/backgrounds/CH1-IMG-021_S00_start_mobile_composite.jpeg" alt="ЦЕХ 404 — производственная игра-симулятор, мобильная стартовая заставка" fetchpriority="high"><button type="button" class="mobile-start-hitbox" data-act="s00next" aria-label="Начать игру"></button></div>`,'cover mobile-cover-s00');
  if(s.s00===1)html=frame(A.gate,chapterDialogue('S00:gate:1','ЦЕХ 404','Первый день на предприятии','Сегодня твой первый день на машиностроительном предприятии «ЦЕХ 404». За проходной уже началась рабочая смена.', '',btn('Далее','s00next','','primary'),'inline'),'gate-scene');
  if(s.s00===2)html=frame(A.gate,chapterDialogue('S00:gate:2','ЦЕХ 404','Первый рабочий день','Тебе предстоит познакомиться с людьми, оборудованием и процессами, от которых зависит работа всего предприятия.', '',btn('Подойти к проходной','s00next','','primary'),'inline'),'gate-scene');
@@ -126,9 +126,17 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
  }else if(s.scene==='S03'){
  if(s.s03Person){
    const p=d.people.find(x=>x.id===s.s03Person);
-   const message=p.speech+'\n\nВопрос: '+p.question+'\nОтвет: '+p.reply;
-   const content=chapterDialogue('S03:person:'+p.id,p.name,p.role,message,A[p.id],btn('Вернуться к специалистам','closePerson','','primary'));
-   html=frame(A.meeting,content,'dialogue-stage dialogue-stage--meeting');
+   // Same mechanic as S01: finish listening, choose a question, then hear the answer.
+   // The approved text and the shared character placement are unchanged.
+   let content='';
+   if(s.s03QuestionMode==='answer'){
+     content=chapterDialogue('S03:answer:'+p.id,p.name,p.role,p.reply,A[p.id],btn('Вернуться к вопросам','s03BackToQuestion','','primary'));
+   }else if(s.s03QuestionMode==='choice'){
+     content='<div class="glass s01-questions s03-questions"><h2>О чём ты хочешь спросить?</h2><div class="choices">'+btn(p.question,'s03Ask',p.id,'primary')+'</div>'+btn('Вернуться к специалистам','closePerson','','')+'</div>';
+   }else{
+     content=chapterDialogue('S03:speech:'+p.id,p.name,p.role,p.speech,A[p.id],btn('Задать вопрос','s03Question','','primary'));
+   }
+   html=frame(A.meeting,content,s.s03QuestionMode==='choice'?'s03-question-choice-scene':'dialogue-stage dialogue-stage--meeting');
  }else{
    const buttons=d.people.map(p=>`<button type="button" class="btn person-choice ${s.asked03.includes(p.id)?'seen':''}" data-act="person" data-id="${e(p.id)}"><span class="person-choice__name">${s.asked03.includes(p.id)?'✓ ':''}${e(p.name)}</span><span class="person-choice__role">${e(p.role)}</span></button>`).join('');
    const content='<div class="s03-chooser"><div class="s03-chooser__intro"><h1>Три профессиональные позиции</h1><p>Перед подготовкой рекомендаций выслушай специалистов.</p></div><div class="choices">'+buttons+'</div><div class="s03-chooser__next">'+btn('Перейти к инвестициям','next','S04','primary')+'</div></div>';
@@ -187,8 +195,11 @@ function act(action,id){if(['dlgMore','dlgBack','dlgStart'].includes(action)){co
  else if(action==='replyClose')s.reply=null;
  else if(action==='hypothesis'&&s.scene==='S02'&&s.s02Step==='conclusion'&&!s.hypothesisConfirmed&&d.hypotheses.some(x=>x.id===id))s.hypothesis=id;
  else if(action==='confirmHyp'&&s.scene==='S02'&&s.s02Step==='conclusion'&&s.hypothesis&&!s.hypothesisConfirmed){s.hypothesisConfirmed=true;s.s02Step='feedback'}
- else if(action==='person'){s.s03Person=id;if(!s.asked03.includes(id))s.asked03.push(id)}
- else if(action==='closePerson')s.s03Person=null;
+ else if(action==='person'){s.s03Person=id;s.s03QuestionMode='speech'}
+ else if(action==='s03Question'&&s.scene==='S03'&&s.s03Person){s.s03QuestionMode='choice'}
+ else if(action==='s03Ask'&&s.scene==='S03'&&s.s03Person===id){s.s03QuestionMode='answer';if(!s.asked03.includes(id))s.asked03.push(id)}
+ else if(action==='s03BackToQuestion'&&s.scene==='S03'&&s.s03Person){s.s03QuestionMode='choice'}
+ else if(action==='closePerson'){s.s03Person=null;s.s03QuestionMode='speech'}
  else if(action==='priority')s.priority=id;
  else if(action==='catalog'){s.s04Mode='catalog';s.showReview=false;s.finished=false;s.budgetMessage=''}
  else if(action==='toggle'){if(s.selected.includes(id)){s.selected=s.selected.filter(x=>x!==id);s.budgetMessage=''}else{const item=d.initiatives.find(x=>x.id===id);const remaining=100-L.spent(s);if(item&&L.spent(s)+item.cost>100){s.budgetMessage='';showBudgetLimit(item,remaining);return}else if(item){s.selected=[...s.selected,id];s.budgetMessage=''}}s.showReview=false}
