@@ -1,0 +1,33 @@
+name: Build approved local WebP assets once
+on:
+  push:
+    branches:
+      - perf/optimized-local-assets-20261112
+    paths:
+      - .github/workflows/optimize-approved-images-once.yml
+permissions:
+  contents: write
+jobs:
+  optimize:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Install image conversion
+        run: |
+          python3 -m venv /tmp/imgopt
+          /tmp/imgopt/bin/python -m pip install --quiet Pillow==11.3.0
+      - name: Produce independent optimized images and size report
+        run: /tmp/imgopt/bin/python scripts/build-webp-assets.py
+      - name: Commit optimized derivatives only to isolated branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/optimized
+          if ! git diff --cached --quiet; then
+            git commit -m "perf(assets): add local optimized images and savings report [skip ci]"
+            git push origin HEAD:perf/optimized-local-assets-20261112
+          fi
