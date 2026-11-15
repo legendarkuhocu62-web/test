@@ -69,6 +69,9 @@ await page.evaluate(()=>window.__CEH_TEST__.act('next','S04'));
 assert.equal(await page.evaluate(()=>window.__CEH_TEST__.getState().scene),'S03','S04 must remain blocked until Irina conclusion');
 await page.locator('[data-act="s03Conclusion"]').click();
 await page.locator('.game-dialogue--scene .game-dialogue__text').waitFor();
+// The page-fitting pass runs on animation frame; wait until the actual
+// page count is established before deciding whether "Next" is available.
+await page.waitForTimeout(100);
 let conclusionPages=0;
 while(await page.locator('[data-act="dlgMore"]').count()){await page.locator('[data-act="dlgMore"]').click();await page.waitForTimeout(80);assert.ok(++conclusionPages<20,'conclusion pagination loop');}
 await page.locator('[data-act="next"][data-id="S04"]').click();
