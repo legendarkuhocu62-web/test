@@ -113,10 +113,11 @@ function fit(){
  const resolvedMax=rawMax.endsWith('%')
    ?(Number.isFinite(parentHeight)?parentHeight*(numericMax/100):Infinity)
    :(Number.isFinite(numericMax)?numericMax:Infinity);
- // The panel has a fixed visual height in all portrait scenes.
- // Use its *actual* height (not an unrelated max-height) when splitting text.
- const actualPanelHeight=panel.getBoundingClientRect().height;
- const maxPanelHeight=Math.min(resolvedMax,parentHeight,actualPanelHeight);
+ // The panel shrinks to the currently rendered fragment. Measuring that
+ // shrunken height creates a feedback loop: each fit() call produces smaller
+ // pages until only a single word remains (e.g. page 17/19 on mobile).
+ // Calculate capacity from the CSS maximum instead of current content height.
+ const maxPanelHeight=Math.min(resolvedMax,parentHeight);
  const room=Math.max(0,maxPanelHeight-panelVertical-headerHeight-footerHeight-3);
  function fits(value){
    measure.innerHTML=escapeHTML(visibleText(value)).replace(/\n/g,'<br>');
