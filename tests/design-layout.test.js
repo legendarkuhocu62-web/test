@@ -67,7 +67,8 @@ const key='ceh404.rebuilt.qa50.20261108';
   await low.waitFor();
   assert.equal(await low.getAttribute('placeholder'),'Введите значение');
   assert.equal(await high.getAttribute('placeholder'),'Введите значение');
-  assert.equal(await page.locator('.edu-doc').count(),0,'task and scans should be on separate screens');
+  assert.equal(await page.locator('.edu-doc:visible').count(),0,'scans must stay hidden until requested');
+  assert.equal(await page.locator('[data-act="eduToggleDocuments"]').count(),1,'document button available on every question');
   assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=width+3,'EDU-01 task horizontal overflow '+width);
 
   // A wrong value must open a branded game dialog instead of Android's native
@@ -100,7 +101,7 @@ const key='ceh404.rebuilt.qa50.20261108';
    'EDU-01 calculation failed');
   assert.equal(await page.locator('.edu-reference--result').count(),1,'success must show a separate result screen');
   await page.locator('[data-act="eduContinue"]').click();
-  await page.locator('[data-act="eduGoTask"]').click();
+  assert.equal(await page.locator('[data-act="eduGoTask"]').count(),0,'no bounce to EDU-01 documents page');
   assert.equal(await page.locator('#edu-excess').getAttribute('placeholder'),'Введите ответ',
    'EDU-01 step 2 must not reveal numerical answer');
   assert.deepEqual(errors,[],'browser errors at '+width+'x'+height);

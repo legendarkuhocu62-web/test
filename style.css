@@ -1506,3 +1506,9 @@ body.dialogue-mode-active #app .game-dialogue__text--question p{
 .document--catalog .investment--visual details{margin-top:auto}
 .document--catalog .investment--visual>.btn{width:100%;text-align:center;justify-content:center;margin:0!important;min-height:44px}
 @media(max-width:590px){.document--catalog .investment--visual{padding:12px}.document--catalog .investment__media{aspect-ratio:16/8}.document--catalog .investment--visual h3{font-size:18px}}
+
+/* 15.11.2026 · EDU-01: документы раскрываются на текущем вопросе, ответы не сбрасываются. */
+.document--edu .edu-docs-on-demand[hidden]{display:none!important}
+.document--edu .edu-docs-on-demand{width:100%;margin:6px auto 0;padding:12px;border:1px solid #7192ad;border-radius:14px;background:rgba(11,28,47,.82)}
+.document--edu .edu-docs-on-demand .edu-doc--scans{margin:0}
+.document--edu .edu-reference .edu-doc-toggle{align-self:center;max-width:100%}
