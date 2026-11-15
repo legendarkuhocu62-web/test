@@ -22,6 +22,27 @@ const key='ceh404.rebuilt.qa50.20261108';
   const col=await page.locator('.ic-grid').evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').length);
   assert.equal(col,width<=720?1:width<=1000?2:3,'catalog grid columns');
   assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=width+3,'catalogue horizontal overflow');
+  // Regression: S04 must not have a second parent .invest-grid.
+  // The nested grid previously squeezed all cards into a thin left strip and
+  // stretched the orange portfolio CTA to the grid row's full height.
+  assert.equal(await page.locator('.document--catalog > .invest-grid').count(),0,
+    'unexpected outer invest-grid around catalogue and portfolio CTA');
+  const geometry=await page.evaluate(()=>{
+    const rect=s=>{const r=document.querySelector(s).getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height,bottom:r.bottom}};
+    return {panel:rect('.document--catalog'),catalog:rect('.ic-catalog'),
+      grid:rect('.ic-grid'),card:rect('.ic-grid .ic-card'),
+      action:rect('.portfolio-actions .btn')};
+  });
+  assert.ok(geometry.catalog.width>=geometry.panel.width*0.70,
+    'catalogue collapsed into narrow column: '+JSON.stringify(geometry));
+  assert.ok(geometry.grid.width>=geometry.catalog.width*0.90,
+    'card grid collapsed: '+JSON.stringify(geometry));
+  assert.ok(geometry.card.width>=Math.min(170,width*0.40),
+    'investment card too narrow: '+JSON.stringify(geometry));
+  assert.ok(geometry.action.height<110 && geometry.action.width<600,
+    'portfolio CTA stretched vertically: '+JSON.stringify(geometry));
+  assert.ok(geometry.action.y>=geometry.grid.y,
+    'portfolio CTA must follow investment cards: '+JSON.stringify(geometry));
   assert.equal(await page.locator('.portfolio-actions .btn').count(),1,'portfolio confirmation remains');
   await page.locator('[data-act="catalogOpen"]').first().click();
   assert.equal(await page.locator('dialog.ic-detail:visible').count(),1,'full card opens');
