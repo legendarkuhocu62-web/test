@@ -131,7 +131,9 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
  html=frame(A.office,text,'dialogue-stage dialogue-stage--office');
  }else if(s.scene==='S02'){html=window.CEH_S02.render(s,d,A,frame,btn,chapterDialogue,e);
  }else if(s.scene==='S03'){
- if(s.s03Person){
+ if(s.s03ConclusionSeen){
+   html=frame(A.meeting,chapterDialogue('S03:conclusion','Ирина Соколова','Главный технолог','Теперь у тебя есть несколько точек зрения. Изучи возможные направления инвестиций и подумай, какие из них действительно помогут предприятию.',A.irina,btn('Перейти к выбору инвестиционного приоритета','next','S04','primary')),'dialogue-stage dialogue-stage--meeting');
+ }else if(s.s03Person){
    const p=d.people.find(x=>x.id===s.s03Person);
    // One pre-written question per specialist: no redundant chooser screen.
    // The question itself is displayed as the player's action, then the same answer
@@ -140,12 +142,15 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
    const content=chapterDialogue(
      isAnswer?'S03:answer:'+p.id:'S03:speech:'+p.id,
      p.name,p.role,isAnswer?p.reply:p.speech,A[p.id],
-     isAnswer?btn('Вернуться к специалистам','closePerson','','primary'):btn(p.question,'s03Ask',p.id,'primary')
+     isAnswer?btn('Вернуться к специалистам','closePerson',p.id,'primary'):
+       (btn(p.question,'s03Ask',p.id,'primary')+btn('Вернуться к специалистам','closePerson',p.id,''))
    );
    html=frame(A.meeting,content,'dialogue-stage dialogue-stage--meeting');
  }else{
-   const buttons=d.people.map(p=>`<button type="button" class="btn person-choice ${s.asked03.includes(p.id)?'seen':''}" data-act="person" data-id="${e(p.id)}"><span class="person-choice__name">${s.asked03.includes(p.id)?'✓ ':''}${e(p.name)}</span><span class="person-choice__role">${e(p.role)}</span></button>`).join('');
-   const content='<div class="s03-chooser"><div class="s03-chooser__intro"><h1>Три профессиональные позиции</h1><p>Перед подготовкой рекомендаций выслушай специалистов.</p></div><div class="choices">'+buttons+'</div><div class="s03-chooser__next">'+btn('Перейти к инвестициям','next','S04','primary')+'</div></div>';
+   const buttons=d.people.map(p=>`<button type="button" class="btn person-choice ${s.s03Read.includes(p.id)?'seen':''}" data-act="person" data-id="${e(p.id)}"><span class="person-choice__name">${s.s03Read.includes(p.id)?'✓ ':''}${e(p.name)}</span><span class="person-choice__role">${e(p.role)}</span></button>`).join('');
+   const readCount=s.s03Read.length;
+   const nextAction=readCount===3?btn('Завершить обсуждение','s03Conclusion','','primary'):'<p class="s03-progress">Прослушано '+readCount+' из 3 основных позиций</p>';
+   const content='<div class="s03-chooser"><div class="s03-chooser__intro"><h1>Три профессиональные позиции</h1><p>Перед подготовкой рекомендаций выслушай специалистов.</p></div><div class="choices">'+buttons+'</div><div class="s03-chooser__next">'+nextAction+'</div></div>';
    html=frame(A.group,content,'s03-group-scene');
  }
  }else if(s.scene==='S04'){
@@ -248,15 +253,16 @@ function act(action,id){if(['dlgMore','dlgBack','dlgStart'].includes(action)){co
  else if(action==='s02Conclude'&&s.scene==='S02'&&s.s02ReportSeen&&['intro','report'].includes(s.s02Step))s.s02Step='conclusion';
  else if(action==='s00next')s.s00=Math.min(3,s.s00+1);
  else if(action==='badge'){const name=L.cleanName(document.getElementById('name')?.value);if(!name){alert('Введите имя');return}s.name=name;s.s00=4}
- else if(action==='next'){const next={S00:'S01',S01:'S02',S02:'S03',S03:'S04'};if(next[s.scene]===id){if(s.scene==='S01'&&s.asked.length!==3)return;if(s.scene==='S02'&&(!s.hypothesisConfirmed||s.s02Step!=='feedback'))return;s.scene=id}}
+ else if(action==='next'){const next={S00:'S01',S01:'S02',S02:'S03',S03:'S04'};if(next[s.scene]===id){if(s.scene==='S01'&&s.asked.length!==3)return;if(s.scene==='S02'&&(!s.hypothesisConfirmed||s.s02Step!=='feedback'))return;if(s.scene==='S03'&&(!s.s03ConclusionSeen||s.s03Read.length!==3))return;s.scene=id}}
  else if(action==='introNext')s.s01=Math.min(4,s.s01+1);
  else if(action==='ask'){s.reply=id;if(!s.asked.includes(id))s.asked.push(id)}
  else if(action==='replyClose')s.reply=null;
  else if(action==='hypothesis'&&s.scene==='S02'&&s.s02Step==='conclusion'&&!s.hypothesisConfirmed&&d.hypotheses.some(x=>x.id===id))s.hypothesis=id;
  else if(action==='confirmHyp'&&s.scene==='S02'&&s.s02Step==='conclusion'&&s.hypothesis&&!s.hypothesisConfirmed){s.hypothesisConfirmed=true;s.s02Step='feedback'}
- else if(action==='person'){s.s03Person=id;s.s03QuestionMode='speech'}
- else if(action==='s03Ask'&&s.scene==='S03'&&s.s03Person===id){s.s03QuestionMode='answer';if(!s.asked03.includes(id))s.asked03.push(id)}
- else if(action==='closePerson'){s.s03Person=null;s.s03QuestionMode='speech'}
+ else if(action==='person'&&s.scene==='S03'&&!s.s03ConclusionSeen&&d.people.some(p=>p.id===id)){s.s03Person=id;s.s03QuestionMode='speech'}
+ else if(action==='s03Ask'&&s.scene==='S03'&&s.s03Person===id&&s.s03QuestionMode==='speech'&&d.people.some(p=>p.id===id)){if(!s.s03Read.includes(id))s.s03Read.push(id);s.s03QuestionMode='answer';if(!s.asked03.includes(id))s.asked03.push(id)}
+ else if(action==='closePerson'&&s.scene==='S03'&&s.s03Person){if(s.s03QuestionMode==='speech'&&id===s.s03Person&&!s.s03Read.includes(id))s.s03Read.push(id);s.s03Person=null;s.s03QuestionMode='speech'}
+ else if(action==='s03Conclusion'&&s.scene==='S03'&&!s.s03Person&&s.s03Read.length===3)s.s03ConclusionSeen=true;
  else if(action==='priority')s.priority=id;
  else if(action==='catalog'){window.CEH_INVESTMENT_CATALOG.reset();s.s04Mode='catalog';s.showReview=false;s.finished=false;s.budgetMessage=''}
  else if(action==='catalogOpen'&&s.scene==='S04'&&s.s04Mode==='catalog'){window.CEH_INVESTMENT_CATALOG.open(id)}
