@@ -9,7 +9,9 @@ await page.goto('http://127.0.0.1:8765/');
 await page.evaluate(k=>localStorage.setItem(k,JSON.stringify({scene:'S03',name:'Тест',s03Person:null,asked03:[]})),key);
 await page.reload();
 await page.locator('.s03-group-scene').waitFor();
-const buttons=page.locator('.s03-group-scene button[data-act="person"]');
+await page.evaluate(()=>window.__CEH_TEST__.act('next','S04'));
+assert.equal(await page.evaluate(()=>window.__CEH_TEST__.getState().scene),'S03','direct S03→S04 must be blocked at 0/3');
+const buttons=page.locator('.s03-group-scene button[data-act="person"]);
 assert.equal(await buttons.count(),3);
 const view=await page.evaluate(()=>{
 const scene=document.querySelector('.s03-group-scene');
@@ -50,8 +52,18 @@ while(await page.locator('[data-act="dlgMore"]').count()){
 assert.ok(await page.locator('[data-act="closePerson"]').count(),'S03 answer final action is missing');
 await page.locator('[data-act="closePerson"]').dispatchEvent('click');
 await page.locator('.s03-chooser').waitFor();
+await page.evaluate(()=>window.__CEH_TEST__.act('next','S04'));
+assert.equal(await page.evaluate(()=>window.__CEH_TEST__.getState().scene),'S03','direct S03→S04 must remain blocked before all main speeches');
 }
-assert.equal(await page.evaluate(()=>window.__CEH_TEST__.getState().asked03.length),3);
+const completed=await page.evaluate(()=>window.__CEH_TEST__.getState());
+assert.equal(completed.asked03.length,3);
+assert.equal(completed.s03Read.length,3);
+await page.evaluate(()=>window.__CEH_TEST__.act('next','S04'));
+assert.equal(await page.evaluate(()=>window.__CEH_TEST__.getState().scene),'S03','S04 must remain blocked until Irina conclusion');
+await page.locator('[data-act="s03Conclusion"]').click();
+await page.locator('.game-dialogue--scene .game-dialogue__text').waitFor();
+let conclusionPages=0;
+while(await page.locator('[data-act="dlgMore"]').count()){await page.locator('[data-act="dlgMore"]').click();await page.waitForTimeout(80);assert.ok(++conclusionPages<20,'conclusion pagination loop');}
 await page.locator('[data-act="next"][data-id="S04"]').click();
 assert.equal(await page.evaluate(()=>window.__CEH_TEST__.getState().scene),'S04');
 console.log('PASS S03 '+width+'x'+height);
