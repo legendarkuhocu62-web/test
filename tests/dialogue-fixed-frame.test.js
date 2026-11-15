@@ -10,7 +10,8 @@ const assert=require('node:assert/strict');
   {scene:'S01',s01:0}, {scene:'S01',s01:2},
   {scene:'S02',s02Step:'intro'},
   {scene:'S02',s02Step:'feedback',hypothesis:'insufficient',hypothesisConfirmed:true},
-  {scene:'S03',s03Person:'andrey'}, {scene:'S03',s03Person:'marina'}
+  {scene:'S03',s03Person:'andrey'}, {scene:'S03',s03Person:'marina'},
+  {scene:'S03',s03Person:null,s03ConclusionSeen:true,s03Read:['andrey','irina','marina']}
  ];
  for(const [width,height] of [[375,667],[390,600],[390,844],[430,932],[1024,768],[1366,768]]){
   const page=await browser.newPage({viewport:{width,height},deviceScaleFactor:1});
@@ -24,6 +25,14 @@ const assert=require('node:assert/strict');
    },[key,state]);
    await page.reload();
    await page.locator('.game-dialogue--scene .game-dialogue__panel').waitFor();
+   if(state.s03ConclusionSeen){
+    assert.equal(await page.locator('body.dialogue-mode-active').count(),1,
+      'S03 conclusion must use the shared fixed dialogue layout');
+    assert.equal(await page.locator('body.s03-mobile-choice-active').count(),0,
+      'S03 conclusion must not use specialist chooser layout');
+    assert.match(await page.locator('.game-dialogue__text').innerText(),/Теперь у тебя есть несколько точек зрения/,
+      'S03 conclusion should keep the approved text');
+   }
    // The real browser must finish text pagination before measurements.
    await page.waitForTimeout(80);
    const check=async()=>{
