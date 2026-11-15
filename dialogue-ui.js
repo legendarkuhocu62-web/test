@@ -130,8 +130,8 @@ function fit(){
    const units=semanticUnits(block);let buffer='';
    for(const unit of units){
      if(fits(buffer+unit)){buffer+=unit;continue}
-     if(buffer){next.push(buffer);buffer=''}
-     if(fits(unit)){buffer=unit;continue}
+     // Do not waste the remaining panel space by moving a whole sentence
+     // to the next page when part of it can still be read here.
      const words=unit.match(/\S+\s*|\s+/g)||[unit];
      for(const word of words){
        if(buffer&&!fits(buffer+word)){next.push(buffer);buffer=''}
@@ -139,6 +139,29 @@ function fit(){
      }
    }
    if(buffer)next.push(buffer);
+ }
+ // Avoid an orphan one-line final page where the preceding page can share
+ // part of its text; preserve every original character and the fixed frame.
+ const lineHeight=parseFloat(getComputedStyle(paragraph).lineHeight)||22;
+ const measuredHeight=value=>{
+   measure.innerHTML=escapeHTML(visibleText(value)).replace(/\n/g,'<br>');
+   return measure.getBoundingClientRect().height;
+ };
+ for(let i=next.length-1;i>0;i--){
+   let tail=next[i],previous=next[i-1];
+   if(/^\n+(?:Вопрос|Ответ):\s/.test(tail))continue;
+   if(measuredHeight(tail)>lineHeight*1.55||measuredHeight(previous)<lineHeight*2.65)continue;
+   const words=previous.match(/\S+\s*|\s+/g)||[];
+   let moved='';
+   while(words.length>1&&measuredHeight(moved+tail)<lineHeight*2.55){
+     const word=words.pop();
+     const candidate=word+moved;
+     if(!fits(candidate+tail)||measuredHeight(words.join(''))<lineHeight*1.7){
+       words.push(word);break;
+     }
+     moved=candidate;
+   }
+   if(moved){next[i-1]=words.join('');next[i]=moved+tail;}
  }
  measure.remove();
  paragraph.innerHTML=oldHTML;
