@@ -1261,7 +1261,8 @@ body.dialogue-mode-active #app .dialogue-stage .game-dialogue--scene .game-dialo
     align-self:end;
     width:min(94%,430px)!important;
     max-width:94%!important;
-    height:min(100%,47dvh)!important;
+    /* One common mobile portrait size for every character using the shared dialogue frame. */
+    height:min(100%,37dvh)!important;
     max-height:100%!important;
     margin:0 auto -8px;
     transform:none!important;
