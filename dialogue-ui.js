@@ -98,27 +98,11 @@ function fit(){
  measure.style.cssText='position:absolute;visibility:hidden;pointer-events:none;height:auto;min-height:0;max-height:none;overflow:visible;margin:0;';
  measure.style.width=paragraph.getBoundingClientRect().width+'px';
  textBox.appendChild(measure);
- const panelStyle=getComputedStyle(panel);
- const panelVertical=(parseFloat(panelStyle.paddingTop)||0)+(parseFloat(panelStyle.paddingBottom)||0)
-   +(parseFloat(panelStyle.borderTopWidth)||0)+(parseFloat(panelStyle.borderBottomWidth)||0);
- const header=panel.querySelector('.game-dialogue__speaker');
- const footer=panel.querySelector('.game-dialogue__footer');
- const headerStyle=header?getComputedStyle(header):null;
- const footerStyle=footer?getComputedStyle(footer):null;
- const headerHeight=header?(header.getBoundingClientRect().height+(parseFloat(headerStyle.marginBottom)||0)):0;
- const footerHeight=footer?(footer.getBoundingClientRect().height+(parseFloat(footerStyle.marginTop)||0)):0;
- const parentHeight=panel.parentElement?.getBoundingClientRect().height||Infinity;
- const rawMax=panelStyle.maxHeight.trim();
- const numericMax=parseFloat(rawMax);
- const resolvedMax=rawMax.endsWith('%')
-   ?(Number.isFinite(parentHeight)?parentHeight*(numericMax/100):Infinity)
-   :(Number.isFinite(numericMax)?numericMax:Infinity);
- // The panel shrinks to the currently rendered fragment. Measuring that
- // shrunken height creates a feedback loop: each fit() call produces smaller
- // pages until only a single word remains (e.g. page 17/19 on mobile).
- // Calculate capacity from the CSS maximum instead of current content height.
- const maxPanelHeight=Math.min(resolvedMax,parentHeight);
- const room=Math.max(0,maxPanelHeight-panelVertical-headerHeight-footerHeight-3);
+ // Use the REAL flexbox text area: header badges have a negative top margin,
+ // and subtracting header height from panel CSS max-height counts it twice.
+ // The old estimate left ~30-45px unused on short Android screens.
+ // Textbox height is stable because the panel has a fixed height.
+ const room=Math.max(0,textBox.getBoundingClientRect().height-2);
  function fits(value){
    measure.innerHTML=escapeHTML(visibleText(value)).replace(/\n/g,'<br>');
    return measure.getBoundingClientRect().height<=room+0.5;
