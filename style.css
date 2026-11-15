@@ -274,7 +274,9 @@ body.s02-view-active .s02-report-stage .scene-content,body.s02-view-active .s02-
     max-height:none;
     /* Desktop S00 fills the viewport like the entrance scene.
        Crop edges proportionally instead of letterboxing the 16:9 artwork. */
-    object-fit:cover;
+    /* S00 approved composite contains the logo and start button.
+       Keep ALL of it visible at normal browser height, not only F11. */
+    object-fit:fill;
     object-position:center center;
     position:relative;
     z-index:1;
