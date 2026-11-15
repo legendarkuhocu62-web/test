@@ -272,7 +272,9 @@ body.s02-view-active .s02-report-stage .scene-content,body.s02-view-active .s02-
     height:100%;
     max-width:none;
     max-height:none;
-    object-fit:contain;
+    /* Desktop S00 fills the viewport like the entrance scene.
+       Crop edges proportionally instead of letterboxing the 16:9 artwork. */
+    object-fit:cover;
     object-position:center center;
     position:relative;
     z-index:1;
