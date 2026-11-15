@@ -39,24 +39,31 @@ while(await page.locator('[data-act="dlgMore"]').count()){
   await page.waitForTimeout(80);
   assert.ok(++fragments<40,'S03 dialogue pagination loop');
 }
-assert.ok(await page.locator('[data-act="s03Ask"]').count(),'S03 direct question button is missing');
+assert.ok(await page.locator('[data-act="s03Ask"]').count(),'S03 direct optional question button is missing');
 assert.equal(await page.locator('.s03-questions').count(),0,'S03 should not open a one-question menu');
-await page.locator('[data-act="s03Ask"]').dispatchEvent('click');
-await page.waitForTimeout(80);
-let answerPages=0;
-while(await page.locator('[data-act="dlgMore"]').count()){
-  await page.locator('[data-act="dlgMore"]').dispatchEvent('click');
+assert.ok(await page.locator('[data-act="closePerson"]').count(),'skip optional question button missing');
+if(i===0){
+  // The main speech is compulsory; the follow-up question is optional.
+  await page.locator('[data-act="closePerson"]').dispatchEvent('click');
+}else{
+  await page.locator('[data-act="s03Ask"]').dispatchEvent('click');
   await page.waitForTimeout(80);
-  assert.ok(++answerPages<40,'S03 answer pagination loop');
+  let answerPages=0;
+  while(await page.locator('[data-act="dlgMore"]').count()){
+    await page.locator('[data-act="dlgMore"]').dispatchEvent('click');
+    await page.waitForTimeout(80);
+    assert.ok(++answerPages<40,'S03 answer pagination loop');
+  }
+  assert.ok(await page.locator('[data-act="closePerson"]').count(),'S03 answer final action is missing');
+  await page.locator('[data-act="closePerson"]').dispatchEvent('click');
 }
-assert.ok(await page.locator('[data-act="closePerson"]').count(),'S03 answer final action is missing');
-await page.locator('[data-act="closePerson"]').dispatchEvent('click');
 await page.locator('.s03-chooser').waitFor();
+assert.equal(await page.locator('[data-act="s03Conclusion"]').count(),i===2?1:0,'investment progression must appear only after 3 checked speeches');
 await page.evaluate(()=>window.__CEH_TEST__.act('next','S04'));
 assert.equal(await page.evaluate(()=>window.__CEH_TEST__.getState().scene),'S03','direct S03→S04 must remain blocked before all main speeches');
 }
 const completed=await page.evaluate(()=>window.__CEH_TEST__.getState());
-assert.equal(completed.asked03.length,3);
+assert.equal(completed.asked03.length,2,'one optional follow-up should be skipped');
 assert.equal(completed.s03Read.length,3);
 await page.evaluate(()=>window.__CEH_TEST__.act('next','S04'));
 assert.equal(await page.evaluate(()=>window.__CEH_TEST__.getState().scene),'S03','S04 must remain blocked until Irina conclusion');
