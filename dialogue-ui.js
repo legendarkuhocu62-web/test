@@ -147,7 +147,17 @@ function fit(){
  for(let i=0;i<next.length;i++){if(cursor<=absoluteOffset)nextPage=i;cursor+=next[i].length}
  nextPage=Math.min(nextPage,next.length-1);
  if(next.length!==segments.length||next.some((x,i)=>x!==segments[i])||page!==nextPage){
-   segments=next;page=nextPage;node.outerHTML=render(lastOptions);
+   const previousPage=page,previousSegment=segments[page];
+   segments=next;page=nextPage;
+   // Do not detach the complete dialogue when the visible page is unchanged.
+   // Replacing the footer during an in-progress click makes the final S03
+   // action unstable in mobile browsers (Playwright: element detached).
+   if(previousPage!==page||previousSegment!==segments[page]){
+     node.outerHTML=render(lastOptions);
+   }else{
+     const counter=node.querySelector('.dialogue-counter');
+     if(counter)counter.textContent=(page+1)+' / '+segments.length;
+   }
  }
 }
 function move(action){
