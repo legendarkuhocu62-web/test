@@ -16,7 +16,7 @@ const assert=require('node:assert/strict');
   const page=await browser.newPage({viewport:{width,height},deviceScaleFactor:1});
   const errors=[];page.on('pageerror',err=>errors.push(err.message));
   await page.goto(base);
-  let baseline=null,checked=0;
+  let baseline=null, portraitHeightBaseline=null,checked=0;
   for(const state of variants){
    await page.evaluate(([key,s])=>{
     const seed=window.CEH_LOGIC.initial();
@@ -44,6 +44,14 @@ const assert=require('node:assert/strict');
     else {
      assert.ok(Math.abs(m.panel.height-baseline.height)<=2,'panel height changes between speakers or pages: '+JSON.stringify({baseline,now:m.panel}));
      assert.ok(Math.abs(m.panel.top-baseline.top)<=2,'panel vertical anchor changes: '+JSON.stringify({baseline,now:m.panel}));
+    }
+    // A shared dialogue portrait should have the same rendered height for
+    // Irina, Andrey and Marina (including the S02 feedback scene).
+    if(width<=720){
+     assert.ok(m.portrait.height<=height*0.37+2,'mobile portrait oversized: '+JSON.stringify(m));
+     if(portraitHeightBaseline===null)portraitHeightBaseline=m.portrait.height;
+     else assert.ok(Math.abs(m.portrait.height-portraitHeightBaseline)<=2,
+       'characters differ in portrait height: '+JSON.stringify({baseline:portraitHeightBaseline,now:m.portrait.height}));
     }
     checked++;
     return m;
