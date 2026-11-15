@@ -11,7 +11,7 @@ await page.reload();
 await page.locator('.s03-group-scene').waitFor();
 await page.evaluate(()=>window.__CEH_TEST__.act('next','S04'));
 assert.equal(await page.evaluate(()=>window.__CEH_TEST__.getState().scene),'S03','direct S03→S04 must be blocked at 0/3');
-const buttons=page.locator('.s03-group-scene button[data-act="person"]);
+const buttons=page.locator('.s03-group-scene button[data-act="person"]');
 assert.equal(await buttons.count(),3);
 const view=await page.evaluate(()=>{
 const scene=document.querySelector('.s03-group-scene');
