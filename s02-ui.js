@@ -1,6 +1,6 @@
 window.CEH_S02={render:function renderS02(s,d,A,frame,btn,chapterDialogue,e){
  const phase=s.s02Step||'intro', who=d.characters.irina;
- const desktopReport='assets/optimized/objects/CH1-S02-production-report-desktop.webp?v=webp-lossless-20261112';
+ const desktopReport='assets/optimized/objects/CH1-IMG-024_S02_production_report_desktop.png?v=ch1-img-024-20261115';
  const mobileReport='assets/optimized/objects/CH1-S02-production-report-mobile.webp?v=webp-lossless-20261112';
  if(phase==='intro'){
    const buttons=btn('Открыть отчёт','s02Open','','primary')+(s.s02ReportSeen?btn('Перейти к выводам','s02Conclude','','primary'):'');
