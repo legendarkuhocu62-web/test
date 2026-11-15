@@ -29,6 +29,6 @@ window.CEH_S02={render:function renderS02(s,d,A,frame,btn,chapterDialogue,e){
    return frame(A.office,html,'s02-scene s02-choice-stage');
  }
  const selected=d.hypotheses.find(x=>x.id===s.hypothesis);
- if(selected)return frame(A.office,chapterDialogue('S02:feedback:'+selected.id,who.name,who.role,selected.reply,A.irina_focused,btn('Продолжить','next','S03','primary')),'dialogue-stage dialogue-stage--office s02-scene s02-feedback');
+ if(selected){const invitation=selected.reply+'\\n\\nУ тебя есть первый вывод. Но прежде чем составлять инвестиционный портфель, давай обсудим ситуацию с коллегами. Перейдём в переговорную — важно выслушать разные точки зрения.';return frame(A.office,chapterDialogue('S02:feedback:'+selected.id,who.name,who.role,invitation,A.irina_focused,btn('Перейти в переговорную','next','S03','primary')),'dialogue-stage dialogue-stage--office s02-scene s02-feedback');}
  return frame(A.office,chapterDialogue('S02:intro',who.name,who.role,d.s02Prompt,A.irina,btn('Открыть отчёт','s02Open','','primary')),'dialogue-stage dialogue-stage--office s02-scene s02-intro');
 }};
