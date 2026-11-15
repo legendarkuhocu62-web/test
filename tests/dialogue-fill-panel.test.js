@@ -28,6 +28,7 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict');
      footerTop:rect(footer).top,paragraphBottom:rect(p).bottom,footerMargin:getComputedStyle(footer).marginTop,
      styleMax:getComputedStyle(panel).maxHeight,
      paragraphWidth:rect(p).width,
+     lineHeight:parseFloat(getComputedStyle(p).lineHeight),
      freePx:Math.round(rect(footer).top-rect(p).bottom)
     };
    });
@@ -40,6 +41,12 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict');
   console.log('DIALOGUE_FILL_METRICS '+width+'x'+height+' '+JSON.stringify(metrics));
   assert.ok(metrics.every(m=>m.read.joined===metrics[0].read.joined),'text lost during paging');
   assert.ok(metrics.every(m=>m.pH<=m.textBoxH+2),'text clipped');
+  assert.ok(metrics.length<=2,'intro 3 must use available frame height: '+width+'x'+height+' pages='+metrics.length);
+  for(let i=0;i<metrics.length-1;i++){
+   const m=metrics[i];
+   assert.ok(m.textBoxH-m.pH<=m.lineHeight+10,
+    'non-final dialogue page wastes more than a line: '+width+'x'+height+' '+JSON.stringify(m));
+  }
   await page.close();
  }
  await browser.close();
