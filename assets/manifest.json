@@ -114,6 +114,33 @@
       "source": "https://drive.google.com/file/d/1wCsQ17ABO-9l1P8f6yx3SSclXW4JvyYR/view",
       "note": "941 × 1672; used only at viewport widths <=430px; HTML labels/buttons remain interactive.",
       "original_path": "assets/backgrounds/CH1-IMG-022_S03_meeting_three_characters_mobile.png"
+    },
+    "andrey_focused": {
+      "id": "CH1-IMG-017",
+      "type": "character",
+      "scene": "S03",
+      "path": "assets/characters/CH1-IMG-017_andrey_focused.png",
+      "status": "approved",
+      "source": "https://drive.google.com/file/d/1n48euI_mqJWn-M8_XgDxi-b9-Nlzl2BD/view",
+      "note": "Утверждённая эмоция; пока не подключена к игровому интерфейсу"
+    },
+    "marina_analytical": {
+      "id": "CH1-IMG-018",
+      "type": "character",
+      "scene": "S03",
+      "path": "assets/characters/CH1-IMG-018_marina_analytical.png",
+      "status": "approved",
+      "source": "https://drive.google.com/file/d/1rZbateyEicBI3ggEH2CxiaSBJUp3XiGK/view",
+      "note": "Утверждённая эмоция; пока не подключена к игровому интерфейсу"
+    },
+    "final_report_visual_candidate": {
+      "id": "CH1-VA-SC08-001",
+      "type": "object",
+      "scene": "S08",
+      "path": "assets/staging/CH1-VA-SC08-001_Финальная_сцена_Итоговый_отчёт.png",
+      "status": "requires_approval",
+      "source": "https://drive.google.com/file/d/15mDT7BD0_gA4Ho8n2P6vEH5xORNbtioX/view",
+      "note": "Визуальный концепт, не используется напрямую в S08; итог должен формироваться динамически из состояния игрока"
     }
   }
 }
