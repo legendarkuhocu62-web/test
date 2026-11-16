@@ -1,6 +1,10 @@
 name: Historical dialogue click count
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/measure-dialogue-clicks.yml'
 permissions:
   contents: read
 jobs:
