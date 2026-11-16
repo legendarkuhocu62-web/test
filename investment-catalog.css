@@ -321,33 +321,51 @@ dialog.ic-detail::backdrop { background:#020811d9; backdrop-filter:blur(3px); }
 }
 
 
-/* 17.11.2026 — catalog previews A–M. Fix the too-small thumbnail:
-   fill the card's vertical area, cropping only the sides as needed.
-   Keep compact photos and approved original full-screen posters unchanged. */
+/* A–M thumbnail framing — individually tunable without altering source images.
+   The original miniatures are 360x240. Photos B/C/D/G have printed banners at
+   the bottom, so those images are shifted upwards with per-item crop settings.
+   Keep full-size investment posters completely untouched. */
 #app .document--catalog .ic-grid .ic-card .ic-card__photo {
   box-sizing:border-box;
+  position:relative;
   flex:0 0 31%;
   width:31%;
   min-width:0;
   min-height:145px;
   height:auto;
-  aspect-ratio:auto;
   align-self:stretch;
   overflow:hidden;
   border:1px solid #f9c62465;
   border-radius:8px;
+  background:#14283b;
 }
 #app .document--catalog .ic-grid .ic-card .ic-card__photo img {
-  display:block;
+  position:absolute;
   width:100%;
   height:100%;
+  inset:0;
+  display:block;
   object-fit:cover;
-  object-position:center 23%;
+  object-position:var(--thumb-x,50%) var(--thumb-y,50%);
 }
+/* Each setting applies to only one investment, A–M. Values can be adjusted
+   without changing the budget, title, selection logic or source artwork. */
+#app .document--catalog .ic-card[data-initiative="A"]{--thumb-x:48%;--thumb-y:46%}
+#app .document--catalog .ic-card[data-initiative="B"]{--thumb-x:25%;--thumb-y:0%}
+#app .document--catalog .ic-card[data-initiative="C"]{--thumb-x:32%;--thumb-y:3%}
+#app .document--catalog .ic-card[data-initiative="D"]{--thumb-x:66%;--thumb-y:0%}
+#app .document--catalog .ic-card[data-initiative="E"]{--thumb-x:46%;--thumb-y:43%}
+#app .document--catalog .ic-card[data-initiative="F"]{--thumb-x:56%;--thumb-y:43%}
+#app .document--catalog .ic-card[data-initiative="G"]{--thumb-x:70%;--thumb-y:0%}
+#app .document--catalog .ic-card[data-initiative="H"]{--thumb-x:48%;--thumb-y:47%}
+#app .document--catalog .ic-card[data-initiative="I"]{--thumb-x:45%;--thumb-y:44%}
+#app .document--catalog .ic-card[data-initiative="J"]{--thumb-x:48%;--thumb-y:42%}
+#app .document--catalog .ic-card[data-initiative="K"]{--thumb-x:52%;--thumb-y:44%}
+#app .document--catalog .ic-card[data-initiative="L"]{--thumb-x:49%;--thumb-y:45%}
+#app .document--catalog .ic-card[data-initiative="M"]{--thumb-x:52%;--thumb-y:41%}
 @media(max-width:720px){
   #app .document--catalog .ic-grid .ic-card .ic-card__photo{min-height:150px}
 }
-/* Smaller desktop/tablet widths also preserve the card/photo proportion. */
 @media(min-width:721px) and (max-width:1000px){
   #app .document--catalog .ic-grid .ic-card .ic-card__photo{
     flex-basis:31%;
