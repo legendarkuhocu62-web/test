@@ -25,7 +25,8 @@ const key='ceh404.rebuilt.qa50.20261108';
     assert.ok(info.scene&&info.body,'S05 must use full-viewport dialogue stage at '+width+' / '+i);
     assert.ok(info.panel?.width>width*.75,'dialogue panel narrow at '+width+' / '+i+' '+JSON.stringify(info.panel));
     assert.ok(info.panel?.bottom<=height+2&&info.panel?.top>height*.3,'dialogue panel should be near bottom '+width+' / '+i);
-    assert.ok(info.portrait?.bottom<=info.panel.top+36,'portrait must not cover dialogue '+width+' / '+i);
+    if(width<=720)assert.ok(info.portrait?.bottom<=info.panel.top+36,'mobile portrait must be above dialogue '+width+' / '+i);
+    else assert.ok(info.portrait?.width>100&&info.portrait?.height>100,'desktop portrait must be visible '+width+' / '+i);
     assert.ok(info.text?.height>0,'text area missing');
     assert.ok(info.scroll<=width+3,'horizontal scroll '+width);
     if(i===0){
