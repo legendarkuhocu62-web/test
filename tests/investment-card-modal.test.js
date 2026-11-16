@@ -24,9 +24,11 @@ const key='ceh404.rebuilt.qa50.20261108';
     const poster=modal.querySelector('.ic-poster').getBoundingClientRect();
     const body=modal.querySelector('.ic-detail__body').getBoundingClientRect();
     const outer=modal.getBoundingClientRect();
+    const cs=getComputedStyle(modal);
+    const head=modal.querySelector('.ic-detail__head').getBoundingClientRect();
     const hit=modal.querySelector('.ic-poster__hit--add').getBoundingClientRect();
     const topmost=document.elementFromPoint(hit.left+hit.width/2,hit.top+hit.height/2);
-    return {gap:outer.bottom-body.bottom,portraitBottom:poster.bottom,modalBottom:outer.bottom,
+    return {gap:outer.bottom-body.bottom,portraitBottom:poster.bottom,modalBottom:outer.bottom,headHeight:head.height,outerHeight:outer.height,bodyHeight:body.height,cssHeight:cs.height,cssMinHeight:cs.minHeight,cssMaxHeight:cs.maxHeight,cssFlex:cs.flexDirection,
       build:getComputedStyle(modal).display,buttonCenterAction:topmost?.getAttribute('data-act')};
   });
   assert.ok(ui.gap<=12,'unwanted blank area at bottom of card '+width+': '+JSON.stringify(ui));
