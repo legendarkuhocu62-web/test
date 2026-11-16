@@ -3,7 +3,7 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict');
 const key='ceh404.rebuilt.qa50.20261108';
 (async()=>{
  const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
- for(const [width,height] of [[390,844],[1366,768]]){
+ for(const [width,height] of [[360,640],[390,844],[768,1024],[1366,768]]){
   const page=await browser.newPage({viewport:{width,height}});
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto('http://127.0.0.1:8765/');
@@ -18,12 +18,29 @@ const key='ceh404.rebuilt.qa50.20261108';
   assert.equal(await dlg.locator('img').getAttribute('src'),'assets/investments/CH1-VA-A-001.png');
   await dlg.locator('img').evaluate(img=>img.decode());
   assert.equal(await dlg.locator('img').evaluate(i=>i.naturalWidth>0),true);
+  assert.equal(await dlg.locator('.ic-detail__actions').count(),0,'no duplicate bottom actions');
+  assert.equal(await dlg.locator('.ic-poster__hit').count(),2,'both printed buttons have native HTML hotspots');
+  const geometry=await dlg.evaluate(modal=>{
+    const rect=el=>{const r=el.getBoundingClientRect();return {x:r.x,y:r.y,right:r.right,bottom:r.bottom,w:r.width,h:r.height}};
+    return {modal:rect(modal),image:rect(modal.querySelector('.ic-poster img')),
+      decline:rect(modal.querySelector('.ic-poster__hit--decline')),
+      add:rect(modal.querySelector('.ic-poster__hit--add')),
+      scrollWidth:document.documentElement.scrollWidth};
+  });
+  assert.ok(geometry.image.w>geometry.modal.w*.94,'poster must fill the frame width '+width);
+  assert.ok(geometry.modal.right<=width+2&&geometry.modal.x>=-2,'modal beyond viewport width '+width);
+  assert.ok(geometry.modal.y>=-2&&geometry.modal.bottom<=height+2,'modal beyond viewport height '+width);
+  assert.ok(geometry.add.x>geometry.decline.right,'Add and Decline touch zones must not overlap');
+  assert.ok(geometry.add.h>=36&&geometry.decline.h>=36,'printed button tap areas must be comfortable');
+  assert.ok(geometry.scrollWidth<=width+3,'no horizontal document overflow');
+
   assert.equal(await dlg.locator('[data-act="catalogAdd"]').count(),1);
-  await dlg.locator('[data-act="catalogAdd"]').click();
+  assert.equal(await dlg.locator('[data-act="catalogDecline"]').count(),1);
+  await dlg.locator('.ic-poster__hit--add').click();
   assert.deepEqual((await page.evaluate(()=>window.__CEH_TEST__.getState())).selected,['A']);
   assert.match(await page.locator('.budget').innerText(),/Выбрано 60 млн у.е./);
   await page.locator('[data-act="catalogOpen"][data-id="A"]').click();
-  await page.locator('[data-act="catalogAdd"]').click();
+  await page.locator('.ic-poster__hit--add').click();
   assert.deepEqual((await page.evaluate(()=>window.__CEH_TEST__.getState())).selected,['A'],'no double add');
   await page.locator('[data-act="catalogOpen"][data-id="B"]').click();
   await page.locator('[data-act="catalogAdd"]').click();
@@ -33,10 +50,18 @@ const key='ceh404.rebuilt.qa50.20261108';
   assert.equal(await page.locator('.budget-limit-dialog:visible').count(),1,'budget limit');
   assert.deepEqual((await page.evaluate(()=>window.__CEH_TEST__.getState())).selected,['A','B']);
   await page.locator('.budget-limit-dialog .budget-limit-dialog__button').click();
-  await page.locator('[data-act="catalogDecline"]').click();
+  await page.locator('.ic-poster__hit--decline').click();
   assert.equal(await page.locator('.ic-detail').count(),0);
   await page.reload();
   assert.deepEqual((await page.evaluate(()=>window.__CEH_TEST__.getState())).selected,['A','B'],'persist after reload');
+  await page.locator('[data-act="catalogOpen"][data-id="B"]').click();
+  await page.locator('.ic-poster__hit--decline').click();
+  assert.deepEqual((await page.evaluate(()=>window.__CEH_TEST__.getState())).selected,['A'],'printed Decline must remove selected initiative');
+  await page.locator('[data-act="catalogOpen"][data-id="B"]').click();
+  await page.locator('.ic-poster__hit--add').focus();
+  await page.keyboard.press('Enter');
+  assert.deepEqual((await page.evaluate(()=>window.__CEH_TEST__.getState())).selected,['A','B'],'printed Add accessible by keyboard');
+
   assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=width+3,'no horizontal overflow');
   await page.locator('[data-act="catalogPage"][data-id="next"]').click();
   assert.match(await page.locator('.ic-pager__counter').innerText(),/2 \/ [34]/);

@@ -55,11 +55,13 @@ window.CEH_INVESTMENT_CATALOG = (() => {
         '<img alt="Полное инвестиционное предложение '+esc(entry.id)+': '+esc(entry.title)+
         '. Условия и ограничения приведены на изображении." src="'+poster(entry.id)+
         '" width="1024" height="1536" fetchpriority="high">'+
-        '</div></div>'+
-        '<div class="ic-detail__actions">'+
-        button(selected?'Убрать из портфеля':'Отклонить','catalogDecline',entry.id,'ic-detail__decline')+
-        button(selected?'В портфеле ✓':'Добавить','catalogAdd',entry.id,'ic-detail__add')+
-        '</div></dialog>';
+        '<button type="button" class="ic-poster__hit ic-poster__hit--decline" data-act="catalogDecline" data-id="'+esc(entry.id)+'"'+
+        ' aria-label="'+esc(selected?'Убрать предложение '+entry.id+' из портфеля':'Отклонить предложение '+entry.id)+'"'+
+        ' title="'+esc(selected?'Убрать из портфеля':'Отклонить')+'"></button>'+
+        '<button type="button" class="ic-poster__hit ic-poster__hit--add" data-act="catalogAdd" data-id="'+esc(entry.id)+'"'+
+        ' aria-label="'+esc(selected?'Предложение '+entry.id+' уже в портфеле':'Добавить предложение '+entry.id+' в портфель')+'"'+
+        ' aria-pressed="'+(selected?'true':'false')+'" title="'+esc(selected?'Уже в портфеле':'Добавить')+'"></button>'+
+        '</div></div></dialog>';
     }
     return html;
   }

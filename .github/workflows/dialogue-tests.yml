@@ -53,6 +53,7 @@ jobs:
           node tests/dialogue-browser.test.js
           node tests/scene-preload.test.js
           node tests/budget-overflow-modal.test.js
+          node tests/investment-card-modal.test.js
           node tests/dialogue-fixed-frame.test.js
           node tests/dialogue-fill-panel.test.js
           node tests/dialogue-all-content.test.js
