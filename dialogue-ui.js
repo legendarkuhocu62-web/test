@@ -99,7 +99,16 @@ function fit(){
  measure.className=paragraph.className;
  measure.style.cssText='position:absolute;visibility:hidden;pointer-events:none;height:auto;min-height:0;max-height:none;overflow:visible;margin:0;';
  measure.style.width=paragraph.getBoundingClientRect().width+'px';
- textBox.appendChild(measure);
+ // Keep the measuring paragraph OUTSIDE the flex panel: inserting it into
+ // the text flex child changes its height and falsely reduces available space.
+ measure.style.left='-10000px';
+ measure.style.top='0';
+ measure.style.font=getComputedStyle(paragraph).font;
+ measure.style.lineHeight=getComputedStyle(paragraph).lineHeight;
+ measure.style.letterSpacing=getComputedStyle(paragraph).letterSpacing;
+ measure.style.overflowWrap=getComputedStyle(paragraph).overflowWrap;
+ measure.style.wordBreak=getComputedStyle(paragraph).wordBreak;
+ document.body.appendChild(measure);
  // Use the REAL flexbox text area: header badges have a negative top margin,
  // and subtracting header height from panel CSS max-height counts it twice.
  // The old estimate left ~30-45px unused on short Android screens.

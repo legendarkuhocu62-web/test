@@ -65,6 +65,12 @@ for(let n=0;n<3;n++)cases.push({id:'S04 Gromov '+n,state:{scene:'S04',s04Mode:'g
       await page.waitForTimeout(40);
      }else break;
     }
+    // The user-reported S01 intro line must share its first page with
+    // the following sentence at the common tall-mobile viewport.
+    if(item.id==='S01 intro 1'&&width===390&&height===844){
+     assert.ok(fragments[0].includes('Они отлично знают своё дело'),
+      'intro 1 is underfilled: only the first sentence is shown');
+    }
     assert.ok(fragments.every(Boolean),'empty page '+item.id);
     checked++;
    }
