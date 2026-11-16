@@ -54,6 +54,7 @@ jobs:
           node tests/scene-preload.test.js
           node tests/budget-overflow-modal.test.js
           node tests/restart-confirmation.test.js
+          node tests/badge-name-dialog.test.js
           node tests/investment-card-modal.test.js
           node tests/dialogue-fixed-frame.test.js
           node tests/dialogue-fill-panel.test.js

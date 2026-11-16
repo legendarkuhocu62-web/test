@@ -108,6 +108,35 @@ function showRestartConfirmation(){
   if(!restartDialog.open)restartDialog.showModal();
   restartDialog.querySelector('[data-restart-cancel]').focus({preventScroll:true});
 }
+/* The enterprise pass requires an actual name. Never use native alert():
+   Android browsers otherwise display the site host rather than the game's UI. */
+let badgeNameDialog=null,badgeNameReturnFocus=null;
+function showBadgeNameRequired(){
+  if(!badgeNameDialog){
+    const dlg=document.createElement('dialog');
+    dlg.className='edu-feedback-dialog badge-name-dialog';
+    dlg.setAttribute('aria-labelledby','badge-name-heading');
+    dlg.setAttribute('aria-describedby','badge-name-description');
+    dlg.innerHTML='<div class="edu-feedback-dialog__top">'+
+      '<span class="edu-feedback-dialog__tag">ЦЕХ 404 · ПЕРСОНАЛЬНЫЙ ПРОПУСК</span>'+
+      '<h2 id="badge-name-heading">Введите имя</h2></div>'+
+      '<p id="badge-name-description">Укажите своё имя, чтобы оформить персональный пропуск на предприятие.</p>'+
+      '<div class="edu-feedback-dialog__actions">'+
+      '<button type="button" class="edu-feedback-dialog__button" data-name-dialog-ok>ПОНЯТНО</button></div>';
+    dlg.querySelector('[data-name-dialog-ok]').addEventListener('click',()=>dlg.close());
+    dlg.addEventListener('close',()=>{
+      const field=document.getElementById('name');
+      if(field&&field.isConnected)field.focus({preventScroll:true});
+      else if(badgeNameReturnFocus?.isConnected)badgeNameReturnFocus.focus({preventScroll:true});
+      badgeNameReturnFocus=null;
+    });
+    document.body.appendChild(dlg);
+    badgeNameDialog=dlg;
+  }
+  badgeNameReturnFocus=document.activeElement;
+  if(!badgeNameDialog.open)badgeNameDialog.showModal();
+  badgeNameDialog.querySelector('[data-name-dialog-ok]').focus({preventScroll:true});
+}
 /* In-game EDU feedback. Native browser alert() has browser-owned styling and
    incorrectly appears as an external site confirmation on Android. */
 let eduFeedbackDialog=null,eduFeedbackReturnFocus=null;
@@ -306,7 +335,7 @@ function act(action,id){if(action==='eduToggleDocuments'&&s.scene==='S04'&&s.s04
  else if(action==='s02Close'&&s.scene==='S02'&&s.s02Step==='report')s.s02Step='intro';
  else if(action==='s02Conclude'&&s.scene==='S02'&&s.s02ReportSeen&&['intro','report'].includes(s.s02Step))s.s02Step='conclusion';
  else if(action==='s00next')s.s00=Math.min(3,s.s00+1);
- else if(action==='badge'){const name=L.cleanName(document.getElementById('name')?.value);if(!name){alert('Введите имя');return}s.name=name;s.s00=4}
+ else if(action==='badge'){const name=L.cleanName(document.getElementById('name')?.value);if(!name){showBadgeNameRequired();return}s.name=name;s.s00=4}
  else if(action==='next'){const next={S00:'S01',S01:'S02',S02:'S03',S03:'S04'};if(next[s.scene]===id){if(s.scene==='S01'&&s.asked.length!==3)return;if(s.scene==='S02'&&(!s.hypothesisConfirmed||s.s02Step!=='feedback'))return;if(s.scene==='S03'&&(!s.s03ConclusionSeen||s.s03Read.length!==3))return;s.scene=id}}
  else if(action==='introNext')s.s01=Math.min(4,s.s01+1);
  else if(action==='ask'){s.reply=id;if(!s.asked.includes(id))s.asked.push(id)}
