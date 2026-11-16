@@ -1764,10 +1764,10 @@ body.dialogue-mode-active #app .game-dialogue__text--question p{
   box-shadow:0 6px 18px #07142325;
 }
 #app .document--edu .edu-reference--result > .edu-result-section--success{
-  border:3px solid #65a982;
+  border:2px solid #dba64e;
 }
 #app .document--edu .edu-reference--result > .edu-result-section--conclusion{
-  border:3px solid #e7a344;
+  border:2px solid #dba64e;
   background:#fff7e9;
 }
 #app .document--edu .edu-reference--result > .edu-result-section h2,
