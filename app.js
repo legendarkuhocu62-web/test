@@ -200,11 +200,11 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
     h+='</section>'+'<button type="button" class="btn edu-doc-toggle" data-act="eduToggleDocuments" aria-expanded="false" aria-controls="edu-docs-on-demand">Посмотреть документы</button><div id="edu-docs-on-demand" class="edu-docs-on-demand" hidden>'+docs+'</div>'+'</div>';
   }
  }else if(s.s04Mode==='gromov'){
-  // Keep the approved three lines and progression, but display in the
-  // established character dialogue layer instead of a document card.
+  // All three approved remarks belong to ONE conversation. Let the
+  // fixed dialogue renderer paginate only when the physical panel is full,
+  // rather than forcing a click after each short authored sentence.
   const lines=['Видишь, по этому акту одну деталь изолировали, а партию задержали до дополнительной проверки. Подобные случаи у нас бывают: после окончательного контроля часть деталей возвращается на доработку. Это время, которое производство теряет.','Где именно возникают отклонения, мы пока не установили.','Я по-прежнему считаю, что нам нужно обновлять оборудование. Но прежде чем защищать инвестиционные предложения, стоит учесть и эти потери.'];
-  const nextLabel=s.eduGromovIndex===2?'Перейти к пересмотру портфеля':'Далее';
-  const content=chapterDialogue('S04:gromov:'+s.eduGromovIndex,'Андрей Громов','Начальник производства',lines[s.eduGromovIndex],A.andrey,btn(nextLabel,'gromovNext','','primary'));
+  const content=chapterDialogue('S04:gromov:combined','Андрей Громов','Начальник производства',lines.join('\n\n'),A.andrey,btn('Перейти к пересмотру портфеля','gromovNext','','primary'));
   html=frame(A.meeting,content,'dialogue-stage dialogue-stage--meeting');
  }else if(s.s04Mode==='reviewFinal'){
   const initial=Array.isArray(s.initialSelected)?s.initialSelected:[];
@@ -294,7 +294,7 @@ function act(action,id){if(action==='eduToggleDocuments'&&s.scene==='S04'&&s.s04
  else if(action==='edu2'){const part=app.querySelector('input[name="edu-part"]:checked')?.value;const excess=Number((document.getElementById('edu-excess')?.value||'').replace(',','.'));if(part==='2'&&Math.abs(excess-0.03)<0.00001){s.eduStep=3;s.eduPage='result';s.eduResult={title:'Результат определён!',message:'Деталь В-20-02 превышает установленный верхний предел.',details:[['Записанный размер','20,08 мм'],['Превышение','0,03 мм']],conclusion:'Несоответствие отдельной детали установлено по данным контроля. Причина отклонения пока не подтверждена.'};s.eduMessage=''}else{showEduFeedback('Вы неправильно рассчитали. Попробуйте ещё раз.');return}}
  else if(action==='edu3'){const conclusion=app.querySelector('input[name="edu-conclusion"]:checked')?.value;if(conclusion==='2'){s.eduStep=4;s.eduPage='result';s.eduResult={title:'Вывод обоснован!',message:'Ты отделил подтверждённое несоответствие от предположений о причинах.',conclusion:'Одной записи о несоответствии недостаточно, чтобы признать всю партию бракованной или установить неисправность оборудования.'};s.eduMessage=''}else{showEduFeedback('Неверный ответ. Попробуйте ещё раз.');return}}
  else if(action==='edu4'){const chosen=[...app.querySelectorAll('input[name="edu-info"]:checked')].map(x=>x.value).sort();if(chosen.join(',')==='1,2,3,4'){s.eduStep=5;s.eduPage='result';s.eduResult={title:'Проверка завершена!',message:'Ты определил, какие сведения нужны для обоснования инвестиций.',conclusion:'Перед выбором мероприятий необходимо дополнительно проверить причины, частоту отклонений и влияние контроля на производственный поток.'};s.eduMessage=''}else{showEduFeedback('Подумай, какие данные позволят установить, где возникло отклонение, насколько регулярно оно повторяется и можно ли выявить его раньше. Проверь также влияние очередей и ожидания на контроль. Один дефект сам по себе ещё не доказывает необходимость покупки станка.');return}}
- else if(action==='gromovNext'){if(s.eduGromovIndex<2)s.eduGromovIndex++;else s.s04Mode='reviewFinal'}
+ else if(action==='gromovNext'&&s.scene==='S04'&&s.s04Mode==='gromov'){s.eduGromovIndex=2;s.s04Mode='reviewFinal'}
  else if(action==='revisePortfolio'){s.returnToReview=true;s.s04Mode='catalog';s.showReview=false;s.budgetMessage=''}
  else if(action==='saveFinal'){s.finalSelected=[...s.selected];s.s04Mode='savedFinal'}
  else if(action==='committeeStart'&&s.scene==='S04'&&s.s04Mode==='savedFinal'){s.scene='S05';s.committeeDecision=null}

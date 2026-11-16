@@ -18,8 +18,8 @@ jobs:
         include:
           - label: v5
             sha: 430fee5c9ce04d55f531eb8ec85f2b67c3057a6d
-          - label: v23
-            sha: c33ab5814b1a38ba618953f67244dc38f492acb9
+          - label: v24
+            sha: main
     steps:
       - uses: actions/checkout@v4
         with:

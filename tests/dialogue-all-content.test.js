@@ -14,7 +14,7 @@ for(const id of ['andrey','marina','irina']){
  cases.push({id:'S03 answer '+id,state:{scene:'S03',s03Person:id,s03QuestionMode:'answer'}});
 }
 cases.push({id:'S03 conclusion',state:{scene:'S03',s03Person:null,s03ConclusionSeen:true,s03Read:['andrey','marina','irina']}});
-for(let n=0;n<3;n++)cases.push({id:'S04 Gromov '+n,state:{scene:'S04',s04Mode:'gromov',eduGromovIndex:n}});
+cases.push({id:'S04 Gromov complete speech',state:{scene:'S04',s04Mode:'gromov',eduGromovIndex:0}});
 (async()=>{
  const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
  let checked=0,breaks=0;
