@@ -169,6 +169,12 @@ function fit(){
    const lineHeight=parseFloat(getComputedStyle(paragraph).lineHeight)||22;
    const dangling=value=>/(?:^|\s)(?:и|а|но|или|что|чтобы|если|когда|прежде|чем|перед|в|на|с|со|к|по|из|у|от|до|для|при|без|под|над|между)$/iu.test(visibleText(value));
    for(let i=0;i<blockPages.length-1;i++){
+     // Only shorten the preceding page when the final page is very short.
+     // Earlier pages must stay dense to minimize unnecessary taps.
+     if(i!==blockPages.length-2)continue;
+     const originalLeftHeight=measuredHeight(blockPages[i]);
+     const originalRightHeight=measuredHeight(blockPages[i+1]);
+     if(originalRightHeight>=lineHeight*2.5)continue;
      const combined=blockPages[i]+blockPages[i+1];
      const tokens=combined.match(/\S+\s*|\s+/g)||[combined];
      let offset=0,best=null;
@@ -177,6 +183,8 @@ function fit(){
        const left=combined.slice(0,offset),right=combined.slice(offset);
        if(!left||!right||!fits(left)||!fits(right))continue;
        const hLeft=measuredHeight(left),hRight=measuredHeight(right);
+       // Keep at most one line of slack on the preceding page.
+       if(originalLeftHeight-hLeft>lineHeight*1.1)continue;
        const last=visibleText(left);
        // Balance both pages, then favor complete sentences when feasible.
        // No one-line final page if both sides can contain comparable text.
