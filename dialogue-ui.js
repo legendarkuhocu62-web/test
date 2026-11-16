@@ -102,26 +102,35 @@ function fit(){
  // and subtracting header height from panel CSS max-height counts it twice.
  // The old estimate left ~30-45px unused on short Android screens.
  // Textbox height is stable because the panel has a fixed height.
- const room=Math.max(0,textBox.getBoundingClientRect().height-2);
+ // Measure against the fixed panel's actual available height, not the
+ // flex child's current height (which shrinks when a short paragraph renders).
+ const panelStyle=getComputedStyle(panel);
+ const textStyle=getComputedStyle(textBox);
+ const header=node.querySelector('.game-dialogue__speaker');
+ const footer=node.querySelector('.game-dialogue__footer');
+ const heightOf=el=>el?el.getBoundingClientRect().height:0;
+ const px=(style,key)=>parseFloat(style[key])||0;
+ const panelRoom=heightOf(panel)
+   -px(panelStyle,'paddingTop')-px(panelStyle,'paddingBottom')
+   -heightOf(header)-heightOf(footer)
+   -px(getComputedStyle(header),'marginTop')-px(getComputedStyle(header),'marginBottom')
+   -px(getComputedStyle(footer),'marginTop')-px(getComputedStyle(footer),'marginBottom');
+ const room=Math.max(0,panelRoom-px(textStyle,'paddingTop')-px(textStyle,'paddingBottom')-2);
  function fits(value){
    measure.innerHTML=escapeHTML(visibleText(value)).replace(/\n/g,'<br>');
    return measure.getBoundingClientRect().height<=room+0.5;
  }
  let next=[];
  for(const block of semanticBlocks(raw)){
-   // The S03 question/answer boundaries remain separate screens.
-   // Within a block, fill the real measured text area before turning a page.
-   const units=semanticUnits(block);
+   // Prefer complete sentences; split a sentence only if it cannot fit
+   // on an empty page. This avoids the dangling "производственным..."
+   // and "упустить." pages visible in the mobile screenshots.
    let buffer='';
-   for(const unit of units){
+   for(const unit of semanticUnits(block)){
      if(fits(buffer+unit)){buffer+=unit;continue}
-     if(buffer&&fits(unit)){
-       next.push(buffer);
-       buffer=unit;
-       continue;
-     }
-     // A long sentence is split at whole-word boundaries only.
-     // Continue consuming words in this SAME page when they fit.
+     if(buffer){next.push(buffer);buffer=''}
+     if(fits(unit)){buffer=unit;continue}
+     // One sentence is taller than the frame: split on whole words.
      const words=unit.match(/\S+\s*|\s+/g)||[unit];
      for(const word of words){
        if(buffer&&!fits(buffer+word)){next.push(buffer);buffer=''}
@@ -130,29 +139,9 @@ function fit(){
    }
    if(buffer)next.push(buffer);
  }
- // Avoid an orphan one-line final page where the preceding page can share
- // part of its text; preserve every original character and the fixed frame.
- const lineHeight=parseFloat(getComputedStyle(paragraph).lineHeight)||22;
- const measuredHeight=value=>{
-   measure.innerHTML=escapeHTML(visibleText(value)).replace(/\n/g,'<br>');
-   return measure.getBoundingClientRect().height;
- };
- for(let i=next.length-1;i>0;i--){
-   let tail=next[i],previous=next[i-1];
-   if(/^\n+(?:Вопрос|Ответ):\s/.test(tail))continue;
-   if(measuredHeight(tail)>lineHeight*1.55||measuredHeight(previous)<lineHeight*2.65)continue;
-   const words=previous.match(/\S+\s*|\s+/g)||[];
-   let moved='';
-   while(words.length>1&&measuredHeight(moved+tail)<lineHeight*2.55){
-     const word=words.pop();
-     const candidate=word+moved;
-     if(!fits(candidate+tail)||measuredHeight(words.join(''))<lineHeight*1.7){
-       words.push(word);break;
-     }
-     moved=candidate;
-   }
-   if(moved){next[i-1]=words.join('');next[i]=moved+tail;}
- }
+ // If both pages would fit together as one, combine them. Do not
+ // merge S03's explicitly separate specialist / question / answer blocks.
+ // No balancing by pulling the last words from a complete sentence.
  measure.remove();
  paragraph.innerHTML=oldHTML;
  if(next.join('')!==raw)next=[raw];
