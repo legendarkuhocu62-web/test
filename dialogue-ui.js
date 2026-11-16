@@ -121,27 +121,44 @@ function fit(){
    return measure.getBoundingClientRect().height<=room+0.5;
  }
  let next=[];
+ // Fill every page with whole words. A sentence boundary is desirable,
+ // but must never create an extra page that could be avoided by using
+ // the available space in this fixed-height dialogue panel.
  for(const block of semanticBlocks(raw)){
-   // Prefer complete sentences; split a sentence only if it cannot fit
-   // on an empty page. This avoids the dangling "производственным..."
-   // and "упустить." pages visible in the mobile screenshots.
+   const words=block.match(/\S+\s*|\s+/g)||[block];
    let buffer='';
-   for(const unit of semanticUnits(block)){
-     if(fits(buffer+unit)){buffer+=unit;continue}
-     if(buffer){next.push(buffer);buffer=''}
-     if(fits(unit)){buffer=unit;continue}
-     // One sentence is taller than the frame: split on whole words.
-     const words=unit.match(/\S+\s*|\s+/g)||[unit];
-     for(const word of words){
-       if(buffer&&!fits(buffer+word)){next.push(buffer);buffer=''}
-       buffer+=word;
-     }
+   for(const word of words){
+     if(buffer&&!fits(buffer+word)){next.push(buffer);buffer=''}
+     buffer+=word;
    }
    if(buffer)next.push(buffer);
  }
- // If both pages would fit together as one, combine them. Do not
- // merge S03's explicitly separate specialist / question / answer blocks.
- // No balancing by pulling the last words from a complete sentence.
+ // Improve boundaries without increasing the page count: if the final
+ // page is very short, move whole words from the previous page, but
+ // never overflow either page or lose any source character.
+ for(let i=next.length-1;i>0;i--){
+   if(/^\n+(?:Вопрос|Ответ):\s/.test(next[i]))continue;
+   const previous=next[i-1],tail=next[i];
+   const lineHeight=parseFloat(getComputedStyle(paragraph).lineHeight)||22;
+   measure.innerHTML=escapeHTML(visibleText(tail)).replace(/\n/g,'<br>');
+   if(measure.getBoundingClientRect().height>lineHeight*2.2)continue;
+   const priorWords=previous.match(/\S+\s*|\s+/g)||[];
+   let prefix='';
+   while(priorWords.length>1){
+     const last=priorWords[priorWords.length-1];
+     const candidate=last+prefix+tail;
+     if(!fits(candidate))break;
+     priorWords.pop();prefix=last+prefix;
+     measure.innerHTML=escapeHTML(visibleText(priorWords.join(''))).replace(/\n/g,'<br>');
+     if(measure.getBoundingClientRect().height<lineHeight*2){
+       priorWords.push(last);prefix=prefix.slice(last.length);
+       break;
+     }
+     measure.innerHTML=escapeHTML(visibleText(candidate)).replace(/\n/g,'<br>');
+     if(measure.getBoundingClientRect().height>=lineHeight*2.2)break;
+   }
+   if(prefix){next[i-1]=priorWords.join('');next[i]=prefix+tail;}
+ }
  measure.remove();
  paragraph.innerHTML=oldHTML;
  if(next.join('')!==raw)next=[raw];
