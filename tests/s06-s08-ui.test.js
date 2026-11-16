@@ -24,15 +24,18 @@ const key='ceh404.rebuilt.qa50.20261108';
   assert.equal((await page.evaluate(()=>window.__CEH_TEST__.getState())).scene,'S05','S05 resumes after reload');
   assert.equal((await page.evaluate(()=>window.__CEH_TEST__.getState())).committeeDecision,'conditions','committee response persists');
   await page.locator('[data-act="s05Continue"]').click();
-  assert.equal((await page.locator('.s05-tablet-notice')).count(),1,'tablet alert on first Gromov dialogue');
+  assert.equal(await page.locator('.s05-tablet-notice').count(),1,'tablet alert on first Gromov dialogue');
   assert.match(await page.locator('.s05-tablet-notice').innerText(),/З-214/);
   for(let i=0;i<3;i++){
    assert.equal((await page.evaluate(()=>window.__CEH_TEST__.getState())).s05Phase,'notice'+i);
+   while(await page.locator('[data-act="dlgMore"]').count())
+    await page.locator('[data-act="dlgMore"]').click();
    await page.locator('[data-act="s05Next"]').click();
   }
   assert.equal((await page.evaluate(()=>window.__CEH_TEST__.getState())).s05Phase,'notice3');
   await page.reload();
   assert.equal((await page.evaluate(()=>window.__CEH_TEST__.getState())).s05Phase,'notice3','last dialogue resumes');
+  while(await page.locator('[data-act="dlgMore"]').count())await page.locator('[data-act="dlgMore"]').click();
   await page.locator('[data-act="s05ToS06"]').click();
   assert.equal((await page.evaluate(()=>window.__CEH_TEST__.getState())).scene,'S06');
   assert.equal(await page.locator('[data-act="s06ReadDocs"]').count(),1,'Gromov briefing first');
