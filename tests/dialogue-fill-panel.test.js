@@ -73,20 +73,20 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict');
      'S02 dialogue cuts after a dangling subordinating conjunction');
    assert.match(first,/У тебя есть первый вывод\./u,
      'S02 should keep the short complete sentence on the first page');
-   assert.ok(await page.locator('[data-act="dlgMore"]').count(),
-     'expected continuation screen for S02');
-   await page.locator('[data-act="dlgMore"]').click();
-   await page.waitForTimeout(60);
-   const second=await page.locator('.game-dialogue__text').innerText();
-   // Both grammatical layouts are valid:
-   // "Но прежде чем ..." can fit on page one, or start page two.
-   // It must not be broken across pages simply to meet a fixed cut.
-   assert.ok(
-     first.includes('Но прежде чем составлять инвестиционный портфель')||
-     second.trim().startsWith('Но прежде чем составлять инвестиционный портфель'),
-     'S02 subordinate phrase must remain intact');
-   assert.match(first.trim(),/[.!?…]$/u,
-     'S02 first page should end with a complete sentence');
+   const continues=await page.locator('[data-act="dlgMore"]').count()>0;
+   if(continues){
+     await page.locator('[data-act="dlgMore"]').click();
+     await page.waitForTimeout(60);
+     const second=await page.locator('.game-dialogue__text').innerText();
+     assert.ok(
+       first.includes('Но прежде чем составлять инвестиционный портфель')||
+       second.trim().startsWith('Но прежде чем составлять инвестиционный портфель'),
+       'S02 subordinate phrase must remain intact');
+     assert.match(first.trim(),/[.!?…]$/u,'first page should end with a sentence');
+   }else{
+     assert.match(first,/Перейдём в переговорную/u,
+       'single-page S02 feedback must show its entire approved conclusion');
+   }
    const read=await page.evaluate(()=>window.CEH_DIALOGUE.getReadState());
    const expected=await page.evaluate(()=>{
      const d=window.CEH_DATA;

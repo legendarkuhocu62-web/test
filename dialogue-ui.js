@@ -123,12 +123,25 @@ function fit(){
  const footer=node.querySelector('.game-dialogue__footer');
  const heightOf=el=>el?el.getBoundingClientRect().height:0;
  const px=(style,key)=>parseFloat(style[key])||0;
+ const probe=panel.cloneNode(true);
+ probe.style.setProperty('position','fixed','important');
+ probe.style.setProperty('left','-10000px','important');
+ probe.style.setProperty('top','0','important');
+ probe.style.setProperty('visibility','hidden','important');
+ probe.style.setProperty('pointer-events','none','important');
+ probe.style.setProperty('width',panel.getBoundingClientRect().width+'px','important');
+ const probeActions=probe.querySelector('.game-dialogue__actions');
+ if(probeActions)probeActions.innerHTML=button('Назад','dlgBack')+(lastOptions.finish||'');
+ node.appendChild(probe);
+ const finalFooter=heightOf(probe.querySelector('.game-dialogue__footer'));
+ probe.remove();
+ const stableFooterHeight=Math.max(heightOf(footer),finalFooter);
  const panelRoom=heightOf(panel)
    -px(panelStyle,'paddingTop')-px(panelStyle,'paddingBottom')
-   -heightOf(header)-heightOf(footer)
+   -heightOf(header)-stableFooterHeight
    -px(getComputedStyle(header),'marginTop')-px(getComputedStyle(header),'marginBottom')
    -px(getComputedStyle(footer),'marginTop')-px(getComputedStyle(footer),'marginBottom');
-  const room=Math.max(0,panelRoom-px(textStyle,'paddingTop')-px(textStyle,'paddingBottom')-2);
+ const room=Math.max(0,panelRoom-px(textStyle,'paddingTop')-px(textStyle,'paddingBottom')-2);
  function fits(value){
    measure.innerHTML=escapeHTML(displayText(value)).replace(/\n/g,'<br>');
    return measure.getBoundingClientRect().height<=room+0.5;
