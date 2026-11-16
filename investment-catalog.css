@@ -357,12 +357,12 @@ dialog.ic-detail::backdrop { background:#020811d9; backdrop-filter:blur(3px); }
    At 125% height, a 240px source is enlarged to cover the card and the
    printed bottom strip is kept outside the viewport. */
 #app .document--catalog .ic-card[data-initiative="A"]{--thumb-height:100%;--thumb-top:0%;--thumb-x:48%;--thumb-y:45%}
-#app .document--catalog .ic-card[data-initiative="B"]{--thumb-height:133%;--thumb-top:0%;--thumb-x:26%;--thumb-y:0%}
-#app .document--catalog .ic-card[data-initiative="C"]{--thumb-height:126%;--thumb-top:0%;--thumb-x:29%;--thumb-y:0%}
-#app .document--catalog .ic-card[data-initiative="D"]{--thumb-height:134%;--thumb-top:0%;--thumb-x:62%;--thumb-y:0%}
+#app .document--catalog .ic-card[data-initiative="B"]{--thumb-height:145%;--thumb-top:-7%;--thumb-x:26%;--thumb-y:0%}
+#app .document--catalog .ic-card[data-initiative="C"]{--thumb-height:139%;--thumb-top:-7%;--thumb-x:29%;--thumb-y:0%}
+#app .document--catalog .ic-card[data-initiative="D"]{--thumb-height:146%;--thumb-top:-7%;--thumb-x:62%;--thumb-y:0%}
 #app .document--catalog .ic-card[data-initiative="E"]{--thumb-height:100%;--thumb-top:0%;--thumb-x:43%;--thumb-y:42%}
 #app .document--catalog .ic-card[data-initiative="F"]{--thumb-height:100%;--thumb-top:0%;--thumb-x:55%;--thumb-y:43%}
-#app .document--catalog .ic-card[data-initiative="G"]{--thumb-height:132%;--thumb-top:0%;--thumb-x:67%;--thumb-y:0%}
+#app .document--catalog .ic-card[data-initiative="G"]{--thumb-height:145%;--thumb-top:-7%;--thumb-x:67%;--thumb-y:0%}
 #app .document--catalog .ic-card[data-initiative="H"]{--thumb-height:100%;--thumb-top:0%;--thumb-x:48%;--thumb-y:48%}
 #app .document--catalog .ic-card[data-initiative="I"]{--thumb-height:100%;--thumb-top:0%;--thumb-x:45%;--thumb-y:45%}
 #app .document--catalog .ic-card[data-initiative="J"]{--thumb-height:100%;--thumb-top:0%;--thumb-x:48%;--thumb-y:44%}
