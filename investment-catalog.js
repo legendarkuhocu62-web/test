@@ -48,7 +48,7 @@ window.CEH_INVESTMENT_CATALOG = (() => {
     const entry=entries.find(x=>x.id===opened);
     if(entry){
       const selected=state.selected.includes(entry.id);
-      html+='<dialog class="ic-detail" aria-label="Инвестиционное предложение '+esc(entry.id)+' — '+esc(entry.title)+'">'+
+      html+='<dialog class="ic-detail" data-ui-build="poster-v3" aria-label="Инвестиционное предложение '+esc(entry.id)+' — '+esc(entry.title)+'">'+
         '<div class="ic-detail__head"><span>ИНВЕСТИЦИОННОЕ ПРЕДЛОЖЕНИЕ '+esc(entry.id)+'</span>'+
         button('×','catalogClose','','ic-detail__close')+'</div>'+
         '<div class="ic-detail__body"><div class="ic-poster">'+

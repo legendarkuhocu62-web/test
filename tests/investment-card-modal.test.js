@@ -19,6 +19,19 @@ const key='ceh404.rebuilt.qa50.20261108';
   await dlg.locator('img').evaluate(img=>img.decode());
   assert.equal(await dlg.locator('img').evaluate(i=>i.naturalWidth>0),true);
   assert.equal(await dlg.locator('.ic-detail__actions').count(),0,'no duplicate bottom actions');
+  assert.equal(await dlg.getAttribute('data-ui-build'),'poster-v3','new poster code must be loaded');
+  const ui=await dlg.evaluate(modal=>{
+    const poster=modal.querySelector('.ic-poster').getBoundingClientRect();
+    const body=modal.querySelector('.ic-detail__body').getBoundingClientRect();
+    const outer=modal.getBoundingClientRect();
+    const hit=modal.querySelector('.ic-poster__hit--add').getBoundingClientRect();
+    const topmost=document.elementFromPoint(hit.left+hit.width/2,hit.top+hit.height/2);
+    return {gap:outer.bottom-body.bottom,portraitBottom:poster.bottom,modalBottom:outer.bottom,
+      build:getComputedStyle(modal).display,buttonCenterAction:topmost?.getAttribute('data-act')};
+  });
+  assert.ok(ui.gap<=12,'unwanted blank area at bottom of card '+width+': '+JSON.stringify(ui));
+  assert.equal(ui.buttonCenterAction,'catalogAdd','printed Add must receive direct touch '+width);
+
   assert.equal(await dlg.locator('.ic-poster__hit').count(),2,'both printed buttons have native HTML hotspots');
   const geometry=await dlg.evaluate(modal=>{
     const rect=el=>{const r=el.getBoundingClientRect();return {x:r.x,y:r.y,right:r.right,bottom:r.bottom,w:r.width,h:r.height}};
