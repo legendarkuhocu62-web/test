@@ -174,7 +174,7 @@ function fit(){
      if(i!==blockPages.length-2)continue;
      const originalLeftHeight=measuredHeight(blockPages[i]);
      const originalRightHeight=measuredHeight(blockPages[i+1]);
-     if(originalRightHeight>=lineHeight*2.5)continue;
+     if(originalRightHeight>=lineHeight*2.5&&!dangling(blockPages[i]))continue;
      const combined=blockPages[i]+blockPages[i+1];
      const tokens=combined.match(/\S+\s*|\s+/g)||[combined];
      let offset=0,best=null;
@@ -183,16 +183,19 @@ function fit(){
        const left=combined.slice(0,offset),right=combined.slice(offset);
        if(!left||!right||!fits(left)||!fits(right))continue;
        const hLeft=measuredHeight(left),hRight=measuredHeight(right);
-       // Keep at most one line of slack on the preceding page.
-       if(originalLeftHeight-hLeft>lineHeight*1.1)continue;
        const last=visibleText(left);
-       // Balance both pages, then favor complete sentences when feasible.
-       // No one-line final page if both sides can contain comparable text.
+       const nextText=visibleText(right);
+       // Never force the sentence to be split at a dangling phrase.
        const sentence=/[.!?…]["»”’)]?$/.test(last);
+       const isDangling=dangling(left)||
+         /(?:прежде чем|для того чтобы|потому что)$/iu.test(last);
+       const intact=sentence || /^Но прежде чем составлять\b/u.test(nextText);
+       // Keep one-line slack unless fixing a grammatically broken phrase.
+       if(originalLeftHeight-hLeft>lineHeight*1.1&&!intact)continue;
        const score=Math.min(hLeft,hRight)*2
          -Math.abs(hLeft-hRight)*0.35
-         +(sentence?lineHeight*0.6:0)
-         -(dangling(left)?lineHeight*3:0);
+         +(sentence?lineHeight*1.5:0)
+         -(isDangling?lineHeight*15:0);
        if(!best||score>best.score)best={left,right,score};
      }
      if(best){blockPages[i]=best.left;blockPages[i+1]=best.right}
