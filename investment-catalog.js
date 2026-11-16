@@ -11,7 +11,7 @@ window.CEH_INVESTMENT_CATALOG = (() => {
   function isMobile() { return window.matchMedia("(max-width: 720px)").matches; }
   function pageSize() { return isMobile() ? 4 : 6; }
   function poster(id) { return "assets/investments/CH1-VA-" + id + "-001.png"; }
-  function thumb(id) { return "assets/investments/thumbs/CH1-VA-" + id + "-001.webp"; }
+  function thumb(id) { return id === "H" ? "assets/investments/thumbs/CH1-VA-H-001-photo-20261117.webp" : "assets/investments/thumbs/CH1-VA-" + id + "-001.webp"; }
   function reset() { page = 0; opened = null; }
   function close() { opened = null; }
   function open(id) { if (ids.has(id)) opened = id; }
