@@ -56,6 +56,38 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict');
    assert.match(snapshot.text,/куда разумнее направить средства\./,
     'first screen should finish at a meaningful sentence boundary');
   }
+  // Screenshot regression: S02 feedback after the "insufficient" answer.
+  // A split after "Но прежде чем" is not an acceptable reading boundary.
+  if(width===390&&height===844){
+   await page.evaluate(()=>{
+    const s=window.CEH_LOGIC.initial();
+    Object.assign(s,{name:'Тест',scene:'S02',s02Step:'feedback',
+     hypothesis:'insufficient',hypothesisConfirmed:true});
+    localStorage.setItem('ceh404.rebuilt.qa50.20261108',JSON.stringify(s));
+   });
+   await page.reload();
+   await page.locator('.game-dialogue--scene .game-dialogue__panel').waitFor();
+   await page.waitForTimeout(140);
+   const first=await page.locator('.game-dialogue__text').innerText();
+   assert.doesNotMatch(first.trim(),/Но прежде чем$/u,
+     'S02 dialogue cuts after a dangling subordinating conjunction');
+   assert.match(first,/У тебя есть первый вывод\./u,
+     'S02 should keep the short complete sentence on the first page');
+   assert.ok(await page.locator('[data-act="dlgMore"]').count(),
+     'expected continuation screen for S02');
+   await page.locator('[data-act="dlgMore"]').click();
+   await page.waitForTimeout(60);
+   const second=await page.locator('.game-dialogue__text').innerText();
+   assert.match(second.trim(),/^Но прежде чем составлять/u,
+     'S02 next page must begin with the complete subordinate phrase');
+   const read=await page.evaluate(()=>window.CEH_DIALOGUE.getReadState());
+   const expected=await page.evaluate(()=>{
+     const d=window.CEH_DATA;
+     return d.hypotheses.find(h=>h.id==='insufficient').reply+
+       '\n\nУ тебя есть первый вывод. Но прежде чем составлять инвестиционный портфель, давай обсудим ситуацию с коллегами. Перейдём в переговорную — важно выслушать разные точки зрения.';
+   });
+   assert.equal(read.joined,expected,'S02 source text changed or lost');
+  }
   await page.close();
  }
  await browser.close();

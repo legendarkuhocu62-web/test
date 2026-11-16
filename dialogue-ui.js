@@ -33,7 +33,9 @@ function semanticBlocks(value){
  return [raw.slice(0,question),raw.slice(question,answer),raw.slice(answer)].filter(Boolean);
 }
 function visibleText(value){
- return /^\n+(?:Вопрос|Ответ):\s/.test(value)?value.replace(/^\n+/,''):value;
+ // Page separators and trailing blanks are part of the saved source text,
+ // but must not consume display lines at the edges of a dialogue page.
+ return String(value??'').replace(/^\s+|\s+$/g,'');
 }
 /* Совместимость с прежним API: лимит используется только как ориентир;
    предпочтение всегда отдаётся границам предложений. */
