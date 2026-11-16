@@ -64,7 +64,7 @@
 }
 @media (min-width:721px){.document--catalog .ic-grid .ic-card.investment{height:auto;min-height:132px}}
 
-/* Final catalog layout: no misleading print-button hotspots; actions live in modal footer. */
+/* Final catalog grid layout: keep its preview cards intact. The full-size modal uses hotspots below. */
 .document--catalog .ic-grid .ic-card.investment{display:flex!important;flex-direction:row!important;min-width:0;overflow:hidden}
 .document--catalog .ic-grid .ic-card .ic-card__body{height:auto;min-width:0;display:flex;flex:1 1 auto;flex-direction:column}
 .document--catalog .ic-grid .ic-card .ic-card__open.btn{flex:0 0 auto;transform:none!important;box-shadow:0 2px 8px #0005}
@@ -119,7 +119,8 @@ dialog.ic-detail {
   min-width:0;
   max-width:calc(100vw - 12px);
   max-height:calc(100dvh - 12px);
-  height:auto;
+  height:fit-content;
+  min-height:0;
   overflow:hidden;
   border:2px solid #bb9552;
   border-radius:12px;
