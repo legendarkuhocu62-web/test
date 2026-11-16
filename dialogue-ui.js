@@ -109,13 +109,19 @@ function fit(){
  }
  let next=[];
  for(const block of semanticBlocks(raw)){
-   // A question/answer boundary is mandatory even when all three fit.
-   if(fits(block)){next.push(block);continue}
-   const units=semanticUnits(block);let buffer='';
+   // The S03 question/answer boundaries remain separate screens.
+   // Within a block, fill the real measured text area before turning a page.
+   const units=semanticUnits(block);
+   let buffer='';
    for(const unit of units){
      if(fits(buffer+unit)){buffer+=unit;continue}
-     // Do not waste the remaining panel space by moving a whole sentence
-     // to the next page when part of it can still be read here.
+     if(buffer&&fits(unit)){
+       next.push(buffer);
+       buffer=unit;
+       continue;
+     }
+     // A long sentence is split at whole-word boundaries only.
+     // Continue consuming words in this SAME page when they fit.
      const words=unit.match(/\S+\s*|\s+/g)||[unit];
      for(const word of words){
        if(buffer&&!fits(buffer+word)){next.push(buffer);buffer=''}
