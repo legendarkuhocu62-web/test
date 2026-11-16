@@ -19,12 +19,24 @@ const key='ceh404.rebuilt.qa50.20261108';
   assert.equal(await page.locator('[data-act="orderStart"]').count(),0,'no S06 bypass before committee response');
   await page.locator('[data-act="committeeChoose"][data-id="conditions"]').click();
   assert.equal((await page.evaluate(()=>window.__CEH_TEST__.getState())).committeeDecision,'conditions');
-  assert.equal(await page.locator('[data-act="orderStart"]').count(),1,'continue after committee response');
+  assert.equal(await page.locator('[data-act="s05Continue"]').count(),1,'continue meeting after committee response');
   await page.reload();
   assert.equal((await page.evaluate(()=>window.__CEH_TEST__.getState())).scene,'S05','S05 resumes after reload');
   assert.equal((await page.evaluate(()=>window.__CEH_TEST__.getState())).committeeDecision,'conditions','committee response persists');
-  await page.locator('[data-act="orderStart"]').click();
+  await page.locator('[data-act="s05Continue"]').click();
+  assert.equal((await page.locator('.s05-tablet-notice')).count(),1,'tablet alert on first Gromov dialogue');
+  assert.match(await page.locator('.s05-tablet-notice').innerText(),/З-214/);
+  for(let i=0;i<3;i++){
+   assert.equal((await page.evaluate(()=>window.__CEH_TEST__.getState())).s05Phase,'notice'+i);
+   await page.locator('[data-act="s05Next"]').click();
+  }
+  assert.equal((await page.evaluate(()=>window.__CEH_TEST__.getState())).s05Phase,'notice3');
+  await page.reload();
+  assert.equal((await page.evaluate(()=>window.__CEH_TEST__.getState())).s05Phase,'notice3','last dialogue resumes');
+  await page.locator('[data-act="s05ToS06"]').click();
   assert.equal((await page.evaluate(()=>window.__CEH_TEST__.getState())).scene,'S06');
+  assert.equal(await page.locator('[data-act="s06ReadDocs"]').count(),1,'Gromov briefing first');
+  await page.locator('[data-act="s06ReadDocs"]').click();
   assert.equal(await page.locator('[data-act="orderTask"]:disabled').count(),1,'3/3 must lock analysis');
   for(const id of ['shipping','route','grinding']){
    await page.locator('[data-act="orderDoc"][data-id="'+id+'"]').click();
