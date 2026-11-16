@@ -21,6 +21,10 @@ window.CEH_INVESTMENT_CATALOG = (() => {
     opened=null;
   }
   function getOpen() { return opened; }
+  function visibleIds() {
+    const size=pageSize();
+    return IDS.slice(page*size,(page+1)*size);
+  }
   function render(state,data,esc,button) {
     const entries=data.initiatives.filter(x=>ids.has(x.id));
     const size=pageSize(), count=Math.max(1,Math.ceil(entries.length/size));
@@ -72,5 +76,5 @@ window.CEH_INVESTMENT_CATALOG = (() => {
     if(!dlg.open)dlg.showModal();
     dlg.querySelector('.ic-detail__close')?.focus({preventScroll:true});
   }
-  return Object.freeze({IDS,render,open,close,reset,changePage,getOpen,attach,pageSize});
+  return Object.freeze({IDS,render,open,close,reset,changePage,getOpen,visibleIds,attach,pageSize});
 })();

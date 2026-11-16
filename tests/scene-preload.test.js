@@ -38,6 +38,23 @@ const KEY='ceh404.rebuilt.qa50.20261108';
       assert.equal(result.state.scene,state.scene,'preloader changed game state');
       assert.ok(result.stats.active<=2,'exceeded concurrent preloads');
    }
+ 
+   // Full-resolution cards begin preloading while their catalog page is
+   // visible; no 36 MB burst at the game's first screen.
+   for(const [pageIndex,targetId] of [[0,'A'],[1,width<=720?'E':'G']]){
+     await page.evaluate(([key,pageIndex])=>{
+       const base=window.CEH_LOGIC.initial();
+       localStorage.setItem(key,JSON.stringify({...base,scene:'S04',s04Mode:'catalog'}));
+     },[KEY,pageIndex]);
+     await page.reload({waitUntil:'load'});
+     if(pageIndex===1)await page.locator('[data-act="catalogPage"][data-id="next"]').click();
+     await page.waitForFunction(id=>window.CEH_PRELOAD.stats().started.some(url=>url.includes('CH1-VA-'+id+'-001.png')),targetId,{timeout:15000});
+     const stats=await page.evaluate(()=>window.CEH_PRELOAD.stats());
+     assert.ok(stats.started.every(url=>new URL(url).origin==='http://127.0.0.1:8765'),'poster preload must be same-origin');
+     assert.ok(stats.active<=2,'poster preload must respect global concurrency');
+     assert.ok(stats.started.length<= (width<=720?5:7),'preload must target the current catalogue page');
+     assert.ok(!stats.started.some(url=>url.includes('CH1-VA-M-001.png')),'do not preload unrelated end-of-catalog images');
+   }
    assert.deepEqual(errors,[],'preload JS errors '+width+'x'+height);
    console.log('PASS next-scene preload '+width+'x'+height);
    await page.close();

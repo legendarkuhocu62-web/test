@@ -80,6 +80,13 @@ function plan(s,A){
  }else if(mode==='S04'){
    add(A.engineer);
    if(s.s04Mode==='eduIntro'||s.s04Mode==='edu')add('assets/edu01/schema-ek-v20-01.jpg','assets/edu01/act-ns-008-26.jpg');
+   if(s.s04Mode==='catalog'){
+     // Preview images in the grid are small and loaded by the browser.
+     // Queue only the full original posters for the current catalog page.
+     const catalog=window.CEH_INVESTMENT_CATALOG;
+     const entries=catalog?.visibleIds?.()||[];
+     for(const id of entries)add('assets/investments/CH1-VA-'+id+'-001.png');
+   }
  }
  return [...new Set(files)];
 }
