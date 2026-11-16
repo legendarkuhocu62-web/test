@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/full-route-clicks.yml'
+      - 'tests/measure-full-route-clicks.js'
 permissions:
   contents: read
 jobs:
