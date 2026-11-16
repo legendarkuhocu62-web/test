@@ -1,0 +1,53 @@
+name: Full route button comparison
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/full-route-clicks.yml'
+permissions:
+  contents: read
+jobs:
+  measure:
+    name: Full route ${{ matrix.label }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: v5
+            sha: 430fee5c9ce04d55f531eb8ec85f2b67c3057a6d
+          - label: v23
+            sha: c33ab5814b1a38ba618953f67244dc38f492acb9
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.sha }}
+          path: snapshot
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: measurement
+          sparse-checkout: |
+            tests/measure-full-route-clicks.js
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: |
+          npm install --no-save playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Run representative route and count
+        env:
+          SNAPSHOT_LABEL: ${{ matrix.label }}
+          SNAPSHOT_SHA: ${{ matrix.sha }}
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory snapshot >/tmp/ceh404-http.log 2>&1 &
+          sleep 2
+          node measurement/tests/measure-full-route-clicks.js
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: full-route-${{ matrix.label }}
+          path: full-route-clicks-${{ matrix.label }}.json
+          if-no-files-found: error
