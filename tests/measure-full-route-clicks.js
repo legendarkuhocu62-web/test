@@ -96,7 +96,11 @@ const navigation=new Set([
    await click('edu3');await click('eduContinue');
    for(const id of ['1','2','3','4'])await page.locator('input[name="edu-info"][value="'+id+'"]').check();
    await click('edu4');await click('eduContinue');
-   await readDialogue('S04:gromov:combined');await click('gromovNext');
+   if(label==='v5'){
+     for(let n=0;n<3;n++){await readDialogue('S04:gromov:'+n);await click('gromovNext');}
+   }else{
+     await readDialogue('S04:gromov:combined');await click('gromovNext');
+   }
    await click('saveFinal');await click('committeeStart');await ensureScene('S05');
    // S05–S08 · committee, documents, task, operative decision, end.
    await click('committeeChoose','conditions');await click('orderStart');
