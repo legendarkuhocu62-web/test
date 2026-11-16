@@ -319,3 +319,38 @@ dialog.ic-detail::backdrop { background:#020811d9; backdrop-filter:blur(3px); }
   box-shadow:inset 2px 0 0 #ffda79aa,0 3px 9px #0008;
   pointer-events:none;
 }
+
+
+/* 17.11.2026 — Investment catalog A–M: use a compact landscape PHOTO window.
+   The approved miniatures are 360x240, but some include a text banner in the
+   lower ~25%. Display their upper 360x180 photographic area, consistently.
+   This also prevents portrait-shaped cards from clipping the actual subject.
+   Full-size approved posters and interactive hotspots are deliberately untouched. */
+#app .document--catalog .ic-grid .ic-card .ic-card__photo {
+  box-sizing:border-box;
+  flex:0 0 31%;
+  width:31%;
+  min-width:0;
+  height:auto;
+  min-height:0;
+  aspect-ratio:2/1;
+  align-self:center;
+  overflow:hidden;
+  border:1px solid #f9c62465;
+  border-radius:8px;
+}
+#app .document--catalog .ic-grid .ic-card .ic-card__photo img {
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center top;
+}
+/* Keep the same compact preview for phones, tablets and desktops;
+   previously the 721–1000px breakpoint forced 25% width. */
+@media(min-width:721px) and (max-width:1000px) {
+  #app .document--catalog .ic-grid .ic-card .ic-card__photo {
+    flex-basis:31%;
+    width:31%;
+  }
+}
