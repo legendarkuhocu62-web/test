@@ -1512,3 +1512,111 @@ body.dialogue-mode-active #app .game-dialogue__text--question p{
 .document--edu .edu-docs-on-demand{width:100%;margin:6px auto 0;padding:12px;border:1px solid #7192ad;border-radius:14px;background:rgba(11,28,47,.82)}
 .document--edu .edu-docs-on-demand .edu-doc--scans{margin:0}
 .document--edu .edu-reference .edu-doc-toggle{align-self:center;max-width:100%}
+
+
+/* Только S05 — заседание инвесткомитета: планшет и смартфон. */
+.investment-scene .committee-layout{
+  width:min(100%,1120px);
+  margin-inline:auto;
+  padding:clamp(18px,2.6vw,32px);
+  border:1px solid rgba(119,157,181,.48);
+  border-radius:18px;
+  background:rgba(7,27,48,.94);
+  box-shadow:0 14px 38px #0006;
+}
+.investment-scene .committee-layout>p{
+  max-width:78ch;
+  font-size:clamp(16px,1.3vw,19px);
+  line-height:1.5;
+}
+.investment-scene .committee-choice-layout{
+  display:grid;
+  grid-template-columns:minmax(230px,.85fr) minmax(360px,1.15fr);
+  gap:clamp(18px,3vw,38px);
+  align-items:center;
+  margin-top:22px;
+  padding-top:18px;
+  border-top:1px solid rgba(183,205,220,.42);
+}
+.investment-scene .committee-choice-layout h3{
+  margin:0;
+  max-width:24ch;
+  font-size:clamp(22px,2.1vw,30px);
+}
+.investment-scene .committee-options{display:grid;gap:10px}
+.investment-scene .committee-options .btn{
+  width:100%;
+  min-height:58px;
+  margin:0;
+  padding:14px 20px;
+  border:1px solid #f4a51d;
+  border-radius:14px;
+  background:linear-gradient(180deg,#ffb21b,#ed7800);
+  color:#172435;
+  font-size:clamp(15px,1.2vw,18px);
+  font-weight:800;
+  line-height:1.35;
+  text-align:center;
+  white-space:normal;
+}
+.investment-scene .committee-result{
+  margin-top:22px;
+  padding-top:18px;
+  border-top:1px solid rgba(183,205,220,.42);
+}
+.investment-scene .committee-result-label{
+  margin-bottom:9px;
+  color:#f6c66b;
+  font-size:16px;
+  font-weight:800;
+}
+.investment-scene .committee-selected{
+  display:flex;
+  align-items:center;
+  gap:15px;
+  padding:16px 20px;
+  border:2px solid #f4b52e;
+  border-radius:14px;
+  background:linear-gradient(110deg,rgba(83,61,19,.72),rgba(34,37,39,.94));
+}
+.investment-scene .committee-selected>span{
+  flex:0 0 14px;
+  width:14px;height:14px;
+  border:3px solid #ffc64a;border-radius:50%;
+}
+.investment-scene .committee-selected strong{
+  font-size:clamp(17px,1.45vw,21px);
+  line-height:1.4;
+}
+.investment-scene .committee-feedback{
+  max-width:85ch;
+  margin:16px 0;
+  font-size:clamp(16px,1.3vw,19px);
+  line-height:1.5;
+}
+.investment-scene .committee-actions{
+  display:flex;gap:14px;margin-top:22px;
+}
+.investment-scene .committee-actions .btn{
+  flex:1 1 0;min-width:0;min-height:54px;
+  justify-content:center;text-align:center;
+}
+@media(max-width:900px) and (min-width:591px){
+  .investment-scene .committee-choice-layout{
+    grid-template-columns:minmax(190px,.8fr) minmax(280px,1.2fr);
+    gap:18px;
+  }
+}
+@media(max-width:590px){
+  .investment-scene .committee-layout{padding:16px 14px;border-radius:15px}
+  .investment-scene .committee-choice-layout{
+    grid-template-columns:minmax(0,1fr);gap:12px;
+    margin-top:18px;padding-top:15px;
+  }
+  .investment-scene .committee-choice-layout h3{font-size:22px}
+  .investment-scene .committee-options .btn{min-height:56px;padding:14px 12px;font-size:15px}
+  .investment-scene .committee-selected{gap:12px;padding:14px 13px}
+  .investment-scene .committee-selected strong{font-size:17px}
+  .investment-scene .committee-actions{display:grid;grid-template-columns:minmax(0,1fr);gap:11px}
+  .investment-scene .committee-actions .btn{width:100%;min-height:54px}
+}

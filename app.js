@@ -226,14 +226,16 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
    confidence:'Комитет обращает внимание: гарантировать эффект без проверки исходных условий нельзя. Решение требует обоснования.',
    stage:'Комитет отмечает преимущество поэтапного запуска: результаты можно оценивать до дальнейших вложений.'
   };
-  let h='<div class="panel"><h2>Заседание инвесткомитета</h2><p>Вы представляете рекомендацию. Коллеги оценивают не только выбранные мероприятия, но и условия, при которых они принесут пользу.</p>'+
+  let h='<div class="panel committee-layout"><h2>Заседание инвесткомитета</h2><p>Вы представляете рекомендацию. Коллеги оценивают не только выбранные мероприятия, но и условия, при которых они принесут пользу.</p>'+
    '<p><b>Окончательный портфель:</b> '+e(final.join(', ')||'Не выбран')+' · '+total+' млн у.е.</p>';
   if(!comments[s.committeeDecision]){
-   h+='<h3>Какие риски вы готовы объяснить комитету?</h3>'+choices.map(x=>btn(x.label,'committeeChoose',x.id)).join('');
+   h+='<div class="committee-choice-layout"><h3>Какие риски вы готовы объяснить комитету?</h3><div class="committee-options">'+choices.map(x=>btn(x.label,'committeeChoose',x.id)).join('')+'</div></div>';
   }else{
-   h+='<h3>Ваш ответ комитету</h3><p>'+e(choices.find(x=>x.id===s.committeeDecision).label)+'</p><p>'+e(comments[s.committeeDecision])+'</p>'+
+   h+='<div class="committee-result"><div class="committee-result-label">Ваш ответ комитету</div>'+
+    '<div class="committee-selected"><span aria-hidden="true"></span><strong>'+e(choices.find(x=>x.id===s.committeeDecision).label)+'</strong></div>'+
+    '<p class="committee-feedback">'+e(comments[s.committeeDecision])+'</p>'+
     '<p>Это учебная проектная версия заседания. Решение комитета об инвестициях не моделируется как подтверждённое.</p>'+
-    btn('Изменить ответ','committeeRevise')+btn('Перейти к заказу З-214','orderStart','','primary');
+    '<div class="committee-actions">'+btn('Изменить ответ','committeeRevise')+btn('Перейти к заказу З-214','orderStart','','primary')+'</div></div>';
   }
   html=frame(A.meeting,h+'</div>','investment-scene');
  }else if(['S06','S07','S08'].includes(s.scene)){
