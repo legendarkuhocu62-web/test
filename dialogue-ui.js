@@ -190,8 +190,9 @@ function fit(){
        const isDangling=dangling(left)||
          /(?:прежде чем|для того чтобы|потому что)$/iu.test(last);
        const intact=sentence || /^Но прежде чем составлять\b/u.test(nextText);
-       // Keep one-line slack unless fixing a grammatically broken phrase.
-       if(originalLeftHeight-hLeft>lineHeight*1.1&&!intact)continue;
+       // Fixed-frame priority: do not sacrifice more than one text line
+       // to reach any "nice" boundary, even a sentence-ending one.
+       if(originalLeftHeight-hLeft>lineHeight*1.1)continue;
        const score=Math.min(hLeft,hRight)*2
          -Math.abs(hLeft-hRight)*0.35
          +(sentence?lineHeight*1.5:0)
