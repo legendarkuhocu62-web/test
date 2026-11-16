@@ -1668,3 +1668,8 @@ body.dialogue-mode-active #app .game-dialogue__text--question p{
   .restart-confirm-dialog .restart-confirm-dialog__summary{padding:0 17px}
   .restart-confirm-dialog .budget-limit-dialog__actions{gap:9px}
 }
+
+
+/* Brand match · 16.11: the 404 digits use the cover artwork's vivid orange,
+   not the previous muted gold. The remaining header and typography are intact. */
+.masthead .brand strong{color:#ff7d08}

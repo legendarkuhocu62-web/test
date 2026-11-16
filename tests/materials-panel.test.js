@@ -37,6 +37,17 @@ const KEY='ceh404.rebuilt.qa50.20261108';
   assert.ok(compact.icon,'materials icon must be present');
   assert.ok(compact.x>=0&&compact.x+compact.w<=width,'launcher must stay on-screen');
   assert.ok(compact.y>=0&&compact.y+compact.h<=height,'launcher must stay on-screen');
+  const visual=await page.evaluate(()=>{
+    const logo=document.querySelector('.masthead .brand strong');
+    const shortcut=document.querySelector('.ceh-materials-trigger');
+    const c=getComputedStyle(shortcut),b=getComputedStyle(logo);
+    return {logoColor:b.color,iconColor:c.color,borderColor:c.borderTopColor,
+      background:c.backgroundImage,shadow:c.boxShadow};
+  });
+  assert.equal(visual.logoColor,'rgb(255, 125, 8)','404 should match cover vivid orange');
+  assert.match(visual.background,/linear-gradient/,'materials shortcut should have subtle brighter gradient');
+  assert.ok(!visual.shadow.includes('none'),'materials shortcut should have a visible, restrained edge');
+
   assert.equal((await page.locator('.ceh-materials-trigger').innerText()).trim(),'',
     'large visible text must be removed');
   await page.locator('.ceh-materials-trigger').click();
