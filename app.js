@@ -296,8 +296,8 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
    confidence:'Комитет обращает внимание: гарантировать эффект без проверки исходных условий нельзя. Решение требует обоснования.',
    stage:'Комитет отмечает преимущество поэтапного запуска: результаты можно оценивать до дальнейших вложений.'
   };
-  let h='<div class="panel committee-layout"><h2 class="committee-heading"><span class="committee-heading__icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 16 5l13 7M5 13h22M7 25h18M4 28h24M9 14v10M16 14v10M23 14v10"/></svg></span><span>Заседание инвесткомитета</span></h2><p>Вы представляете рекомендацию. Коллеги оценивают не только выбранные мероприятия, но и условия, при которых они принесут пользу.</p>'+
-   '<p><b>Окончательный портфель:</b> '+e(final.join(', ')||'Не выбран')+' · '+total+' млн у.е.</p>';
+  let h='<div class="panel committee-layout"><section class="committee-intro" aria-label="Заседание инвесткомитета"><h2 class="committee-heading"><span class="committee-heading__icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 16 5l13 7M5 13h22M7 25h18M4 28h24M9 14v10M16 14v10M23 14v10"/></svg></span><span>Заседание инвесткомитета</span></h2><p>Вы представляете рекомендацию. Коллеги оценивают не только выбранные мероприятия, но и условия, при которых они принесут пользу.</p>'+
+   '<p class="committee-portfolio"><b>Окончательный портфель:</b> '+e(final.join(', ')||'Не выбран')+' · '+total+' млн у.е.</p></section>';
   if(!comments[s.committeeDecision]){
    h+='<div class="committee-choice-layout"><h3 class="committee-question"><span class="committee-question__icon" aria-hidden="true">⚠</span><span>Какие риски вы готовы объяснить комитету?</span></h3><div class="committee-options">'+choices.map(x=>btn(x.label,'committeeChoose',x.id)).join('')+'</div></div>';
   }else{
