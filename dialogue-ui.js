@@ -113,48 +113,22 @@ function fit(){
  measure.style.width=paragraph.getBoundingClientRect().width+'px';
  // Keep the measuring paragraph OUTSIDE the flex panel: inserting it into
  // the text flex child changes its height and falsely reduces available space.
- measure.style.left='-10000px';
- measure.style.top='0';
- measure.style.font=getComputedStyle(paragraph).font;
- measure.style.lineHeight=getComputedStyle(paragraph).lineHeight;
- measure.style.letterSpacing=getComputedStyle(paragraph).letterSpacing;
- measure.style.overflowWrap=getComputedStyle(paragraph).overflowWrap;
- measure.style.wordBreak=getComputedStyle(paragraph).wordBreak;
- document.body.appendChild(measure);
- // Use the REAL flexbox text area: header badges have a negative top margin,
- // and subtracting header height from panel CSS max-height counts it twice.
- // The old estimate left ~30-45px unused on short Android screens.
- // Textbox height is stable because the panel has a fixed height.
- // Measure against the fixed panel's actual available height, not the
- // flex child's current height (which shrinks when a short paragraph renders).
+ // Measure within the real dialogue text box, as in the early v5
+ // renderer. This uses its own CSS typography and the actual current
+ // footer instead of reserving hypothetical extra footer height.
+ textBox.appendChild(measure);
  const panelStyle=getComputedStyle(panel);
  const textStyle=getComputedStyle(textBox);
  const header=node.querySelector('.game-dialogue__speaker');
  const footer=node.querySelector('.game-dialogue__footer');
  const heightOf=el=>el?el.getBoundingClientRect().height:0;
  const px=(style,key)=>parseFloat(style[key])||0;
- // Footer buttons vary between reading and the last page. Measure the
- // largest footer in the SAME CSS context before pagination, so advancing
- // never shrinks the room or creates a new page mid-conversation.
- const probe=panel.cloneNode(true);
- probe.style.setProperty('position','fixed','important');
- probe.style.setProperty('left','-10000px','important');
- probe.style.setProperty('top','0','important');
- probe.style.setProperty('visibility','hidden','important');
- probe.style.setProperty('pointer-events','none','important');
- probe.style.setProperty('width',panel.getBoundingClientRect().width+'px','important');
- const probeActions=probe.querySelector('.game-dialogue__actions');
- if(probeActions)probeActions.innerHTML=button('Назад','dlgBack')+(lastOptions.finish||'');
- node.appendChild(probe);
- const finalFooter=heightOf(probe.querySelector('.game-dialogue__footer'));
- probe.remove();
- const stableFooterHeight=Math.max(heightOf(footer),finalFooter);
  const panelRoom=heightOf(panel)
    -px(panelStyle,'paddingTop')-px(panelStyle,'paddingBottom')
-   -heightOf(header)-stableFooterHeight
+   -heightOf(header)-heightOf(footer)
    -px(getComputedStyle(header),'marginTop')-px(getComputedStyle(header),'marginBottom')
    -px(getComputedStyle(footer),'marginTop')-px(getComputedStyle(footer),'marginBottom');
- const room=Math.max(0,panelRoom-px(textStyle,'paddingTop')-px(textStyle,'paddingBottom')-2);
+  const room=Math.max(0,panelRoom-px(textStyle,'paddingTop')-px(textStyle,'paddingBottom')-2);
  function fits(value){
    measure.innerHTML=escapeHTML(displayText(value)).replace(/\n/g,'<br>');
    return measure.getBoundingClientRect().height<=room+0.5;
@@ -192,7 +166,7 @@ function fit(){
        if(originalHeight-h1>lh*1.05)continue;
        const h2=measuredHeight(right),ending=visibleText(left);
        const complete=/[.!?…]["»”’)]?$/.test(ending);
-       const score=h1+(complete?lh*0.75:0)
+       const score=h1+(complete?lh*2.5:0)
          -(endsPoorly(left)?lh*100:0)
          +Math.min(h2,lh*2)*0.02;
        if(!best||score>best.score)best={left,right,score};
