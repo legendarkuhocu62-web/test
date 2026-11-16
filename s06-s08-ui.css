@@ -52,3 +52,9 @@
 .order-stage .scene-content{width:100%;position:relative;z-index:1}
 body:has(.order-stage) .reset{position:relative;clear:both;margin-top:0;padding:18px 22px 26px;z-index:0}
 .order-screen>.btn{margin-bottom:12px}
+
+/* S05 signal, isolated from the shared dialogue frame */
+.s05-notice-scene .s05-tablet-notice{position:absolute;top:clamp(12px,3vh,30px);right:clamp(12px,3vw,42px);width:min(340px,42vw);z-index:3;background:rgba(12,30,49,.97);border:2px solid #dca75a;border-radius:12px;padding:12px 16px;color:#fff;box-shadow:0 12px 32px #0008;line-height:1.35}
+.s05-tablet-notice strong,.s05-tablet-notice small{display:block}.s05-tablet-notice small{margin-top:5px;color:#ffda9e}.s05-tablet-notice p{margin:8px 0 0;font-size:clamp(12px,1.2vw,15px)}
+@media(max-width:720px){.s05-notice-scene .s05-tablet-notice{top:10px;right:10px;left:10px;width:auto;max-height:24vh;overflow:auto;padding:9px 12px}.s05-tablet-notice p{font-size:12px}}
+.s06-intro{max-width:740px!important}

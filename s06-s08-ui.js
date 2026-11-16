@@ -22,6 +22,7 @@ function viewDocument(state){
 }
 function renderS06(s){
  const z=M.clean(s.s0608),view=s.s06Page||'documents';
+ if(!s.s06IntroSeen)return '<div class="glass order-screen s06-intro"><div class="order-kicker">ЗАКАЗ З-214 · ПРОИЗВОДСТВЕННЫЙ УЧАСТОК</div><h1>Поручение Андрея Громова</h1><p>'+e(s.name?s.name+', ':'')+'вот данные по заказу З-214. Нам нужно разобраться, насколько серьёзно отклонение от графика и что действительно известно о ситуации. Изучи документы и подготовь оперативное заключение.</p>'+button('Изучить документы заказа','s06ReadDocs','',true)+'</div>';
  let h='<div class="glass order-screen"><div class="order-kicker">ГЛАВА 01 · ПРОИЗВОДСТВЕННЫЙ ЗАКАЗ</div><h1>Заказ под угрозой · З-214</h1>';
  if(view==='documents'){
   h+='<p>Плановая отгрузка — 13.11.2026, 16:00. Прежде чем делать выводы, изучи три документа. Время ситуации: <strong>'+e(M.GAME_CLOCK)+'</strong>.</p>';

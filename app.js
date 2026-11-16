@@ -109,7 +109,7 @@ function syncStartHitbox(){
  hit.style.height='100%';
 }
 
-function render(){document.body.classList.toggle('s00-mobile-cover-active',s.scene==='S00'&&s.s00===0);document.body.classList.toggle('s00-desktop-cover-active',s.scene==='S00'&&s.s00===0);document.body.classList.toggle('s00-mobile-badge-active',s.scene==='S00'&&s.s00===4);document.body.classList.toggle('dialogue-mode-active',s.scene==='S01'||(s.scene==='S03'&&(!!s.s03Person||s.s03ConclusionSeen))||(s.scene==='S04'&&s.s04Mode==='gromov')||(s.scene==='S02'&&['intro','feedback'].includes(s.s02Step)));document.body.classList.toggle('s02-view-active',s.scene==='S02');document.body.classList.toggle('s03-mobile-choice-active',s.scene==='S03'&&!s.s03Person&&!s.s03ConclusionSeen);let html='';if(s.scene==='S00'){
+function render(){document.body.classList.toggle('s00-mobile-cover-active',s.scene==='S00'&&s.s00===0);document.body.classList.toggle('s00-desktop-cover-active',s.scene==='S00'&&s.s00===0);document.body.classList.toggle('s00-mobile-badge-active',s.scene==='S00'&&s.s00===4);document.body.classList.toggle('dialogue-mode-active',s.scene==='S01'||(s.scene==='S03'&&(!!s.s03Person||s.s03ConclusionSeen))||(s.scene==='S04'&&s.s04Mode==='gromov')||(s.scene==='S05'&&s.s05Phase!=='committee')||(s.scene==='S06'&&!s.s06IntroSeen)||(s.scene==='S02'&&['intro','feedback'].includes(s.s02Step)));document.body.classList.toggle('s02-view-active',s.scene==='S02');document.body.classList.toggle('s03-mobile-choice-active',s.scene==='S03'&&!s.s03Person&&!s.s03ConclusionSeen);let html='';if(s.scene==='S00'){
  if(s.s00===0)html=frame(A.title,`<div class="desktop-start-visual"><img src="${A.title}" alt="ЦЕХ 404 — производственная игра-симулятор. Начало игры." fetchpriority="high"><button type="button" class="desktop-start-hitbox" data-act="s00next" aria-label="Начать игру"></button></div><div class="mobile-start-visual"><img src="assets/backgrounds/CH1-IMG-021_S00_start_mobile_composite.jpeg" alt="ЦЕХ 404 — производственная игра-симулятор, мобильная стартовая заставка" fetchpriority="high"><button type="button" class="mobile-start-hitbox" data-act="s00next" aria-label="Начать игру"></button></div>`,'cover mobile-cover-s00');
  if(s.s00===1)html=frame(A.gate,chapterDialogue('S00:gate:1','ЦЕХ 404','Первый день на предприятии','Сегодня твой первый день на машиностроительном предприятии «ЦЕХ 404». За проходной уже началась рабочая смена.', '',btn('Далее','s00next','','primary'),'inline'),'gate-scene');
  if(s.s00===2)html=frame(A.gate,chapterDialogue('S00:gate:2','ЦЕХ 404','Первый рабочий день','Тебе предстоит познакомиться с людьми, оборудованием и процессами, от которых зависит работа всего предприятия.', '',btn('Подойти к проходной','s00next','','primary'),'inline'),'gate-scene');
@@ -235,9 +235,20 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
     '<div class="committee-selected"><span aria-hidden="true"></span><strong>'+e(choices.find(x=>x.id===s.committeeDecision).label)+'</strong></div>'+
     '<p class="committee-feedback">'+e(comments[s.committeeDecision])+'</p>'+
     '<p>Это учебная проектная версия заседания. Решение комитета об инвестициях не моделируется как подтверждённое.</p>'+
-    '<div class="committee-actions">'+btn('Изменить ответ','committeeRevise')+btn('Перейти к заказу З-214','orderStart','','primary')+'</div></div>';
+    '<div class="committee-actions">'+btn('Изменить ответ','committeeRevise')+btn('Продолжить заседание','s05Continue','','primary')+'</div></div>';
   }
-  html=frame(A.meeting,h+'</div>','investment-scene');
+  if(s.s05Phase!=='committee'){
+   const messages=[
+    {name:'Андрей Громов',role:'Участник инвесткомитета',portrait:A.andrey,text:'Коллеги, на мой планшет только что пришло сообщение с производства. По заказу З-214 возникло отклонение от графика. Предлагаю прерваться и разобраться, что происходит на участке.'},
+    {name:'Марина Власова',role:'Участник инвесткомитета',portrait:A.marina,text:'Прежде чем принимать срочные меры, нужно понять, насколько ситуация влияет на сроки и другие обязательства предприятия. Пока у нас недостаточно данных для окончательного вывода.'},
+    {name:'Ирина Соколова',role:'Главный технолог',portrait:A.irina_focused,text:'По одному сообщению нельзя установить причину задержки. Давай сначала посмотрим маршрут заказа, оперативную сводку участка и план дальнейших операций.'},
+    {name:'Андрей Громов',role:'Участник инвесткомитета',portrait:A.andrey,text:(s.name?s.name+', ':'')+'твоя инвестиционная рекомендация зафиксирована. Теперь нам нужно оценить ситуацию с текущим заказом. Пройдём на производственный участок и проверим документы.'}
+   ];
+   const n=Math.max(0,Math.min(3,Number(s.s05Phase.replace('notice',''))||0));
+   const notice=n===0?'<aside class="s05-tablet-notice" aria-label="Уведомление на планшете Андрея Громова"><strong>Производственное уведомление</strong><small>11.11.2026 · 12:00 · Заказ З-214</small><p>Обнаружено отклонение от графика: шлифование заказа З-214 не началось в запланированное время. Требуется уточнить ситуацию на производственном участке.</p></aside>':'';
+   const m=messages[n];
+   html=frame(A.meeting,notice+chapterDialogue('S05:notice:'+n,m.name,m.role,m.text,m.portrait,btn(n===3?'Перейти на производственный участок':'Далее',n===3?'s05ToS06':'s05Next','','primary')),'investment-scene s05-notice-scene');
+  }else html=frame(A.meeting,h+'</div>','investment-scene');
  }else if(['S06','S07','S08'].includes(s.scene)){
   html=window.CEH_ORDER_UI.render(s,d,A.engineer,frame);
  }
@@ -297,15 +308,13 @@ function act(action,id){if(action==='eduToggleDocuments'&&s.scene==='S04'&&s.s04
  else if(action==='gromovNext'&&s.scene==='S04'&&s.s04Mode==='gromov'){s.eduGromovIndex=2;s.s04Mode='reviewFinal'}
  else if(action==='revisePortfolio'){s.returnToReview=true;s.s04Mode='catalog';s.showReview=false;s.budgetMessage=''}
  else if(action==='saveFinal'){s.finalSelected=[...s.selected];s.s04Mode='savedFinal'}
- else if(action==='committeeStart'&&s.scene==='S04'&&s.s04Mode==='savedFinal'){s.scene='S05';s.committeeDecision=null}
+ else if(action==='committeeStart'&&s.scene==='S04'&&s.s04Mode==='savedFinal'){s.scene='S05';s.committeeDecision=null;s.s05Phase='committee'}
  else if(action==='committeeChoose'&&s.scene==='S05'&&['conditions','confidence','stage'].includes(id)){s.committeeDecision=id}
- else if(action==='committeeRevise'&&s.scene==='S05'){s.committeeDecision=null}
- else if(action==='orderStart'&&s.scene==='S05'&&['conditions','confidence','stage'].includes(s.committeeDecision)){
-  s.s0608=O.clean(s.s0608);s.s06Page='documents';s.s06Message='';s.scene='S06';
- }
- else if(action==='orderStart'&&s.scene==='S04'&&s.s04Mode==='savedFinal'){
-  s.s0608=O.clean(s.s0608);s.s06Page='documents';s.s06Message='';s.scene='S06';
- }
+ else if(action==='committeeRevise'&&s.scene==='S05'&&s.s05Phase==='committee'){s.committeeDecision=null}
+ else if(action==='s05Continue'&&s.scene==='S05'&&s.s05Phase==='committee'&&['conditions','confidence','stage'].includes(s.committeeDecision)){s.s05Phase='notice0'}
+ else if(action==='s05Next'&&s.scene==='S05'&&/^notice[0-2]$/.test(s.s05Phase)){s.s05Phase='notice'+(Number(s.s05Phase.slice(-1))+1)}
+ else if(action==='s05ToS06'&&s.scene==='S05'&&s.s05Phase==='notice3'&&['conditions','confidence','stage'].includes(s.committeeDecision)){s.s0608=O.clean(s.s0608);s.s06Page='documents';s.s06Message='';s.s06IntroSeen=false;s.scene='S06'}
+ else if(action==='s06ReadDocs'&&s.scene==='S06'&&!s.s06IntroSeen){s.s06IntroSeen=true}
  else if(action==='orderDoc'&&s.scene==='S06'&&s.s06Page==='documents'&&O.DOCUMENTS.some(x=>x.id===id)){
   s.s0608=O.openDocument(s.s0608,id);s.s06OpenDoc=id;
  }
