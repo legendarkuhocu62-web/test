@@ -52,7 +52,14 @@ const KEY='ceh404.rebuilt.qa50.20261108';
      const stats=await page.evaluate(()=>window.CEH_PRELOAD.stats());
      assert.ok(stats.started.every(url=>new URL(url).origin==='http://127.0.0.1:8765'),'poster preload must be same-origin');
      assert.ok(stats.active<=2,'poster preload must respect global concurrency');
-     assert.ok(stats.started.length<= (width<=720?5:7),'preload must target the current catalogue page');
+     const posterIds=stats.started.map(url=>url.match(/CH1-VA-([A-M])-001\.png/)?.[1]).filter(Boolean);
+     const allowed=pageIndex===0
+       ? (width<=720?'ABCD':'ABCDEF')
+       : (width<=720?'ABCDEFGH':'ABCDEFGHIJKL');
+     assert.ok(posterIds.every(id=>allowed.includes(id)),
+       'preloader started posters outside visited catalogue pages: '+posterIds.join(','));
+     assert.ok(posterIds.length <= (width<=720?(pageIndex===0?4:8):(pageIndex===0?6:12)),
+       'excess poster preloads: '+posterIds.join(','));
      assert.ok(!stats.started.some(url=>url.includes('CH1-VA-M-001.png')),'do not preload unrelated end-of-catalog images');
    }
    assert.deepEqual(errors,[],'preload JS errors '+width+'x'+height);
