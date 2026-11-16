@@ -148,74 +148,47 @@ function fit(){
    return measure.getBoundingClientRect().height<=room+0.5;
  }
  let next=[];
- // First calculate the minimum number of pages from the real text height.
- // Never add a page solely to preserve a sentence boundary.
+ const measuredHeight=value=>{
+   measure.innerHTML=escapeHTML(visibleText(value)).replace(/\n/g,'<br>');
+   return measure.getBoundingClientRect().height;
+ };
+ const lh=parseFloat(getComputedStyle(paragraph).lineHeight)||22;
+ const endsPoorly=s=>/(?:^|\s)(?:и|а|но|или|что|чтобы|если|когда|прежде|чем|перед|в|на|с|со|к|по|из|у|от|до|для|при|без|под|над|между)$/iu.test(visibleText(s));
  for(const block of semanticBlocks(raw)){
    const words=block.match(/\S+\s*|\s+/g)||[block];
-   const blockPages=[];
+   // Greedy packing gives the minimum page count for this text area.
+   const pages=[];
    let buffer='';
    for(const word of words){
-     if(buffer&&!fits(buffer+word)){blockPages.push(buffer);buffer=''}
+     if(buffer&&!fits(buffer+word)){pages.push(buffer);buffer=''}
      buffer+=word;
    }
-   if(buffer)blockPages.push(buffer);
-   // Balance pages when a greedy last page has only a few words.
-   // Both adjacent pages must fit, the number of pages may not increase,
-   // and the full source must remain byte-for-byte intact.
-   const measuredHeight=value=>{
-     measure.innerHTML=escapeHTML(visibleText(value)).replace(/\n/g,'<br>');
-     return measure.getBoundingClientRect().height;
-   };
-   const lineHeight=parseFloat(getComputedStyle(paragraph).lineHeight)||22;
-   const dangling=value=>/(?:^|\s)(?:и|а|но|или|что|чтобы|если|когда|прежде|чем|перед|в|на|с|со|к|по|из|у|от|до|для|при|без|под|над|между)$/iu.test(visibleText(value));
-   for(let i=0;i<blockPages.length-1;i++){
-     // Only shorten the preceding page when the final page is very short.
-     // Earlier pages must stay dense to minimize unnecessary taps.
-     if(i!==blockPages.length-2)continue;
-     const originalLeftHeight=measuredHeight(blockPages[i]);
-     const originalRightHeight=measuredHeight(blockPages[i+1]);
-     if(originalRightHeight>=lineHeight*2.5&&!dangling(blockPages[i]))continue;
-     const combined=blockPages[i]+blockPages[i+1];
-     const tokens=combined.match(/\S+\s*|\s+/g)||[combined];
-     let offset=0,best=null;
-     for(let t=0;t<tokens.length-1;t++){
-       offset+=tokens[t].length;
-       const left=combined.slice(0,offset),right=combined.slice(offset);
-       if(!left||!right||!fits(left)||!fits(right))continue;
-       const hLeft=measuredHeight(left),hRight=measuredHeight(right);
-       const last=visibleText(left);
-       const nextText=visibleText(right);
-       // Never force the sentence to be split at a dangling phrase.
-       const sentence=/[.!?…]["»”’)]?$/.test(last);
-       const isDangling=dangling(left)||
-         /(?:прежде чем|для того чтобы|потому что)$/iu.test(last);
-       const intact=sentence || /^Но прежде чем составлять\b/u.test(nextText);
-       // Fixed-frame priority: do not sacrifice more than one text line
-       // to reach any "nice" boundary, even a sentence-ending one.
-       if(originalLeftHeight-hLeft>lineHeight*1.1)continue;
-       const score=Math.min(hLeft,hRight)*2
-         -Math.abs(hLeft-hRight)*0.35
-         +(sentence?lineHeight*1.5:0)
-         -(isDangling?lineHeight*15:0);
-       if(!best||score>best.score)best={left,right,score};
-     }
-     // A short introductory clause must not end a page in mid-phrase.
-     // Keep this grammatical rule local: never rewrite the source text.
-     if(best){
-       const textLeft=visibleText(best.left),textRight=visibleText(best.right);
-       if(/Но прежде чем$/u.test(textLeft)||
-          (/^составлять\b/u.test(textRight)&&/Но прежде чем$/u.test(textLeft))){
-         const phraseIndex=combined.lastIndexOf('Но прежде чем');
-         if(phraseIndex>0){
-           const before=combined.slice(0,phraseIndex),after=combined.slice(phraseIndex);
-           if(fits(before)&&fits(after))best={left:before,right:after};
-         }
+   if(buffer)pages.push(buffer);
+   // Optimize all adjacent boundaries while keeping the SAME page count.
+   // In particular, avoid a 1-line last page; grammatical boundaries are
+   // preferred but cannot create extra pages or clip text.
+   for(let pass=0;pass<2;pass++){
+     for(let i=pages.length-2;i>=0;i--){
+       const combined=pages[i]+pages[i+1];
+       const parts=combined.match(/\S+\s*|\s+/g)||[combined];
+       let offset=0,best=null;
+       for(let j=0;j<parts.length-1;j++){
+         offset+=parts[j].length;
+         const left=combined.slice(0,offset),right=combined.slice(offset);
+         if(!left||!right||!fits(left)||!fits(right))continue;
+         const h1=measuredHeight(left),h2=measuredHeight(right);
+         const ending=visibleText(left),opening=visibleText(right);
+         const sentence=/[.!?…]["»”’)]?$/.test(ending);
+         const broken=endsPoorly(left)||
+           (/\bНо прежде чем$/u.test(ending)&&/^составлять\b/u.test(opening));
+         const score=Math.min(h1,h2)*3-Math.abs(h1-h2)*0.25
+           +(sentence?lh*1.5:0)-(broken?lh*15:0);
+         if(!best||score>best.score)best={left,right,score};
        }
-       blockPages[i]=best.left;
-       blockPages[i+1]=best.right;
+       if(best){pages[i]=best.left;pages[i+1]=best.right}
      }
    }
-   next.push(...blockPages);
+   next.push(...pages);
  }
  measure.remove();
  paragraph.innerHTML=oldHTML;
