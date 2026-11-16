@@ -224,7 +224,7 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
    html=frame(A.group,content,'s03-group-scene');
  }
  }else if(s.scene==='S04'){
- let h='<div class="glass document document--'+e(s.s04Mode)+'"><h1>Инвестиционное предложение</h1>';
+ let h='<div class="glass document document--'+e(s.s04Mode)+'">'+(s.s04Mode==='savedFinal'?'<h1 class="s04-saved__page-title"><span class="s04-saved__title-icon" aria-hidden="true">▤</span><span>Инвестиционное предложение</span></h1>':'<h1>Инвестиционное предложение</h1>');
  if(s.s04Mode==='priority'){
   h+='<p>Выбери основной приоритет инвестиционной программы. Это ориентир для анализа, а не условие допуска к формированию портфеля.</p><div class="choices">'+d.goals.map(x=>btn((s.priority===x.id?'✓ ':'')+x.label,'priority',x.id,s.priority===x.id?'selected':'')).join('')+'</div>'+btn('Перейти к выбору мероприятий','catalog','','primary');
  }else if(s.s04Mode==='catalog'){
@@ -280,7 +280,7 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
   const initial=Array.isArray(s.initialSelected)?s.initialSelected:[];
   h+='<h2>Сохранить или пересмотреть?</h2><p>Теперь у тебя больше информации. Готов оставить первоначальный инвестиционный портфель или хочешь его пересмотреть?</p><p><b>Первоначальный портфель:</b> '+e(initial.join(', '))+' · '+initial.reduce((sum,id)=>sum+(d.initiatives.find(x=>x.id===id)?.cost||0),0)+' млн у.е.</p><p><b>Текущий портфель:</b> '+e(s.selected.join(', '))+' · '+L.spent(s)+' млн у.е.</p>'+btn('Сохранить и продолжить','saveFinal','','primary')+btn('Пересмотреть портфель','revisePortfolio','','');
  }else if(s.s04Mode==='savedFinal'){
-  h+='<h2>Портфель сохранён</h2><p>Окончательный портфель: '+e((s.finalSelected||s.selected).join(', '))+' · '+L.spent({...s,selected:s.finalSelected||s.selected})+' млн у.е.</p><p>EDU-01 пройден.</p><p>Рекомендация подготовлена. Следующий этап — заседание инвестиционного комитета.</p>'+btn('Перейти к заседанию','committeeStart','','primary');
+  h+='<section class="s04-saved__result" aria-label="Итоги инвестиционного предложения"><h2><span class="s04-saved__check" aria-hidden="true">✓</span>Портфель сохранён</h2><p class="s04-saved__portfolio"><strong>Окончательный портфель:</strong> '+e((s.finalSelected||s.selected).join(', '))+' · '+L.spent({...s,selected:s.finalSelected||s.selected})+' млн у.е.</p><p class="s04-saved__edu"><span aria-hidden="true">✓</span> EDU-01 пройден.</p></section><section class="s04-saved__next" aria-label="Следующий этап"><span class="s04-saved__next-icon" aria-hidden="true">➜</span><p>Рекомендация подготовлена. Следующий этап — заседание инвестиционного комитета.</p></section><div class="s04-saved__actions">'+btn('Перейти к заседанию','committeeStart','','primary')+'</div>';
  }
  if(s.s04Mode!=='gromov')html=frame(A.engineer,h+'</div>','investment-scene');
  }else if(s.scene==='S05'){
