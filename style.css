@@ -2043,3 +2043,133 @@ body.dialogue-mode-active #app .game-dialogue__text--question p{
   #app .document--savedFinal .s04-saved__next{padding:14px 12px;gap:10px}
   #app .document--savedFinal .s04-saved__actions .btn{width:100%;max-width:100%}
 }
+
+
+/* S04 reviewFinal: keep the question and the portfolio comparison in clearly
+   separated industrial-gold frames. Applies only to this S04 sub-screen. */
+#app .investment-scene .document--reviewFinal .s04-saved__page-title{
+  display:flex;
+  align-items:center;
+  gap:13px;
+  box-sizing:border-box;
+  max-width:100%;
+  padding:16px 18px;
+  margin:0 0 22px;
+  border:2px solid #dca64f;
+  border-radius:15px;
+  background:linear-gradient(125deg,#26394d,#102337);
+  font-size:clamp(23px,3.5vw,35px);
+  line-height:1.2;
+  overflow-wrap:anywhere;
+}
+#app .document--reviewFinal .s04-saved__title-icon{
+  display:grid;
+  place-items:center;
+  flex:0 0 43px;
+  width:43px;
+  height:43px;
+  border:1.5px solid #f8be55;
+  border-radius:10px;
+  color:#ffd16f;
+  background:#ffb82a20;
+  font-size:29px;
+  line-height:1;
+}
+#app .document--reviewFinal .s04-review__intro{
+  box-sizing:border-box;
+  padding:19px 20px;
+  border:2px solid #dca64f;
+  border-radius:16px;
+  background:linear-gradient(145deg,rgba(33,53,71,.96),rgba(13,32,51,.96));
+  box-shadow:inset 0 1px 0 #ffde9a24,0 6px 18px #0004;
+}
+#app .document--reviewFinal .s04-review__intro h2{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:0 0 16px;
+  font-size:clamp(22px,3vw,30px);
+  line-height:1.24;
+}
+#app .document--reviewFinal .s04-review__icon{
+  display:grid;
+  place-items:center;
+  flex:0 0 38px;
+  width:38px;
+  height:38px;
+  border:1.5px solid #f8be55;
+  border-radius:10px;
+  color:#ffd16f;
+  background:#ffb82a20;
+  font-size:25px;
+  line-height:1;
+}
+#app .document--reviewFinal .s04-review__intro p{
+  margin:0;
+  line-height:1.55;
+}
+#app .document--reviewFinal .s04-review__comparison{
+  box-sizing:border-box;
+  margin-top:18px;
+  padding:8px 19px;
+  border:2px solid #dca64f;
+  border-radius:15px;
+  background:rgba(18,39,57,.92);
+}
+#app .document--reviewFinal .s04-review__row{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:baseline;
+  justify-content:space-between;
+  column-gap:14px;
+  row-gap:6px;
+  padding:14px 0;
+  line-height:1.4;
+}
+#app .document--reviewFinal .s04-review__row + .s04-review__row{
+  border-top:1px solid #dca64f7d;
+}
+#app .document--reviewFinal .s04-review__row span{
+  color:#ffe0a0;
+  font-weight:700;
+}
+#app .document--reviewFinal .s04-review__actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-top:20px;
+}
+#app .document--reviewFinal .s04-review__actions > .btn{
+  margin:0;
+}
+@media(max-width:590px){
+  #app .investment-scene .document--reviewFinal .s04-saved__page-title{
+    gap:11px;
+    padding:14px 12px;
+    font-size:clamp(22px,5.3vw,29px);
+  }
+  #app .document--reviewFinal .s04-saved__title-icon{
+    flex-basis:36px;
+    width:36px;
+    height:36px;
+    font-size:25px;
+  }
+  #app .document--reviewFinal .s04-review__intro{padding:17px 14px}
+  #app .document--reviewFinal .s04-review__intro h2{font-size:clamp(22px,5.4vw,27px)}
+  #app .document--reviewFinal .s04-review__comparison{padding:6px 14px}
+  #app .document--reviewFinal .s04-review__row{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+    padding:13px 0;
+  }
+  #app .document--reviewFinal .s04-review__actions{
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+    gap:11px;
+  }
+  #app .document--reviewFinal .s04-review__actions .btn{
+    width:100%;
+    max-width:100%;
+  }
+}
