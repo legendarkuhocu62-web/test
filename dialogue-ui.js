@@ -143,26 +143,40 @@ function fit(){
      buffer+=word;
    }
    if(buffer)blockPages.push(buffer);
-   // Then redistribute between EXISTING adjacent pages at sentence ends.
-   // Example: move "Ты поможешь..." entirely to page 2 instead of
-   // leaving page 1 ending in "информацию и".
+   // Keep pages DENSE: never move a whole sentence to the next page
+   // if that leaves several lines blank on the current one. Prefer a
+   // grammatical boundary only when it uses almost the same text height.
    const measuredHeight=value=>{
      measure.innerHTML=escapeHTML(visibleText(value)).replace(/\n/g,'<br>');
      return measure.getBoundingClientRect().height;
    };
+   const lineHeight=parseFloat(getComputedStyle(paragraph).lineHeight)||22;
+   const dangling=value=>/(?:^|\s)(?:и|а|но|или|что|чтобы|если|когда|прежде|чем|перед|в|на|с|со|к|по|из|у|от|до|для|при|без|под|над|между)$/iu.test(visibleText(value));
    for(let i=0;i<blockPages.length-1;i++){
      const combined=blockPages[i]+blockPages[i+1];
-     let offset=0,best=null;
-     for(const unit of semanticUnits(combined)){
-       offset+=unit.length;
-       if(offset<=0||offset>=combined.length)continue;
+     const tokens=combined.match(/\S+\s*|\s+/g)||[combined];
+     const denseHeight=measuredHeight(blockPages[i]);
+     let offset=0;
+     let best={left:blockPages[i],right:blockPages[i+1],
+       score:dangling(blockPages[i])?-1000:0};
+     for(let t=0;t<tokens.length-1;t++){
+       offset+=tokens[t].length;
        const left=combined.slice(0,offset),right=combined.slice(offset);
-       if(!fits(left)||!fits(right))continue;
-       const lh=measuredHeight(left),rh=measuredHeight(right);
-       const score=Math.min(lh,rh)-Math.abs(lh-rh)*0.05;
-       if(!best||score>best.score)best={left,right,score};
+       if(!left||!right||!fits(left)||!fits(right))continue;
+       const leftHeight=measuredHeight(left);
+       // One line of slack is acceptable to avoid an awkward ending.
+       // Two or more empty lines are NOT acceptable.
+       if(denseHeight-leftHeight>lineHeight*1.15)continue;
+       const tail=visibleText(left);
+       const natural=/[.!?…]["»”’)]?$/.test(tail);
+       const isDangling=dangling(left);
+       const score=(natural?100:0)-(isDangling?1000:0)
+         -(denseHeight-leftHeight)/lineHeight*15
+         +leftHeight/lineHeight;
+       if(score>best.score)best={left,right,score};
      }
-     if(best){blockPages[i]=best.left;blockPages[i+1]=best.right}
+     blockPages[i]=best.left;
+     blockPages[i+1]=best.right;
    }
    next.push(...blockPages);
  }

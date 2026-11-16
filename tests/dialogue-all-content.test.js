@@ -19,7 +19,7 @@ for(let n=0;n<3;n++)cases.push({id:'S04 Gromov '+n,state:{scene:'S04',s04Mode:'g
  const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
  let checked=0,breaks=0;
  try{
-  for(const [width,height] of [[375,667],[390,600],[390,844],[430,932],[1024,768],[1366,768]]){
+  for(const [width,height] of [[320,700],[360,760],[360,800],[375,667],[375,812],[390,600],[390,844],[393,873],[430,932],[1024,768],[1366,768]]){
    const page=await browser.newPage({viewport:{width,height},deviceScaleFactor:1});
    await page.goto('http://127.0.0.1:8765/');
    for(const item of cases){
@@ -41,6 +41,7 @@ for(let n=0;n<3;n++)cases.push({id:'S04 Gromov '+n,state:{scene:'S04',s04Mode:'g
        footerBottom:rect(footer).bottom,panelBottom:rect(panel).bottom,
        panelHeight:rect(panel).height,textHeight:rect(body).height,
        paragraphHeight:rect(p).height,
+       lineHeight:parseFloat(getComputedStyle(p).lineHeight),
        continueAvailable:!!panel.querySelector('[data-act="dlgMore"]'),
        primary:!!panel.querySelector('.game-dialogue__actions button')};
      });
@@ -51,6 +52,16 @@ for(let n=0;n<3;n++)cases.push({id:'S04 Gromov '+n,state:{scene:'S04',s04Mode:'g
      assert.ok(m.footerBottom<=m.panelBottom+3,'button clipping '+item.id+' '+width+'x'+height);
      assert.ok(m.primary,'missing final/next button '+item.id);
      assert.equal(m.continueAvailable,m.read.page<m.read.total-1,'next button before text ends '+item.id);
+     // Regression: avoid pages showing only one short sentence while
+     // the next page contains the rest of the same speech. These were
+     // missed by the original grammar-only tests.
+     if(m.continueAvailable&&!/\n\s*(?:Вопрос|Ответ):/.test(source||'')){
+      const spare=m.textHeight-m.paragraphHeight;
+      assert.ok(spare<=m.lineHeight*2.1+2,
+       'half-empty dialogue '+item.id+' '+width+'x'+height+
+       ' blankLines='+(spare/m.lineHeight).toFixed(1)+
+       ' shown='+JSON.stringify(m.text.slice(-65)));
+     }
      if(prevCount)assert.equal(m.read.total,prevCount,'unstable pagination '+item.id);
      prevCount=m.read.total;
      fragments.push(m.text.trim());
