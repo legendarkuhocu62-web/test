@@ -164,29 +164,28 @@ function fit(){
      buffer+=word;
    }
    if(buffer)pages.push(buffer);
-   // Optimize all adjacent boundaries while keeping the SAME page count.
-   // In particular, avoid a 1-line last page; grammatical boundaries are
-   // preferred but cannot create extra pages or clip text.
-   for(let pass=0;pass<2;pass++){
-     for(let i=pages.length-2;i>=0;i--){
-       const combined=pages[i]+pages[i+1];
-       const parts=combined.match(/\S+\s*|\s+/g)||[combined];
-       let offset=0,best=null;
-       for(let j=0;j<parts.length-1;j++){
-         offset+=parts[j].length;
-         const left=combined.slice(0,offset),right=combined.slice(offset);
-         if(!left||!right||!fits(left)||!fits(right))continue;
-         const h1=measuredHeight(left),h2=measuredHeight(right);
-         const ending=visibleText(left),opening=visibleText(right);
-         const sentence=/[.!?…]["»”’)]?$/.test(ending);
-         const broken=endsPoorly(left)||
-           (/\bНо прежде чем$/u.test(ending)&&/^составлять\b/u.test(opening));
-         const score=Math.min(h1,h2)*3-Math.abs(h1-h2)*0.25
-           +(sentence?lh*1.5:0)-(broken?lh*15:0);
-         if(!best||score>best.score)best={left,right,score};
-       }
-       if(best){pages[i]=best.left;pages[i+1]=best.right}
+   // Keep non-final pages packed. Only correct an awkward boundary if
+   // it costs at most ONE visual line compared with greedy packing.
+   // A short final page is preferable to breaking the already-full page.
+   for(let i=0;i<pages.length-1;i++){
+     const originalHeight=measuredHeight(pages[i]);
+     const combined=pages[i]+pages[i+1];
+     const parts=combined.match(/\S+\s*|\s+/g)||[combined];
+     let offset=0,best=null;
+     for(let j=0;j<parts.length-1;j++){
+       offset+=parts[j].length;
+       const left=combined.slice(0,offset),right=combined.slice(offset);
+       if(!left||!right||!fits(left)||!fits(right))continue;
+       const h1=measuredHeight(left);
+       if(originalHeight-h1>lh*1.05)continue;
+       const h2=measuredHeight(right),ending=visibleText(left);
+       const complete=/[.!?…]["»”’)]?$/.test(ending);
+       const score=h1+(complete?lh*0.75:0)
+         -(endsPoorly(left)?lh*100:0)
+         +Math.min(h2,lh*2)*0.02;
+       if(!best||score>best.score)best={left,right,score};
      }
+     if(best){pages[i]=best.left;pages[i+1]=best.right}
    }
    next.push(...pages);
  }
