@@ -30,7 +30,7 @@ for(let n=0;n<3;n++)cases.push({id:'S04 Gromov '+n,state:{scene:'S04',s04Mode:'g
     await page.reload();
     await page.locator('.game-dialogue--scene .game-dialogue__panel').waitFor();
     await page.waitForTimeout(55);
-    let source=null,fragments=[],seen=0,prevCount=0;
+    let source=null,fragments=[],seen=0,prevCount=0,layouts=[];
     while(true){
      const m=await page.evaluate(()=>{
       const panel=document.querySelector('.game-dialogue--scene .game-dialogue__panel');
@@ -41,6 +41,7 @@ for(let n=0;n<3;n++)cases.push({id:'S04 Gromov '+n,state:{scene:'S04',s04Mode:'g
        footerBottom:rect(footer).bottom,panelBottom:rect(panel).bottom,
        panelHeight:rect(panel).height,textHeight:rect(body).height,
        paragraphHeight:rect(p).height,
+       footerHeight:rect(footer).height,
        lineHeight:parseFloat(getComputedStyle(p).lineHeight),
        continueAvailable:!!panel.querySelector('[data-act="dlgMore"]'),
        primary:!!panel.querySelector('.game-dialogue__actions button')};
@@ -52,19 +53,9 @@ for(let n=0;n<3;n++)cases.push({id:'S04 Gromov '+n,state:{scene:'S04',s04Mode:'g
      assert.ok(m.footerBottom<=m.panelBottom+3,'button clipping '+item.id+' '+width+'x'+height);
      assert.ok(m.primary,'missing final/next button '+item.id);
      assert.equal(m.continueAvailable,m.read.page<m.read.total-1,'next button before text ends '+item.id);
-     // Regression: avoid pages showing only one short sentence while
-     // the next page contains the rest of the same speech. These were
-     // missed by the original grammar-only tests.
-     if(m.continueAvailable&&!/\n\s*(?:Вопрос|Ответ):/.test(source||'')){
-      const spare=m.textHeight-m.paragraphHeight;
-      assert.ok(spare<=m.lineHeight*2.1+2,
-       'half-empty dialogue '+item.id+' '+width+'x'+height+
-       ' blankLines='+(spare/m.lineHeight).toFixed(1)+
-       ' shown='+JSON.stringify(m.text.slice(-65)));
-     }
      if(prevCount)assert.equal(m.read.total,prevCount,'unstable pagination '+item.id);
      prevCount=m.read.total;
-     fragments.push(m.text.trim());
+     fragments.push(m.text.trim());layouts.push(m);
      if(m.continueAvailable){
       const ending=m.text.trim();
       if(/(?:^|\s)(?:и|а|но|или|что|чтобы|если|когда|прежде|чем|перед|в|на|с|со|к|по|из|у|от|до|для|при|без|под|над|между)$/iu.test(ending)){
@@ -75,6 +66,20 @@ for(let n=0;n<3;n++)cases.push({id:'S04 Gromov '+n,state:{scene:'S04',s04Mode:'g
       await page.locator('[data-act="dlgMore"]').click();
       await page.waitForTimeout(40);
      }else break;
+    }
+    // The final action area can be taller than the Read More footer.
+    // That space is RESERVED on all pages to prevent repagination when
+    // the player advances. Only flag blank space that could actually
+    // hold text while keeping the final buttons inside the fixed panel.
+    const tallestFooter=Math.max(...layouts.map(m=>m.footerHeight));
+    for(let i=0;i<layouts.length-1;i++){
+     const m=layouts[i];
+     const reserved=Math.max(0,tallestFooter-m.footerHeight);
+     const unused=m.textHeight-reserved-m.paragraphHeight;
+     assert.ok(unused<=m.lineHeight*2.1+2,
+      'half-empty dialogue '+item.id+' '+width+'x'+height+
+      ' usableBlankLines='+(unused/m.lineHeight).toFixed(1)+
+      ' shown='+JSON.stringify(m.text.slice(-65)));
     }
     // The user-reported S01 intro line must share its first page with
     // the following sentence at the common tall-mobile viewport.
