@@ -134,31 +134,23 @@ function fit(){
      buffer+=word;
    }
    if(buffer)blockPages.push(buffer);
-   // Inspect EVERY whole-word boundary between existing adjacent pages.
-   // A grammatical boundary wins if it fits; otherwise avoid hanging
-   // conjunctions and keep both pages reasonably filled. Never add pages.
+   // Then redistribute between EXISTING adjacent pages at sentence ends.
+   // Example: move "Ты поможешь..." entirely to page 2 instead of
+   // leaving page 1 ending in "информацию и".
    const measuredHeight=value=>{
      measure.innerHTML=escapeHTML(visibleText(value)).replace(/\n/g,'<br>');
      return measure.getBoundingClientRect().height;
    };
-   const lineHeight=parseFloat(getComputedStyle(paragraph).lineHeight)||22;
    for(let i=0;i<blockPages.length-1;i++){
      const combined=blockPages[i]+blockPages[i+1];
-     const tokens=combined.match(/\S+\s*|\s+/g)||[combined];
      let offset=0,best=null;
-     for(let t=0;t<tokens.length-1;t++){
-       offset+=tokens[t].length;
+     for(const unit of semanticUnits(combined)){
+       offset+=unit.length;
+       if(offset<=0||offset>=combined.length)continue;
        const left=combined.slice(0,offset),right=combined.slice(offset);
-       if(!left||!right||!fits(left)||!fits(right))continue;
-       const ending=visibleText(left),beginning=visibleText(right);
-       const a=measuredHeight(left)/lineHeight,b=measuredHeight(right)/lineHeight;
-       let grammar=0;
-       if(/[.!?…]["»”’)]?$/.test(ending))grammar+=34;
-       else if(/[;:]["»”’)]?$/.test(ending))grammar+=12;
-       else if(/[,—–]["»”’)]?$/.test(ending))grammar+=7;
-       if(/(?:^|\s)(?:и|а|но|или|что|чтобы|если|когда|прежде|чем|перед|в|на|с|со|к|по|из|у|от|до|для|при|без|под|над|между)$/iu.test(ending))grammar-=70;
-       if(/^(?:и|а|но|или|что|чтобы|если|когда|прежде чем)\b/iu.test(beginning)&&!/[.!?…]["»”’)]?$/.test(ending))grammar-=10;
-       const score=grammar+Math.min(a,b)*5-Math.abs(a-b)*1.5+(Math.min(a,b)<1.5?-45:0);
+       if(!fits(left)||!fits(right))continue;
+       const lh=measuredHeight(left),rh=measuredHeight(right);
+       const score=Math.min(lh,rh)-Math.abs(lh-rh)*0.05;
        if(!best||score>best.score)best={left,right,score};
      }
      if(best){blockPages[i]=best.left;blockPages[i+1]=best.right}
