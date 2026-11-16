@@ -47,6 +47,15 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict');
    assert.ok(m.textBoxH-m.pH<=m.lineHeight+10,
     'non-final dialogue page wastes more than a line: '+width+'x'+height+' '+JSON.stringify(m));
   }
+  // Regression for the user screenshot: on a 390px phone the committee
+  // introduction must not finish its first screen with "...информацию и".
+  if(width===390&&height===844){
+   const snapshot=metrics[0];
+   assert.doesNotMatch(snapshot.text.trim(),/\bи\s*$/u,
+    'first page ends on a dangling conjunction');
+   assert.match(snapshot.text,/куда разумнее направить средства\./,
+    'first screen should finish at a meaningful sentence boundary');
+  }
   await page.close();
  }
  await browser.close();

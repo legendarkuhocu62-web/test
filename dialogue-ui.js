@@ -121,43 +121,39 @@ function fit(){
    return measure.getBoundingClientRect().height<=room+0.5;
  }
  let next=[];
- // Fill every page with whole words. A sentence boundary is desirable,
- // but must never create an extra page that could be avoided by using
- // the available space in this fixed-height dialogue panel.
+ // First calculate the minimum number of pages from the real text height.
+ // Never add a page solely to preserve a sentence boundary.
  for(const block of semanticBlocks(raw)){
    const words=block.match(/\S+\s*|\s+/g)||[block];
+   const blockPages=[];
    let buffer='';
    for(const word of words){
-     if(buffer&&!fits(buffer+word)){next.push(buffer);buffer=''}
+     if(buffer&&!fits(buffer+word)){blockPages.push(buffer);buffer=''}
      buffer+=word;
    }
-   if(buffer)next.push(buffer);
- }
- // Improve boundaries without increasing the page count: if the final
- // page is very short, move whole words from the previous page, but
- // never overflow either page or lose any source character.
- for(let i=next.length-1;i>0;i--){
-   if(/^\n+(?:Вопрос|Ответ):\s/.test(next[i]))continue;
-   const previous=next[i-1],tail=next[i];
-   const lineHeight=parseFloat(getComputedStyle(paragraph).lineHeight)||22;
-   measure.innerHTML=escapeHTML(visibleText(tail)).replace(/\n/g,'<br>');
-   if(measure.getBoundingClientRect().height>lineHeight*2.2)continue;
-   const priorWords=previous.match(/\S+\s*|\s+/g)||[];
-   let prefix='';
-   while(priorWords.length>1){
-     const last=priorWords[priorWords.length-1];
-     const candidate=last+prefix+tail;
-     if(!fits(candidate))break;
-     priorWords.pop();prefix=last+prefix;
-     measure.innerHTML=escapeHTML(visibleText(priorWords.join(''))).replace(/\n/g,'<br>');
-     if(measure.getBoundingClientRect().height<lineHeight*2){
-       priorWords.push(last);prefix=prefix.slice(last.length);
-       break;
+   if(buffer)blockPages.push(buffer);
+   // Then redistribute between EXISTING adjacent pages at sentence ends.
+   // Example: move "Ты поможешь..." entirely to page 2 instead of
+   // leaving page 1 ending in "информацию и".
+   const measuredHeight=value=>{
+     measure.innerHTML=escapeHTML(visibleText(value)).replace(/\n/g,'<br>');
+     return measure.getBoundingClientRect().height;
+   };
+   for(let i=0;i<blockPages.length-1;i++){
+     const combined=blockPages[i]+blockPages[i+1];
+     let offset=0,best=null;
+     for(const unit of semanticUnits(combined)){
+       offset+=unit.length;
+       if(offset<=0||offset>=combined.length)continue;
+       const left=combined.slice(0,offset),right=combined.slice(offset);
+       if(!fits(left)||!fits(right))continue;
+       const lh=measuredHeight(left),rh=measuredHeight(right);
+       const score=Math.min(lh,rh)-Math.abs(lh-rh)*0.05;
+       if(!best||score>best.score)best={left,right,score};
      }
-     measure.innerHTML=escapeHTML(visibleText(candidate)).replace(/\n/g,'<br>');
-     if(measure.getBoundingClientRect().height>=lineHeight*2.2)break;
+     if(best){blockPages[i]=best.left;blockPages[i+1]=best.right}
    }
-   if(prefix){next[i-1]=priorWords.join('');next[i]=prefix+tail;}
+   next.push(...blockPages);
  }
  measure.remove();
  paragraph.innerHTML=oldHTML;
