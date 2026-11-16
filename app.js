@@ -67,6 +67,47 @@ function showBudgetLimit(item,remaining){
   budgetDialog.querySelector('.budget-limit-dialog__button').focus({preventScroll:true});
   if(window.scrollY!==budgetScrollY)window.scrollTo(0,budgetScrollY);
 }
+/* Restart uses an accessible, in-game confirmation with the same approved
+   industrial modal design as the S04 budget overflow warning. */
+let restartDialog=null,restartReturnFocus=null,restartScrollY=0;
+function showRestartConfirmation(){
+  if(!restartDialog){
+    const dlg=document.createElement('dialog');
+    dlg.className='budget-limit-dialog restart-confirm-dialog';
+    dlg.setAttribute('aria-labelledby','restart-confirm-heading');
+    dlg.setAttribute('aria-describedby','restart-confirm-summary');
+    dlg.innerHTML='<div class="budget-limit-dialog__top">'+
+      '<span class="budget-limit-dialog__tag">ЦЕХ 404 · НОВАЯ ИГРА</span>'+
+      '<h2 id="restart-confirm-heading">Начать заново?</h2></div>'+
+      '<p id="restart-confirm-summary" class="restart-confirm-dialog__summary">Текущий прогресс, выбранные инвестиции и выполненные задания будут сброшены.</p>'+
+      '<p class="budget-limit-dialog__tip">Можно вернуться к игре без потери результатов.</p>'+
+      '<div class="budget-limit-dialog__actions">'+
+      '<button type="button" class="budget-limit-dialog__button restart-confirm-dialog__cancel" data-restart-cancel>ОТМЕНА</button>'+
+      '<button type="button" class="budget-limit-dialog__button restart-confirm-dialog__confirm" data-restart-confirm>НАЧАТЬ ЗАНОВО</button></div>';
+    dlg.querySelector('[data-restart-cancel]').addEventListener('click',()=>dlg.close());
+    dlg.querySelector('[data-restart-confirm]').addEventListener('click',()=>{
+      restartReturnFocus=null;
+      dlg.close();
+      s=L.initial();
+      window.CEH_INVESTMENT_CATALOG?.reset();
+      render();
+      window.scrollTo(0,0);
+    });
+    dlg.addEventListener('close',()=>{
+      if(restartReturnFocus){
+        if(restartReturnFocus.isConnected)restartReturnFocus.focus({preventScroll:true});
+        window.scrollTo(0,restartScrollY);
+      }
+      restartReturnFocus=null;
+    });
+    document.body.appendChild(dlg);
+    restartDialog=dlg;
+  }
+  restartReturnFocus=document.activeElement;
+  restartScrollY=window.scrollY;
+  if(!restartDialog.open)restartDialog.showModal();
+  restartDialog.querySelector('[data-restart-cancel]').focus({preventScroll:true});
+}
 /* In-game EDU feedback. Native browser alert() has browser-owned styling and
    incorrectly appears as an external site confirmation on Android. */
 let eduFeedbackDialog=null,eduFeedbackReturnFocus=null;
@@ -260,7 +301,7 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
  requestAnimationFrame(()=>{D.fit();syncStartHitbox();if(s.scene==='S02'&&s.s02Step==='report')app.querySelector('.s02-report-close')?.focus({preventScroll:true});});
  window.CEH_PRELOAD?.afterRender(s,A);
 }
-function act(action,id){if(action==='eduToggleDocuments'&&s.scene==='S04'&&s.s04Mode==='edu'){const panel=app.querySelector('.edu-docs-on-demand'),trigger=app.querySelector('[data-act="eduToggleDocuments"]');if(panel&&trigger){panel.hidden=!panel.hidden;trigger.setAttribute('aria-expanded',String(!panel.hidden));trigger.textContent=panel.hidden?'Посмотреть документы':'Скрыть документы';}return;}if(['dlgMore','dlgBack','dlgStart'].includes(action)){const node=app.querySelector('.game-dialogue');if(node){node.outerHTML=D.move(action);requestAnimationFrame(()=>D.fit());}return;}if(action==='reset'){if(confirm('Начать заново?'))s=L.initial()}
+function act(action,id){if(action==='eduToggleDocuments'&&s.scene==='S04'&&s.s04Mode==='edu'){const panel=app.querySelector('.edu-docs-on-demand'),trigger=app.querySelector('[data-act="eduToggleDocuments"]');if(panel&&trigger){panel.hidden=!panel.hidden;trigger.setAttribute('aria-expanded',String(!panel.hidden));trigger.textContent=panel.hidden?'Посмотреть документы':'Скрыть документы';}return;}if(['dlgMore','dlgBack','dlgStart'].includes(action)){const node=app.querySelector('.game-dialogue');if(node){node.outerHTML=D.move(action);requestAnimationFrame(()=>D.fit());}return;}if(action==='reset'){showRestartConfirmation();return}
  else if(action==='s02Open'&&s.scene==='S02'&&s.s02Step==='intro'){s.s02ReportSeen=true;s.s02Step='report'}
  else if(action==='s02Close'&&s.scene==='S02'&&s.s02Step==='report')s.s02Step='intro';
  else if(action==='s02Conclude'&&s.scene==='S02'&&s.s02ReportSeen&&['intro','report'].includes(s.s02Step))s.s02Step='conclusion';

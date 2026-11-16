@@ -130,11 +130,14 @@ const key='ceh404.rebuilt.qa50.20261108';
   const accent=await feedback.evaluate(el=>{
     const s=getComputedStyle(el),p=getComputedStyle(el,'::before');
     return {left:s.borderLeftWidth,content:p.content,gradient:p.backgroundImage,
-      width:p.width,height:p.height};
+      width:p.width,height:p.height,transform:p.transform,railLeft:p.left,headingLeft:el.querySelector('h2').getBoundingClientRect().left-el.getBoundingClientRect().left};
   });
   assert.equal(parseFloat(accent.left),0,'old plain orange stripe should be removed');
   assert.match(accent.gradient,/linear-gradient/,'stripe should share button gradient');
-  assert.ok(parseFloat(accent.width)>=9&&parseFloat(accent.height)>30,'beveled confirmation stripe missing');
+  assert.ok(parseFloat(accent.width)>=7&&parseFloat(accent.height)>30,'beveled confirmation stripe missing');
+  assert.equal(accent.transform,'none','tall confirmation rail cannot use skewX');
+  assert.ok(parseFloat(accent.railLeft)+parseFloat(accent.width)+7<=accent.headingLeft,
+    'confirmation rail must not overlap heading or other text');
   await page.locator('[data-act="catalog"]').click();
   assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=width+3,'no horizontal overflow');
   await page.locator('[data-act="catalogPage"][data-id="next"]').click();

@@ -307,13 +307,15 @@ dialog.ic-detail::backdrop { background:#020811d9; backdrop-filter:blur(3px); }
 #app .document--catalog .feedback::before {
   content:"";
   position:absolute;
-  left:8px;
-  top:13px;
-  bottom:13px;
-  width:10px;
-  border-radius:6px;
+  left:10px;
+  top:14px;
+  bottom:14px;
+  width:8px;
+  border-radius:5px;
   background:linear-gradient(125deg,#ffac24 0%,#ff9109 52%,#f47600 100%);
-  transform:skewX(-9deg);
+  /* Do not skew a tall rail: skewX shifts its top across the text on mobile. */
+  transform:none;
+  clip-path:polygon(45% 0,100% 0,100% calc(100% - 5px),55% 100%,0 100%,0 5px);
   box-shadow:inset 2px 0 0 #ffda79aa,0 3px 9px #0008;
   pointer-events:none;
 }

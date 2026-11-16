@@ -1625,3 +1625,46 @@ body.dialogue-mode-active #app .game-dialogue__text--question p{
   .investment-scene .committee-actions{display:grid;grid-template-columns:minmax(0,1fr);gap:11px}
   .investment-scene .committee-actions .btn{width:100%;min-height:54px}
 }
+
+
+/* Global restart confirmation — same design language as budget limit dialog.
+   Outside #app to avoid generic in-game button pseudo-elements. */
+.restart-confirm-dialog .restart-confirm-dialog__summary{
+  padding:0 24px;
+  margin:16px 0 0;
+  color:#f5f7fc;
+  font-size:clamp(16px,3.6vw,19px);
+  line-height:1.45;
+}
+.restart-confirm-dialog .budget-limit-dialog__actions{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  padding-top:19px;
+}
+.restart-confirm-dialog .budget-limit-dialog__button{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-width:0;
+  min-height:54px;
+  padding:12px 8px;
+  white-space:normal;
+  text-align:center;
+  font-size:clamp(12px,2.9vw,16px);
+  line-height:1.25;
+  touch-action:manipulation;
+}
+.restart-confirm-dialog .restart-confirm-dialog__cancel{
+  background:linear-gradient(125deg,#294761,#14283e);
+  border-color:#7d9bb4;
+  box-shadow:0 4px 0 #081622;
+  text-shadow:0 1px 2px #071423;
+}
+.restart-confirm-dialog .restart-confirm-dialog__confirm{
+  background:linear-gradient(125deg,#ffb43c,#f18405);
+}
+@media(max-width:420px){
+  .restart-confirm-dialog .restart-confirm-dialog__summary{padding:0 17px}
+  .restart-confirm-dialog .budget-limit-dialog__actions{gap:9px}
+}
