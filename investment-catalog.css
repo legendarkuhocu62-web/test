@@ -228,3 +228,44 @@ dialog.ic-detail::backdrop { background:#020811d9; backdrop-filter:blur(3px); }
   .ic-detail__head span {font-size:clamp(10px,3vw,12px)}
   .ic-detail__body {padding:3px}
 }
+
+/* Catalog CTA · override the game's transparent generic button surface.
+   Keep the same orange industrial action treatment on all 13 cards. */
+#app .document--catalog .ic-grid .ic-card .ic-card__open.btn {
+  display:inline-flex!important;
+  align-items:center;
+  justify-content:center;
+  align-self:stretch;
+  box-sizing:border-box;
+  width:100%;
+  min-height:48px;
+  margin:6px 0 0!important;
+  padding:10px 12px!important;
+  border:2px solid #ffbf53!important;
+  border-radius:11px!important;
+  background:linear-gradient(125deg,#ffb73b 0%,#ff9615 55%,#f27805 100%)!important;
+  color:#fff!important;
+  box-shadow:inset 0 2px 0 #ffe1a380,0 4px 10px #0007!important;
+  text-shadow:0 1px 2px #6d3500a0;
+  line-height:1.25;
+  white-space:normal;
+}
+#app .document--catalog .ic-grid .ic-card .ic-card__open.btn::before,
+#app .document--catalog .ic-grid .ic-card .ic-card__open.btn::after {
+  content:none!important;
+  display:none!important;
+}
+#app .document--catalog .ic-grid .ic-card .ic-card__open.btn:hover {
+  filter:brightness(1.08);
+}
+#app .document--catalog .ic-grid .ic-card .ic-card__open.btn:focus-visible {
+  outline:3px solid #fff6bf;
+  outline-offset:3px;
+}
+@media(max-width:720px) {
+  #app .document--catalog .ic-grid .ic-card .ic-card__open.btn {
+    min-height:48px;
+    padding:10px 9px!important;
+    font-size:clamp(12px,3.4vw,15px)!important;
+  }
+}

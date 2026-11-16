@@ -11,6 +11,22 @@ const key='ceh404.rebuilt.qa50.20261108';
   await page.reload();
   const count=width<=720?4:6;
   assert.equal(await page.locator('.ic-grid .ic-card').count(),count);
+  const buttonVisuals=await page.locator('.ic-grid .ic-card .ic-card__open.btn').evaluateAll(buttons=>
+    buttons.map(button=>{
+      const style=getComputedStyle(button);
+      const r=button.getBoundingClientRect();
+      return {background:style.backgroundImage,bgColor:style.backgroundColor,
+        visible:r.width>120&&r.height>=44,color:style.color,hit:document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)===button};
+    })
+  );
+  assert.equal(buttonVisuals.length,count,'each catalog card needs an obvious action button');
+  for(const [i,b] of buttonVisuals.entries()){
+    assert.match(b.background,/linear-gradient/,'investment open CTA is not orange-filled '+i+' '+JSON.stringify(b));
+    assert.ok(/(255, 1(4[0-9]|5[0-9]|6[0-9]|7[0-9]|8[0-9]))/.test(b.background)||b.background.includes('255, 183, 59'),
+      'investment open CTA lacks expected warm orange stops '+i+' '+b.background);
+    assert.ok(b.visible,'CTA action has inadequate size '+i);
+  }
+
   assert.match(await page.locator('.ic-pager__counter').innerText(),width<=720?/1 \/ 4/:/1 \/ 3/);
   await page.locator('[data-act="catalogOpen"][data-id="A"]').click();
   const dlg=page.locator('.ic-detail');
