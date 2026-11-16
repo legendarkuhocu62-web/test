@@ -159,9 +159,9 @@ function fit(){
      buffer+=word;
    }
    if(buffer)blockPages.push(buffer);
-   // Keep pages DENSE: never move a whole sentence to the next page
-   // if that leaves several lines blank on the current one. Prefer a
-   // grammatical boundary only when it uses almost the same text height.
+   // Balance pages when a greedy last page has only a few words.
+   // Both adjacent pages must fit, the number of pages may not increase,
+   // and the full source must remain byte-for-byte intact.
    const measuredHeight=value=>{
      measure.innerHTML=escapeHTML(visibleText(value)).replace(/\n/g,'<br>');
      return measure.getBoundingClientRect().height;
@@ -171,28 +171,23 @@ function fit(){
    for(let i=0;i<blockPages.length-1;i++){
      const combined=blockPages[i]+blockPages[i+1];
      const tokens=combined.match(/\S+\s*|\s+/g)||[combined];
-     const denseHeight=measuredHeight(blockPages[i]);
-     let offset=0;
-     let best={left:blockPages[i],right:blockPages[i+1],
-       score:dangling(blockPages[i])?-1000:0};
+     let offset=0,best=null;
      for(let t=0;t<tokens.length-1;t++){
        offset+=tokens[t].length;
        const left=combined.slice(0,offset),right=combined.slice(offset);
        if(!left||!right||!fits(left)||!fits(right))continue;
-       const leftHeight=measuredHeight(left);
-       // One line of slack is acceptable to avoid an awkward ending.
-       // Two or more empty lines are NOT acceptable.
-       if(denseHeight-leftHeight>lineHeight*1.15)continue;
-       const tail=visibleText(left);
-       const natural=/[.!?…]["»”’)]?$/.test(tail);
-       const isDangling=dangling(left);
-       const score=(natural?100:0)-(isDangling?1000:0)
-         -(denseHeight-leftHeight)/lineHeight*15
-         +leftHeight/lineHeight;
-       if(score>best.score)best={left,right,score};
+       const hLeft=measuredHeight(left),hRight=measuredHeight(right);
+       const last=visibleText(left);
+       // Balance both pages, then favor complete sentences when feasible.
+       // No one-line final page if both sides can contain comparable text.
+       const sentence=/[.!?…]["»”’)]?$/.test(last);
+       const score=Math.min(hLeft,hRight)*2
+         -Math.abs(hLeft-hRight)*0.35
+         +(sentence?lineHeight*0.6:0)
+         -(dangling(left)?lineHeight*3:0);
+       if(!best||score>best.score)best={left,right,score};
      }
-     blockPages[i]=best.left;
-     blockPages[i+1]=best.right;
+     if(best){blockPages[i]=best.left;blockPages[i+1]=best.right}
    }
    next.push(...blockPages);
  }

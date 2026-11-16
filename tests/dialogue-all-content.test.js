@@ -87,6 +87,15 @@ for(let n=0;n<3;n++)cases.push({id:'S04 Gromov '+n,state:{scene:'S04',s04Mode:'g
      assert.ok(fragments[0].includes('Они отлично знают своё дело'),
       'intro 1 is underfilled: only the first sentence is shown');
     }
+    // Screenshot regression: a final page containing a single short
+    // line must be balanced with the previous page when possible.
+    if(item.id==='S01 intro 1'&&width===390&&height===844&&layouts.length>1){
+      const last=layouts[layouts.length-1],prev=layouts[layouts.length-2];
+      assert.ok(last.paragraphHeight>=last.lineHeight*2.5,
+        'S01 intro 1 ends on an almost empty final page');
+      assert.ok(prev.paragraphHeight>=prev.lineHeight*2.5,
+        'S01 intro 1 starts with an almost empty page');
+    }
     assert.ok(fragments.every(Boolean),'empty page '+item.id);
     checked++;
    }
