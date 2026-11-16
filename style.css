@@ -1742,3 +1742,46 @@ body.dialogue-mode-active #app .game-dialogue__text--question p{
 @media(max-width:590px){
   .document--edu .edu-reference--result .edu-result-section{padding:16px}
 }
+
+
+/* EDU-01 result screen: TWO independent, visibly framed panels.
+   This overrides the former single pale container without changing content. */
+#app .document--edu .edu-reference--result{
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  gap:clamp(16px,2.8vw,24px);
+}
+#app .document--edu .edu-reference--result > .edu-result-section{
+  display:block;
+  width:100%;
+  box-sizing:border-box;
+  margin:0;
+  padding:clamp(19px,3.2vw,30px);
+  border-radius:21px;
+  background:#f0f5f9;
+  color:#132336;
+  box-shadow:0 6px 18px #07142325;
+}
+#app .document--edu .edu-reference--result > .edu-result-section--success{
+  border:3px solid #65a982;
+}
+#app .document--edu .edu-reference--result > .edu-result-section--conclusion{
+  border:3px solid #e7a344;
+  background:#fff7e9;
+}
+#app .document--edu .edu-reference--result > .edu-result-section h2,
+#app .document--edu .edu-reference--result > .edu-result-section h3{
+  margin:0 0 15px;
+  line-height:1.2;
+}
+#app .document--edu .edu-reference--result > .edu-result-section p{
+  margin:0;
+  line-height:1.55;
+}
+@media(max-width:590px){
+  #app .document--edu .edu-reference--result > .edu-result-section{
+    padding:21px 19px;
+    border-radius:20px;
+  }
+}
