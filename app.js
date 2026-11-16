@@ -299,7 +299,7 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
   let h='<div class="panel committee-layout"><h2>Заседание инвесткомитета</h2><p>Вы представляете рекомендацию. Коллеги оценивают не только выбранные мероприятия, но и условия, при которых они принесут пользу.</p>'+
    '<p><b>Окончательный портфель:</b> '+e(final.join(', ')||'Не выбран')+' · '+total+' млн у.е.</p>';
   if(!comments[s.committeeDecision]){
-   h+='<div class="committee-choice-layout"><h3>Какие риски вы готовы объяснить комитету?</h3><div class="committee-options">'+choices.map(x=>btn(x.label,'committeeChoose',x.id)).join('')+'</div></div>';
+   h+='<div class="committee-choice-layout"><h3 class="committee-question"><span class="committee-question__icon" aria-hidden="true">⚠</span><span>Какие риски вы готовы объяснить комитету?</span></h3><div class="committee-options">'+choices.map(x=>btn(x.label,'committeeChoose',x.id)).join('')+'</div></div>';
   }else{
    h+='<div class="committee-result"><div class="committee-result-label">Ваш ответ комитету</div>'+
     '<div class="committee-selected"><span aria-hidden="true"></span><strong>'+e(choices.find(x=>x.id===s.committeeDecision).label)+'</strong></div>'+
