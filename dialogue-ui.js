@@ -199,7 +199,21 @@ function fit(){
          -(isDangling?lineHeight*15:0);
        if(!best||score>best.score)best={left,right,score};
      }
-     if(best){blockPages[i]=best.left;blockPages[i+1]=best.right}
+     // A short introductory clause must not end a page in mid-phrase.
+     // Keep this grammatical rule local: never rewrite the source text.
+     if(best){
+       const textLeft=visibleText(best.left),textRight=visibleText(best.right);
+       if(/Но прежде чем$/u.test(textLeft)||
+          (/^составлять\b/u.test(textRight)&&/Но прежде чем$/u.test(textLeft))){
+         const phraseIndex=combined.lastIndexOf('Но прежде чем');
+         if(phraseIndex>0){
+           const before=combined.slice(0,phraseIndex),after=combined.slice(phraseIndex);
+           if(fits(before)&&fits(after))best={left:before,right:after};
+         }
+       }
+       blockPages[i]=best.left;
+       blockPages[i+1]=best.right;
+     }
    }
    next.push(...blockPages);
  }
