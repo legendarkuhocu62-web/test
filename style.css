@@ -1714,3 +1714,31 @@ body.dialogue-mode-active #app .game-dialogue__text--question p{
   outline:2px solid #ffd18b;
   outline-offset:2px;
 }
+
+/* EDU-01: clearly separate the result and the professional takeaway. */
+.document--edu .edu-reference--result .edu-reference__result-card{
+  display:grid;
+  gap:clamp(14px,2.3vw,20px);
+}
+.document--edu .edu-reference--result .edu-result-section{
+  padding:clamp(15px,2.5vw,24px);
+  background:#ffffff;
+  border:1px solid #cbd9e4;
+  border-radius:15px;
+  box-shadow:0 2px 6px #1323360c;
+  min-width:0;
+}
+.document--edu .edu-reference--result .edu-result-section--conclusion{
+  border-color:#dfb875;
+  background:#fffaf0;
+}
+.document--edu .edu-reference--result .edu-result-section h2,
+.document--edu .edu-reference--result .edu-result-section h3{
+  margin:0 0 12px;
+}
+.document--edu .edu-reference--result .edu-result-section p{
+  margin:0;
+}
+@media(max-width:590px){
+  .document--edu .edu-reference--result .edu-result-section{padding:16px}
+}
