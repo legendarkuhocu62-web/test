@@ -1,0 +1,29 @@
+name: S06 document highlighting regression
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/s06-document-highlights.yml'
+      - 's06-s08-ui.js'
+      - 's06-s08-ui.css'
+      - 'tests/s06-s08-ui.test.js'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  document-status:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: |
+          npm install --no-save playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Verify unread/read documents on phone and desktop
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/ceh404-http.log 2>&1 &
+          sleep 2
+          node tests/s06-s08-ui.test.js
