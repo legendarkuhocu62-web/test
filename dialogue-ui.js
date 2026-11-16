@@ -37,6 +37,18 @@ function visibleText(value){
  // but must not consume display lines at the edges of a dialogue page.
  return String(value??'').replace(/^\s+|\s+$/g,'');
 }
+
+/* The saved dialogue preserves its original newlines exactly.
+   A single newline between ordinary sentences is not an intentional
+   paragraph break and should not force a wasted line in the fixed panel.
+   Blank-line paragraphs retain ONE visual break. */
+function displayText(value){
+ return visibleText(value)
+   .replace(/\n{2,}/g,'\uE000')
+   .replace(/\n/g,' ')
+   .replace(/\uE000/g,'\n');
+}
+
 /* Совместимость с прежним API: лимит используется только как ориентир;
    предпочтение всегда отдаётся границам предложений. */
 function splitExact(value,limit){
@@ -79,7 +91,7 @@ function render(options){
    '<section class="game-dialogue__panel" aria-label="Диалог">'+
    '<div class="game-dialogue__speaker"><span class="game-dialogue__name">'+escapeHTML(speaker)+'</span>'+
    (role?'<span class="game-dialogue__role">'+escapeHTML(role)+'</span>':'')+'</div>'+
-   '<div class="game-dialogue__text'+tone+'" aria-live="polite"><p>'+escapeHTML(visible).replace(/\n/g,'<br>')+'</p></div>'+
+   '<div class="game-dialogue__text'+tone+'" aria-live="polite"><p>'+escapeHTML(displayText(segment)).replace(/\n/g,'<br>')+'</p></div>'+
    '<div class="game-dialogue__footer">'+(segments.length>1?'<span class="dialogue-counter">'+(page+1)+' / '+segments.length+'</span>':'')+
    '<div class="game-dialogue__actions">'+controls+'</div></div></section></div>';
 }
@@ -144,12 +156,12 @@ function fit(){
    -px(getComputedStyle(footer),'marginTop')-px(getComputedStyle(footer),'marginBottom');
  const room=Math.max(0,panelRoom-px(textStyle,'paddingTop')-px(textStyle,'paddingBottom')-2);
  function fits(value){
-   measure.innerHTML=escapeHTML(visibleText(value)).replace(/\n/g,'<br>');
+   measure.innerHTML=escapeHTML(displayText(value)).replace(/\n/g,'<br>');
    return measure.getBoundingClientRect().height<=room+0.5;
  }
  let next=[];
  const measuredHeight=value=>{
-   measure.innerHTML=escapeHTML(visibleText(value)).replace(/\n/g,'<br>');
+   measure.innerHTML=escapeHTML(displayText(value)).replace(/\n/g,'<br>');
    return measure.getBoundingClientRect().height;
  };
  const lh=parseFloat(getComputedStyle(paragraph).lineHeight)||22;

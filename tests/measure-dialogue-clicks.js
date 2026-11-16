@@ -45,6 +45,7 @@ for(let n=0;n<3;n++)cases.push({id:'S04 Gromov '+n,state:{scene:'S04',s04Mode:'g
     const presses=pages-1;
     total+=presses;
     report.results.push({viewport:width+'x'+height,id:item.id,presses,pages,dialogueKey:read.key});
+    if(presses)console.log('COUNT_CASE '+label+' '+width+'x'+height+' '+item.id+' '+presses);
    }
    report.viewports.push({viewport:width+'x'+height,dialogues:cases.length,presses:total});
    console.log('COUNT '+label+' '+width+'x'+height+' '+total);
