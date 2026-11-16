@@ -1673,3 +1673,9 @@ body.dialogue-mode-active #app .game-dialogue__text--question p{
 /* Brand match · 16.11: the 404 digits use the cover artwork's vivid orange,
    not the previous muted gold. The remaining header and typography are intact. */
 .masthead .brand strong{color:#ff7d08}
+
+
+/* EDU-01: orange checkmarks match the game's orange accent (desktop/mobile). */
+#app .document--edu .edu-task .choices input[type="checkbox"]{
+  accent-color:#f18a0a;
+}
