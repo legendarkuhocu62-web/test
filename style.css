@@ -1679,3 +1679,38 @@ body.dialogue-mode-active #app .game-dialogue__text--question p{
 #app .document--edu .edu-task .choices input[type="checkbox"]{
   accent-color:#f18a0a;
 }
+
+
+/* EDU-01 task 4: render a reliable orange checkbox on mobile browsers. */
+#app .document--edu .edu-task .choices input[type="checkbox"]{
+  -webkit-appearance:none;
+  appearance:none;
+  display:inline-grid;
+  place-content:center;
+  vertical-align:middle;
+  width:23px;
+  height:23px;
+  min-width:23px;
+  margin:0 9px 0 0;
+  padding:0;
+  border:2px solid #d5e5f2;
+  border-radius:4px;
+  background:#fff;
+  cursor:pointer;
+}
+#app .document--edu .edu-task .choices input[type="checkbox"]:checked{
+  border-color:#f18a0a;
+  background:#f18a0a;
+}
+#app .document--edu .edu-task .choices input[type="checkbox"]:checked::after{
+  content:"";
+  width:6px;
+  height:11px;
+  border:solid #fff;
+  border-width:0 3px 3px 0;
+  transform:rotate(45deg) translate(-1px,-1px);
+}
+#app .document--edu .edu-task .choices input[type="checkbox"]:focus-visible{
+  outline:2px solid #ffd18b;
+  outline-offset:2px;
+}
