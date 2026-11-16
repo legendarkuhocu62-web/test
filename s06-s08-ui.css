@@ -58,3 +58,37 @@ body:has(.order-stage) .reset{position:relative;clear:both;margin-top:0;padding:
 .s05-tablet-notice strong,.s05-tablet-notice small{display:block}.s05-tablet-notice small{margin-top:5px;color:#ffda9e}.s05-tablet-notice p{margin:8px 0 0;font-size:clamp(12px,1.2vw,15px)}
 @media(max-width:720px){.s05-notice-scene .s05-tablet-notice{top:10px;right:10px;left:10px;width:auto;max-height:24vh;overflow:auto;padding:9px 12px}.s05-tablet-notice p{font-size:12px}}
 .s06-intro{max-width:740px!important}
+
+
+/* S06 · Unread documents attract attention, studied ones return to the
+   regular neutral card styling. Does not alter document opening logic. */
+.order-screen .order-doc-card--unread{
+  border-color:#ffaf29;
+  background:linear-gradient(115deg,#25415a,#19344d);
+  box-shadow:inset 0 0 0 1px #ffbe4580,0 0 15px #f295173b,0 4px 13px #0004;
+}
+.order-screen .order-doc-card--unread .order-doc-status{
+  display:inline-block;
+  color:#ffc76f;
+  font-weight:800;
+}
+.order-screen .order-doc-card--unread .btn{
+  border-color:#ffd088;
+  box-shadow:inset 0 1px 0 #ffdd9d7a,0 5px 13px #f18a2252;
+}
+.order-screen .order-doc-card--read{
+  border-color:#698eab;
+  background:#1c3953;
+  box-shadow:none;
+}
+.order-screen .order-doc-card--read .order-doc-status{
+  color:#b4c6d4;
+  font-weight:600;
+}
+.order-screen .order-doc-card--read .btn{
+  filter:saturate(.65);
+  box-shadow:none;
+}
+.order-screen .order-doc-card--read .btn:focus-visible{
+  filter:none;
+}

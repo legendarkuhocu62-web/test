@@ -9,7 +9,7 @@ function button(text,act,id='',main=false,disabled=false){
 function docList(state){
  const st=M.clean(state.s0608);
  return '<div class="order-doc-list">'+M.DOCUMENTS.map((x,i)=>
- '<article class="order-doc-card"><span class="order-doc-icon" aria-hidden="true">'+['▤','⚙','▣'][i]+'</span><div><h3>'+e(x.title)+'</h3><small>'+(st.docsOpened.includes(x.id)?'✓ Изучено':'Нужно открыть')+'</small></div>'+button('Открыть','orderDoc',x.id)+'</article>'
+ '<article class="order-doc-card '+(st.docsOpened.includes(x.id)?'order-doc-card--read':'order-doc-card--unread')+'"><span class="order-doc-icon" aria-hidden="true">'+['▤','⚙','▣'][i]+'</span><div><h3>'+e(x.title)+'</h3><small class="order-doc-status">'+(st.docsOpened.includes(x.id)?'✓ Изучено':'● Не изучено')+'</small></div>'+button('Открыть','orderDoc',x.id)+'</article>'
  ).join('')+'</div>';
 }
 function viewDocument(state){

@@ -41,11 +41,30 @@ const key='ceh404.rebuilt.qa50.20261108';
   assert.equal(await page.locator('[data-act="s06ReadDocs"]').count(),1,'Gromov briefing first');
   await page.locator('[data-act="s06ReadDocs"]').click();
   assert.equal(await page.locator('[data-act="orderTask"]:disabled').count(),1,'3/3 must lock analysis');
-  for(const id of ['shipping','route','grinding']){
+  assert.equal(await page.locator('.order-doc-card--unread').count(),3,'all three initially highlighted');
+  assert.equal(await page.locator('.order-doc-card--read').count(),0,'nothing yet read');
+
+  for(const [i,id] of ['shipping','route','grinding'].entries()){
    await page.locator('[data-act="orderDoc"][data-id="'+id+'"]').click();
    assert.equal(await page.locator('.order-paper').count(),1,'document opens');
    await page.locator('[data-act="orderCloseDoc"]').click();
+   assert.equal(await page.locator('.order-doc-card--read').count(),i+1,'studied cards lose highlight');
+   assert.equal(await page.locator('.order-doc-card--unread').count(),2-i,'unread cards stay highlighted');
+   const readStyle=await page.locator('.order-doc-card--read').first().evaluate(el=>({
+     border:getComputedStyle(el).borderColor,status:getComputedStyle(el.querySelector('.order-doc-status')).color
+   }));
+   const unreadCount=await page.locator('.order-doc-card--unread').count();
+   if(unreadCount){
+     const unreadStyle=await page.locator('.order-doc-card--unread').first().evaluate(el=>({
+       border:getComputedStyle(el).borderColor,status:getComputedStyle(el.querySelector('.order-doc-status')).color
+     }));
+     assert.notEqual(readStyle.border,unreadStyle.border,'read and unread border colors must differ');
+     assert.notEqual(readStyle.status,unreadStyle.status,'read and unread text colors must differ');
+   }
   }
+  await page.reload();
+  assert.equal(await page.locator('.order-doc-card--read').count(),3,'all documents remain read after reload');
+  assert.equal(await page.locator('.order-doc-card--unread').count(),0,'highlight must remain off after reload');
   assert.match(await page.locator('.order-progress').innerText(),/3 \/ 3/);
   await page.locator('[data-act="orderTask"]').click();
   assert.equal(await page.locator('.order-statement').count(),5);
