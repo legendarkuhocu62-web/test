@@ -42,7 +42,7 @@ const key='ceh404.rebuilt.qa50.20261108';
     const pseudo=getComputedStyle(el,'::before');
     const under=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);
     return {w:r.width,h:r.height,size:parseFloat(s.fontSize),background:s.backgroundImage,
-      transform:s.transform,centerAction:under?.getAttribute('data-act'),
+      transform:s.transform,centerAction:under?.closest('[data-act]')?.getAttribute('data-act'),
       hiddenPseudo:pseudo.content==='none',label:el.getAttribute('aria-label')};
   });
   assert.ok(closeStyle.w>=48&&closeStyle.h>=44&&closeStyle.size>=28,
