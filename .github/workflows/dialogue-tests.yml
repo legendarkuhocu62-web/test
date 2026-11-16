@@ -55,6 +55,7 @@ jobs:
           node tests/budget-overflow-modal.test.js
           node tests/dialogue-fixed-frame.test.js
           node tests/dialogue-fill-panel.test.js
+          node tests/dialogue-all-content.test.js
           node tests/dialogue-question-pages.test.js
           node tests/edu01-reference-flow.test.js
           node tests/gromov-character-dialogue.test.js
