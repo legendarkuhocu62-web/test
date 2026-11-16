@@ -1252,7 +1252,8 @@ body.dialogue-mode-active #app .dialogue-stage .game-dialogue--scene .game-dialo
     grid-row:2;
     width:100%;
     margin-top:0;
-    padding:12px 13px;
+    /* Preserve panel dimensions; recover internal unused breathing room. */
+    padding:9px 10px;
     border-radius:15px;
   }
   body.dialogue-mode-active #app .dialogue-stage .game-dialogue--scene .game-dialogue__character {
@@ -1276,11 +1277,15 @@ body.dialogue-mode-active #app .dialogue-stage .game-dialogue--scene .game-dialo
     object-position:center bottom;
   }
   body.dialogue-mode-active #app .game-dialogue--scene .game-dialogue__speaker {
-    margin:-25px 0 8px;
+    margin:-25px 0 5px;
   }
   body.dialogue-mode-active #app .game-dialogue--scene .game-dialogue__text p {
     font-size:clamp(14px,3.8vw,17px);
-    line-height:1.35;
+    line-height:1.25;
+  }
+  body.dialogue-mode-active #app .game-dialogue--scene .game-dialogue__footer {
+    margin-top:auto;
+    padding-top:0;
   }
 }
 @media(max-width:720px) and (max-height:650px){
