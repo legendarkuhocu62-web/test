@@ -54,7 +54,7 @@ window.CEH_INVESTMENT_CATALOG = (() => {
       const selected=state.selected.includes(entry.id);
       html+='<dialog class="ic-detail" data-ui-build="poster-v3" aria-label="Инвестиционное предложение '+esc(entry.id)+' — '+esc(entry.title)+'">'+
         '<div class="ic-detail__head"><span>ИНВЕСТИЦИОННОЕ ПРЕДЛОЖЕНИЕ '+esc(entry.id)+'</span>'+
-        button('×','catalogClose','','ic-detail__close')+'</div>'+
+        '<button type="button" class="btn ic-detail__close" data-act="catalogClose" aria-label="Закрыть инвестиционное предложение" title="Закрыть"><span aria-hidden="true">✕</span></button>'+'</div>'+
         '<div class="ic-detail__body"><div class="ic-poster">'+
         '<img alt="Полное инвестиционное предложение '+esc(entry.id)+': '+esc(entry.title)+
         '. Условия и ограничения приведены на изображении." src="'+poster(entry.id)+

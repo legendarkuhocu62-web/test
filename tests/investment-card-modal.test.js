@@ -35,6 +35,23 @@ const key='ceh404.rebuilt.qa50.20261108';
   await dlg.locator('img').evaluate(img=>img.decode());
   assert.equal(await dlg.locator('img').evaluate(i=>i.naturalWidth>0),true);
   assert.equal(await dlg.locator('.ic-detail__actions').count(),0,'no duplicate bottom actions');
+  // Phone and PC: the close control is a readable, generously-sized actual
+  // orange button, not a tiny glyph floating in a distorted capsule.
+  const closeStyle=await dlg.locator('.ic-detail__close').evaluate(el=>{
+    const r=el.getBoundingClientRect(),s=getComputedStyle(el);
+    const pseudo=getComputedStyle(el,'::before');
+    const under=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);
+    return {w:r.width,h:r.height,size:parseFloat(s.fontSize),background:s.backgroundImage,
+      transform:s.transform,centerAction:under?.getAttribute('data-act'),
+      hiddenPseudo:pseudo.content==='none',label:el.getAttribute('aria-label')};
+  });
+  assert.ok(closeStyle.w>=48&&closeStyle.h>=44&&closeStyle.size>=28,
+    'close X must be large enough on '+width+'x'+height+': '+JSON.stringify(closeStyle));
+  assert.match(closeStyle.background,/linear-gradient/,'close control should have same orange gradient');
+  assert.equal(closeStyle.centerAction,'catalogClose','X center must actually be clickable');
+  assert.equal(closeStyle.hiddenPseudo,true,'tiny skewed global button background must be absent');
+  assert.equal(closeStyle.label,'Закрыть инвестиционное предложение');
+
   assert.equal(await dlg.getAttribute('data-ui-build'),'poster-v3','new poster code must be loaded');
   const ui=await dlg.evaluate(modal=>{
     const poster=modal.querySelector('.ic-poster').getBoundingClientRect();
@@ -67,6 +84,11 @@ const key='ceh404.rebuilt.qa50.20261108';
 
   assert.equal(await dlg.locator('[data-act="catalogAdd"]').count(),1);
   assert.equal(await dlg.locator('[data-act="catalogDecline"]').count(),1);
+  await dlg.locator('.ic-detail__close').click();
+  assert.equal(await page.locator('.ic-detail').count(),0,'close button must dismiss the card');
+  await page.locator('[data-act="catalogOpen"][data-id="A"]').click();
+  assert.equal(await page.locator('.ic-detail').count(),1,'card should reopen with budget state intact');
+
   await dlg.locator('.ic-poster__hit--add').click();
   assert.deepEqual((await page.evaluate(()=>window.__CEH_TEST__.getState())).selected,['A']);
   assert.match(await page.locator('.budget').innerText(),/Выбрано 60 млн у.е./);
@@ -93,6 +115,27 @@ const key='ceh404.rebuilt.qa50.20261108';
   await page.keyboard.press('Enter');
   assert.deepEqual((await page.evaluate(()=>window.__CEH_TEST__.getState())).selected,['A','B'],'printed Add accessible by keyboard');
 
+
+  // Only confirmation accent changes; the four yellow-highlighted catalog
+  // actions in the supplied phone screenshot remain exactly as approved.
+  const protectedCTA=await page.locator('.ic-grid .ic-card .ic-card__open').first().evaluate(btn=>{
+    const s=getComputedStyle(btn);
+    return {bg:s.backgroundImage,height:btn.getBoundingClientRect().height};
+  });
+  assert.ok(protectedCTA.bg.includes('linear-gradient')&&protectedCTA.height>=44,
+    'do not alter the approved orange catalog open buttons');
+  await page.locator('[data-act="review"]').click();
+  const feedback=page.locator('.document--catalog .feedback');
+  assert.equal(await feedback.count(),1,'portfolio confirmation expected');
+  const accent=await feedback.evaluate(el=>{
+    const s=getComputedStyle(el),p=getComputedStyle(el,'::before');
+    return {left:s.borderLeftWidth,content:p.content,gradient:p.backgroundImage,
+      width:p.width,height:p.height};
+  });
+  assert.equal(parseFloat(accent.left),0,'old plain orange stripe should be removed');
+  assert.match(accent.gradient,/linear-gradient/,'stripe should share button gradient');
+  assert.ok(parseFloat(accent.width)>=9&&parseFloat(accent.height)>30,'beveled confirmation stripe missing');
+  await page.locator('[data-act="catalog"]').click();
   assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=width+3,'no horizontal overflow');
   await page.locator('[data-act="catalogPage"][data-id="next"]').click();
   assert.match(await page.locator('.ic-pager__counter').innerText(),/2 \/ [34]/);
