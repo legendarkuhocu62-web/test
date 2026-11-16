@@ -31,7 +31,7 @@ const key='ceh404.rebuilt.qa50.20261108';
     if(i===0){
      assert.ok(info.notice,'notification missing');
      assert.ok(info.notice.bottom<info.panel.top,'notification overlaps bottom dialogue');
-    }else assert.equal(info.notice,null,'notification should only appear on first frame');
+    }else assert.ok(!info.notice,'notification should only appear on first frame');
     const expected=[
       'Коллеги, на мой планшет только что пришло сообщение с производства.',
       'Прежде чем принимать срочные меры',
