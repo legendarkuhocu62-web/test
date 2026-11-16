@@ -59,6 +59,7 @@ jobs:
           node tests/dialogue-question-pages.test.js
           node tests/edu01-reference-flow.test.js
           node tests/gromov-character-dialogue.test.js
+          node tests/s05-dialogue-mobile-layout.test.js
           node tests/save-continue-label.test.js
           node integration/s06-s08/module.test.js
           node tests/s06-s08-ui.test.js

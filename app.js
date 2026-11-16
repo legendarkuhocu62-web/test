@@ -247,7 +247,7 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
    const n=Math.max(0,Math.min(3,Number(s.s05Phase.replace('notice',''))||0));
    const notice=n===0?'<aside class="s05-tablet-notice" aria-label="Уведомление на планшете Андрея Громова"><strong>Производственное уведомление</strong><small>11.11.2026 · 12:00 · Заказ З-214</small><p>Обнаружено отклонение от графика: шлифование заказа З-214 не началось в запланированное время. Требуется уточнить ситуацию на производственном участке.</p></aside>':'';
    const m=messages[n];
-   html=frame(A.meeting,notice+chapterDialogue('S05:notice:'+n,m.name,m.role,m.text,m.portrait,btn(n===3?'Перейти на производственный участок':'Далее',n===3?'s05ToS06':'s05Next','','primary')),'investment-scene s05-notice-scene');
+   html=frame(A.meeting,notice+chapterDialogue('S05:notice:'+n,m.name,m.role,m.text,m.portrait,btn(n===3?'Перейти на производственный участок':'Далее',n===3?'s05ToS06':'s05Next','','primary')),'dialogue-stage dialogue-stage--meeting s05-notice-scene');
   }else html=frame(A.meeting,h+'</div>','investment-scene');
  }else if(['S06','S07','S08'].includes(s.scene)){
   html=window.CEH_ORDER_UI.render(s,d,A.engineer,frame);
