@@ -2227,3 +2227,14 @@ body.dialogue-mode-active #app .game-dialogue__text--question p{
  .edu-document-dialog{height:96dvh;max-height:96dvh}
  .edu-document-dialog__body{padding:6px}
 }
+
+/* Desktop scene stability: reserve scrollbar width and anchor the backdrop to
+   the viewport so taller/shorter content does not re-crop the same scene. */
+@media(min-width:721px){
+ html{scrollbar-gutter:stable}
+ body:not(.s00-desktop-cover-active) .stage-scene{
+   background-attachment:scroll,fixed;
+   background-position:center center,center center;
+   background-size:cover,cover;
+ }
+}
