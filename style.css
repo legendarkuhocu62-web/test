@@ -866,11 +866,11 @@ body{overflow-x:hidden}.shell{max-width:none}.masthead{padding:8px clamp(12px,2v
     margin:0 auto 5px;
     background:rgba(255,255,255,.75);
   }
-  /* S03 seats: Andrey left, Marina center, Irina right.
-     Match each visual to its own name, job title and click target. */
+  /* S03 portrait order is Andrey LEFT, Irina CENTER, Marina RIGHT.
+     The complete button moves, so each name, role and dialog ID stays together. */
   #app .s03-group-scene .choices .person-choice[data-id="andrey"] {order:1}
-  #app .s03-group-scene .choices .person-choice[data-id="marina"] {order:2}
-  #app .s03-group-scene .choices .person-choice[data-id="irina"] {order:3}
+  #app .s03-group-scene .choices .person-choice[data-id="irina"] {order:2}
+  #app .s03-group-scene .choices .person-choice[data-id="marina"] {order:3}
   body.s03-mobile-choice-active .s03-chooser__next {
     margin-top:10px;
     text-align:center;
@@ -2316,3 +2316,10 @@ body.dialogue-mode-active #app .game-dialogue__text--question p{
   #app .s03-group-scene .s03-chooser .choices .person-choice[data-id="irina"]{grid-column:2;grid-row:1;order:2}
   #app .s03-group-scene .s03-chooser .choices .person-choice[data-id="marina"]{grid-column:3;grid-row:1;order:3}
 }
+
+/* S03 for all screen widths: the order matches the shared group artwork.
+   Prevent mobile 431–720px from falling back to data-array order.
+   Desktop retains its explicit grid columns directly above. */
+#app .s03-group-scene .s03-chooser .choices .person-choice[data-id="andrey"]{order:1}
+#app .s03-group-scene .s03-chooser .choices .person-choice[data-id="irina"]{order:2}
+#app .s03-group-scene .s03-chooser .choices .person-choice[data-id="marina"]{order:3}
