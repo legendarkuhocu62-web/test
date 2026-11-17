@@ -419,7 +419,7 @@ function act(action,id){if(action==='eduToggleDocuments'&&s.scene==='S04'&&s.s04
  else if(action==='committeeRevise'&&s.scene==='S05'&&s.s05Phase==='committee'){s.committeeDecision=null}
  else if(action==='s05Continue'&&s.scene==='S05'&&s.s05Phase==='committee'&&['conditions','confidence','stage'].includes(s.committeeDecision)){s.s05Phase='notice3'}
  else if(action==='s05Next'&&s.scene==='S05'&&/^notice[0-2]$/.test(s.s05Phase)){s.s05Phase='notice'+(Number(s.s05Phase.slice(-1))+1)}
- else if(action==='s05ToS06'&&s.scene==='S05'&&s.s05Phase==='notice3'&&['conditions','confidence','stage'].includes(s.committeeDecision)){s.s0608=O.clean(s.s0608);s.s06Page='documents';s.s06Message='';s.s06IntroSeen=false;s.scene='S06'}
+ else if(action==='s05ToS06'&&s.scene==='S05'&&/^notice[0-3]$/.test(s.s05Phase)&&['conditions','confidence','stage'].includes(s.committeeDecision)){s.s0608=O.clean(s.s0608);s.s06Page='documents';s.s06Message='';s.s06IntroSeen=false;s.scene='S06'}
  else if(action==='s06ReadDocs'&&s.scene==='S06'&&!s.s06IntroSeen){s.s06IntroSeen=true}
  else if(action==='orderDoc'&&s.scene==='S06'&&s.s06Page==='documents'&&O.DOCUMENTS.some(x=>x.id===id)){
   s.s0608=O.openDocument(s.s0608,id);s.s06OpenDoc=id;
