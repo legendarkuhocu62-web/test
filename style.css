@@ -2237,12 +2237,11 @@ body.dialogue-mode-active #app .game-dialogue__text--question p{
   overflow:auto;
 }
 
-/* S00 desktop: wide composite (2048x941) preserves the original artwork
-   byte-for-byte with designed extensions, not a stretched or cropped photo.
-   The central original is fully visible from 16:9 up to 2048:941 screens.
-   No changes to mobile splash screen. */
+/* Desktop S00: 16:9 original, 2.1+: panoramic photo crop.
+   Both sources use UNIFORM scaling. No synthetic side bands or distortion.
+   Keep the approved Android mobile composite untouched. */
 @media(min-width:721px){
- body.s00-desktop-cover-active {overflow:hidden!important}
+ body.s00-desktop-cover-active{overflow:hidden!important}
  body.s00-desktop-cover-active .stage-scene.mobile-cover-s00{
    display:block!important;
    width:100%!important;
@@ -2254,16 +2253,16 @@ body.dialogue-mode-active #app .game-dialogue__text--question p{
  }
  body.s00-desktop-cover-active .stage-scene.mobile-cover-s00 .scene-content{
    display:block!important;
-   box-sizing:border-box;
    width:100%!important;
    height:100%!important;
    min-height:0!important;
    padding:0!important;
    overflow:hidden!important;
  }
- body.s00-desktop-cover-active .stage-scene.mobile-cover-s00 .desktop-start-visual{
-   position:relative!important;
+ body.s00-desktop-cover-active .stage-scene.mobile-cover-s00 .desktop-start-visual,
+ body.s00-desktop-cover-active .stage-scene.mobile-cover-s00 .desktop-start-visual > picture{
    display:block!important;
+   position:relative!important;
    width:100%!important;
    height:100%!important;
    max-width:none!important;
@@ -2271,11 +2270,11 @@ body.dialogue-mode-active #app .game-dialogue__text--question p{
    overflow:hidden!important;
    margin:0!important;
  }
- body.s00-desktop-cover-active .stage-scene.mobile-cover-s00 .desktop-start-visual > img{
+ body.s00-desktop-cover-active .stage-scene.mobile-cover-s00 .desktop-start-visual > picture > img{
+   display:block!important;
    position:absolute!important;
    inset:0!important;
    transform:none!important;
-   display:block!important;
    width:100%!important;
    height:100%!important;
    min-width:0!important;
@@ -2283,13 +2282,10 @@ body.dialogue-mode-active #app .game-dialogue__text--question p{
    max-height:none!important;
    aspect-ratio:auto!important;
    object-fit:cover!important;
-   object-position:center!important;
+   object-position:center top!important;
    margin:0!important;
  }
- body.s00-desktop-cover-active .stage-scene.mobile-cover-s00 .desktop-start-visual::before{
-   content:none!important;
-   display:none!important;
- }
+ body.s00-desktop-cover-active .stage-scene.mobile-cover-s00 .desktop-start-visual::before{content:none!important;display:none!important}
  body.s00-desktop-cover-active .stage-scene.mobile-cover-s00 .desktop-start-hitbox{z-index:3!important}
 }
 
