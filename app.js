@@ -14,23 +14,57 @@ function showEduDocument(src,title){
     dlg.className='edu-document-dialog';
     dlg.setAttribute('aria-labelledby','edu-document-dialog-title');
     dlg.innerHTML='<div class="edu-document-dialog__header"><h2 id="edu-document-dialog-title"></h2><button type="button" class="edu-document-dialog__close" aria-label="Закрыть документ">✕</button></div><div class="edu-document-dialog__body"><img alt="" loading="eager"></div><div class="edu-document-dialog__zoom"><button type="button" data-zoom-out aria-label="Уменьшить документ">−</button><output data-zoom-level>100%</output><button type="button" data-zoom-in aria-label="Увеличить документ">+</button></div><a class="edu-document-dialog__original" target="_blank" rel="noopener">Открыть оригинал для увеличения</a>';
-    dlg.querySelector('.edu-document-dialog__close').addEventListener('click',()=>dlg.close());
+    const body=dlg.querySelector('.edu-document-dialog__body');
+    const photo=body.querySelector('img');
     let zoom=1;
-    const photo=dlg.querySelector('.edu-document-dialog__body img');
-    const updateZoom=(value)=>{zoom=Math.max(1,Math.min(3,Math.round(value*4)/4));const body=dlg.querySelector('.edu-document-dialog__body');if(zoom===1){body.classList.remove('is-zoomed');photo.style.removeProperty('width');photo.style.removeProperty('height');photo.style.removeProperty('max-width');photo.style.removeProperty('max-height');body.scrollTop=0;body.scrollLeft=0;}else{if(!body.classList.contains('is-zoomed')){const fittedWidth=photo.getBoundingClientRect().width;photo.dataset.fitWidth=String(fittedWidth);}body.classList.add('is-zoomed');photo.style.setProperty('width',((Number(photo.dataset.fitWidth)||photo.naturalWidth||600)*zoom)+'px','important');photo.style.setProperty('height','auto');}dlg.querySelector('[data-zoom-level]').textContent=Math.round(zoom*100)+'%';};
+    // 100% means "fit the WHOLE document". Scrolling is enabled only after zooming.
+    const renderDocumentScale=()=>{
+      if(!dlg.open||!photo.naturalWidth||!photo.naturalHeight)return;
+      const box=body.getBoundingClientRect();
+      const computed=getComputedStyle(body);
+      const availableW=Math.max(1,box.width-parseFloat(computed.paddingLeft)-parseFloat(computed.paddingRight)-2);
+      const availableH=Math.max(1,box.height-parseFloat(computed.paddingTop)-parseFloat(computed.paddingBottom)-2);
+      const factor=Math.min(1,availableW/photo.naturalWidth,availableH/photo.naturalHeight);
+      const fittedW=photo.naturalWidth*factor;
+      const fittedH=photo.naturalHeight*factor;
+      photo.style.setProperty('width',Math.round(fittedW*zoom)+'px','important');
+      photo.style.setProperty('height',Math.round(fittedH*zoom)+'px','important');
+      photo.style.setProperty('max-width','none');
+      photo.style.setProperty('max-height','none');
+      body.classList.toggle('is-zoomed',zoom>1);
+      body.style.overflow=zoom>1?'auto':'hidden';
+      dlg.querySelector('[data-zoom-level]').textContent=Math.round(zoom*100)+'%';
+    };
+    const updateZoom=(value)=>{
+      zoom=Math.max(1,Math.min(3,Math.round(value*4)/4));
+      renderDocumentScale();
+      if(zoom===1){body.scrollTop=0;body.scrollLeft=0;}
+    };
+    dlg.querySelector('.edu-document-dialog__close').addEventListener('click',()=>dlg.close());
     dlg.querySelector('[data-zoom-in]').addEventListener('click',()=>updateZoom(zoom+.25));
     dlg.querySelector('[data-zoom-out]').addEventListener('click',()=>updateZoom(zoom-.25));
-    dlg.addEventListener('close',()=>updateZoom(1));
-    dlg.addEventListener('close',()=>{if(eduDocumentReturnFocus&&eduDocumentReturnFocus.isConnected)eduDocumentReturnFocus.focus({preventScroll:true});});
+    photo.addEventListener('load',()=>{if(dlg.open)renderDocumentScale();});
+    window.addEventListener('resize',()=>{if(dlg.open)requestAnimationFrame(renderDocumentScale);});
+    dlg.addEventListener('close',()=>{
+      zoom=1;
+      body.classList.remove('is-zoomed');
+      body.style.removeProperty('overflow');
+      photo.style.removeProperty('width');photo.style.removeProperty('height');
+      photo.style.removeProperty('max-width');photo.style.removeProperty('max-height');
+      if(eduDocumentReturnFocus&&eduDocumentReturnFocus.isConnected)eduDocumentReturnFocus.focus({preventScroll:true});
+    });
+    dlg._fitDocument=()=>{zoom=1;renderDocumentScale();body.scrollTop=0;body.scrollLeft=0;};
     document.body.appendChild(dlg);
     eduDocumentDialog=dlg;
   }
   eduDocumentReturnFocus=document.activeElement;
   eduDocumentDialog.querySelector('#edu-document-dialog-title').textContent=title;
   const photo=eduDocumentDialog.querySelector('.edu-document-dialog__body img');
-  photo.src=src;photo.alt=title;photo.removeAttribute('data-fit-width');const body=eduDocumentDialog.querySelector('.edu-document-dialog__body');body.classList.remove('is-zoomed');photo.style.removeProperty('width');photo.style.removeProperty('height');photo.style.removeProperty('max-width');photo.style.removeProperty('max-height');body.scrollTop=0;body.scrollLeft=0;eduDocumentDialog.querySelector('[data-zoom-level]').textContent='100%';
+  photo.src=src;
+  photo.alt=title;
   eduDocumentDialog.querySelector('.edu-document-dialog__original').href=src;
   if(!eduDocumentDialog.open)eduDocumentDialog.showModal();
+  requestAnimationFrame(()=>eduDocumentDialog._fitDocument());
   eduDocumentDialog.querySelector('.edu-document-dialog__close').focus({preventScroll:true});
 }
 app.addEventListener('click',ev=>{
