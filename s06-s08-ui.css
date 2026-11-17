@@ -245,3 +245,24 @@ body:has(.order-stage) .reset{position:relative;clear:both;margin-top:0;padding:
   .s05-notice-scene .s05-tablet-notice p {padding:6px 9px 8px;font-size:12px;line-height:1.28}
   .s05-notice-scene .game-dialogue__panel {max-height:50%!important;overflow:hidden!important}
 }
+
+
+/* S05 top notification: protect Gromov's speaker badge from clipping.
+   Keep this fix local; other character dialogues use the shared defaults. */
+@media(max-width:720px){
+  .s05-notice-scene .game-dialogue--scene{
+    overflow:visible;
+  }
+  .s05-notice-scene .game-dialogue--scene .game-dialogue__panel{
+    overflow:visible!important;
+  }
+  .s05-notice-scene .game-dialogue--scene .game-dialogue__speaker{
+    margin-top:0!important;
+    margin-bottom:8px!important;
+    flex-shrink:0;
+  }
+  .s05-notice-scene .game-dialogue--scene .game-dialogue__name,
+  .s05-notice-scene .game-dialogue--scene .game-dialogue__role{
+    line-height:1.2;
+  }
+}
