@@ -251,7 +251,8 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
    );
    html=frame(A.meeting,content,'dialogue-stage dialogue-stage--meeting');
  }else{
-   const buttons=d.people.map(p=>`<button type="button" class="btn person-choice ${s.s03Read.includes(p.id)?'seen':''}" data-act="person" data-id="${e(p.id)}"><span class="person-choice__name">${s.s03Read.includes(p.id)?'✓ ':''}${e(p.name)}</span><span class="person-choice__role">${e(p.role)}</span></button>`).join('');
+   const s03SeatOrder=['andrey','irina','marina'];
+   const buttons=s03SeatOrder.map(id=>d.people.find(p=>p.id===id)).filter(Boolean).map(p=>`<button type="button" class="btn person-choice ${s.s03Read.includes(p.id)?'seen':''}" data-act="person" data-id="${e(p.id)}"><span class="person-choice__name">${s.s03Read.includes(p.id)?'✓ ':''}${e(p.name)}</span><span class="person-choice__role">${e(p.role)}</span></button>`).join('');
    const readCount=s.s03Read.length;
    const nextAction=readCount===3?btn('Завершить обсуждение','s03Conclusion','','primary'):'<p class="s03-progress">Прослушано '+readCount+' из 3 основных позиций</p>';
    const content='<div class="s03-chooser"><div class="s03-chooser__intro"><h1>Три профессиональные позиции</h1><p>Перед подготовкой рекомендаций выслушай специалистов.</p></div><div class="choices">'+buttons+'</div><div class="s03-chooser__next">'+nextAction+'</div></div>';
