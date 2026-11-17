@@ -345,16 +345,16 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
     '<div class="committee-actions">'+btn('Изменить ответ','committeeRevise')+btn('Продолжить заседание','s05Continue','','primary')+'</div></div>';
   }
   if(s.s05Phase!=='committee'){
-   const messages=[
-    {name:'Андрей Громов',role:'Участник инвесткомитета',portrait:A.andrey,text:'Коллеги, на мой планшет только что пришло сообщение с производства. По заказу З-214 возникло отклонение от графика. Предлагаю прерваться и разобраться, что происходит на участке.'},
-    {name:'Марина Власова',role:'Участник инвесткомитета',portrait:A.marina,text:'Прежде чем принимать срочные меры, нужно понять, насколько ситуация влияет на сроки и другие обязательства предприятия. Пока у нас недостаточно данных для окончательного вывода.'},
-    {name:'Ирина Соколова',role:'Главный технолог',portrait:A.irina_focused,text:'По одному сообщению нельзя установить причину задержки. Давай сначала посмотрим маршрут заказа, оперативную сводку участка и план дальнейших операций.'},
-    {name:'Андрей Громов',role:'Участник инвесткомитета',portrait:A.andrey,text:(s.name?s.name+', ':'')+'твоя инвестиционная рекомендация зафиксирована. Теперь нам нужно оценить ситуацию с текущим заказом. Пройдём на производственный участок и проверим документы.'}
-   ];
+   // Retain the existing S05 state values for compatible saved games.
+   // The two interim committee comments were removed from this urgent notice:
+   // only Gromov reports the problem and directs the player to the shop floor.
    const n=Math.max(0,Math.min(3,Number(s.s05Phase.replace('notice',''))||0));
-   const notice=n===0?'<aside class="s05-tablet-notice" aria-label="Уведомление на планшете Андрея Громова"><div class="s05-tablet-notice__heading"><span class="s05-tablet-notice__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 21h20L12 3Z"/><path d="M12 9v5M12 17h.01"/></svg></span><strong>Производственное уведомление</strong></div><div class="s05-tablet-notice__meta"><time datetime="2026-11-11T12:00">11.11.2026 · 12:00</time><span class="s05-tablet-notice__order">Заказ З-214</span></div><p><span class="s05-tablet-notice__alert">Обнаружено отклонение от графика:</span> шлифование заказа З-214 не началось в запланированное время. Требуется уточнить ситуацию на производственном участке.</p></aside>':'';
-   const m=messages[n];
-   html=frame(A.meeting,notice+chapterDialogue('S05:notice:'+n,m.name,m.role,m.text,m.portrait,btn(n===3?'Перейти на производственный участок':'Далее',n===3?'s05ToS06':'s05Next','','primary')),'dialogue-stage dialogue-stage--meeting s05-notice-scene');
+   const notice='<aside class="s05-tablet-notice" aria-label="Уведомление на планшете Андрея Громова"><div class="s05-tablet-notice__heading"><span class="s05-tablet-notice__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 21h20L12 3Z"/><path d="M12 9v5M12 17h.01"/></svg></span><strong>Производственное уведомление</strong></div><div class="s05-tablet-notice__meta"><time datetime="2026-11-11T12:00">11.11.2026 · 12:00</time><span class="s05-tablet-notice__order">Заказ З-214</span></div><p><span class="s05-tablet-notice__alert">Обнаружено отклонение от графика:</span> шлифование заказа З-214 не началось в запланированное время. Требуется уточнить ситуацию на производственном участке.</p></aside>';
+   const text='Коллеги, на мой планшет только что пришло сообщение с производства. По заказу З-214 возникло отклонение от графика. Предлагаю прерваться и разобраться, что происходит на участке.';
+   const dialogue=chapterDialogue('S05:notice:gromov','Андрей Громов','Участник инвесткомитета',text,A.andrey,btn('Перейти на производственный участок','s05ToS06','','primary'));
+   // Place the notice in the dialogue panel, not above the character's head.
+   const content=dialogue.replace('<div class="game-dialogue__text','<div class="game-dialogue__text');
+   html=frame(A.meeting,content.replace('<div class="game-dialogue__text',notice+'<div class="game-dialogue__text'),'dialogue-stage dialogue-stage--meeting s05-notice-scene');
   }else html=frame(A.meeting,h+'</div>','investment-scene');
  }else if(['S06','S07','S08'].includes(s.scene)){
   html=window.CEH_ORDER_UI.render(s,d,A.engineer,frame);
