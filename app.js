@@ -17,7 +17,7 @@ function showEduDocument(src,title){
     dlg.querySelector('.edu-document-dialog__close').addEventListener('click',()=>dlg.close());
     let zoom=1;
     const photo=dlg.querySelector('.edu-document-dialog__body img');
-    const updateZoom=(value)=>{zoom=Math.max(1,Math.min(3,Math.round(value*4)/4));photo.style.width=(zoom*100)+'%';dlg.querySelector('[data-zoom-level]').textContent=Math.round(zoom*100)+'%';};
+    const updateZoom=(value)=>{zoom=Math.max(1,Math.min(3,Math.round(value*4)/4));const body=dlg.querySelector('.edu-document-dialog__body');if(zoom===1){body.classList.remove('is-zoomed');photo.style.removeProperty('width');photo.style.removeProperty('height');photo.style.removeProperty('max-width');photo.style.removeProperty('max-height');body.scrollTop=0;body.scrollLeft=0;}else{if(!body.classList.contains('is-zoomed')){const fittedWidth=photo.getBoundingClientRect().width;photo.dataset.fitWidth=String(fittedWidth);}body.classList.add('is-zoomed');photo.style.setProperty('width',((Number(photo.dataset.fitWidth)||photo.naturalWidth||600)*zoom)+'px','important');photo.style.setProperty('height','auto');}dlg.querySelector('[data-zoom-level]').textContent=Math.round(zoom*100)+'%';};
     dlg.querySelector('[data-zoom-in]').addEventListener('click',()=>updateZoom(zoom+.25));
     dlg.querySelector('[data-zoom-out]').addEventListener('click',()=>updateZoom(zoom-.25));
     dlg.addEventListener('close',()=>updateZoom(1));
@@ -28,7 +28,7 @@ function showEduDocument(src,title){
   eduDocumentReturnFocus=document.activeElement;
   eduDocumentDialog.querySelector('#edu-document-dialog-title').textContent=title;
   const photo=eduDocumentDialog.querySelector('.edu-document-dialog__body img');
-  photo.src=src;photo.alt=title;
+  photo.src=src;photo.alt=title;photo.removeAttribute('data-fit-width');const body=eduDocumentDialog.querySelector('.edu-document-dialog__body');body.classList.remove('is-zoomed');photo.style.removeProperty('width');photo.style.removeProperty('height');photo.style.removeProperty('max-width');photo.style.removeProperty('max-height');body.scrollTop=0;body.scrollLeft=0;eduDocumentDialog.querySelector('[data-zoom-level]').textContent='100%';
   eduDocumentDialog.querySelector('.edu-document-dialog__original').href=src;
   if(!eduDocumentDialog.open)eduDocumentDialog.showModal();
   eduDocumentDialog.querySelector('.edu-document-dialog__close').focus({preventScroll:true});
