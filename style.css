@@ -2289,3 +2289,38 @@ body.dialogue-mode-active #app .game-dialogue__text--question p{
   display:block;
   overflow:auto;
 }
+
+
+/* S00 desktop: TRUE edge-to-edge width with preserved source aspect ratio.
+   Unlike the previous contain rule, do not limit width by viewport height;
+   crop overflow vertically, never stretch the approved artwork. */
+@media (min-width:721px){
+  body.s00-desktop-cover-active .stage-scene.mobile-cover-s00 .desktop-start-visual{
+    width:100vw!important;
+    height:100dvh!important;
+    max-width:none!important;
+    max-height:none!important;
+    display:block!important;
+    position:relative!important;
+    overflow:hidden!important;
+  }
+  body.s00-desktop-cover-active .stage-scene.mobile-cover-s00 .desktop-start-visual > img{
+    display:block!important;
+    position:absolute!important;
+    left:50%!important;
+    top:50%!important;
+    transform:translate(-50%,-50%)!important;
+    width:100vw!important;
+    height:auto!important;
+    min-width:100vw!important;
+    max-width:none!important;
+    max-height:none!important;
+    aspect-ratio:1672/941!important;
+    object-fit:contain!important;
+    object-position:center!important;
+    margin:0!important;
+  }
+  body.s00-desktop-cover-active .stage-scene.mobile-cover-s00 .desktop-start-visual::before{
+    content:none!important;
+  }
+}
