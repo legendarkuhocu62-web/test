@@ -353,8 +353,7 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
    const text='Коллеги, на мой планшет только что пришло сообщение с производства. По заказу З-214 возникло отклонение от графика. Предлагаю прерваться и разобраться, что происходит на участке.';
    const dialogue=chapterDialogue('S05:notice:gromov','Андрей Громов','Участник инвесткомитета',text,A.andrey,btn('Перейти на производственный участок','s05ToS06','','primary'));
    // Place the notice in the dialogue panel, not above the character's head.
-   const content=dialogue.replace('<div class="game-dialogue__text','<div class="game-dialogue__text');
-   html=frame(A.meeting,content.replace('<div class="game-dialogue__text',notice+'<div class="game-dialogue__text'),'dialogue-stage dialogue-stage--meeting s05-notice-scene');
+   html=frame(A.meeting,dialogue.replace('<div class="game-dialogue__text',notice+'<div class="game-dialogue__text'),'dialogue-stage dialogue-stage--meeting s05-notice-scene');
   }else html=frame(A.meeting,h+'</div>','investment-scene');
  }else if(['S06','S07','S08'].includes(s.scene)){
   html=window.CEH_ORDER_UI.render(s,d,A.engineer,frame);
