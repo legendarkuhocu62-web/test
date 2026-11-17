@@ -2173,3 +2173,57 @@ body.dialogue-mode-active #app .game-dialogue__text--question p{
     max-width:100%;
   }
 }
+
+
+/* 17.11.2026 · S00 desktop: preserve artwork proportions; never stretch. */
+@media (min-width:721px) {
+ body.s00-desktop-cover-active .stage-scene.mobile-cover-s00 {
+   height:100dvh!important;min-height:100dvh!important;max-height:100dvh!important;
+   overflow:hidden!important;background:#061321!important;
+ }
+ body.s00-desktop-cover-active .stage-scene.mobile-cover-s00 .scene-content {
+   width:100%;height:100%;min-height:0;padding:0!important;overflow:hidden;
+ }
+ body.s00-desktop-cover-active .mobile-cover-s00 .desktop-start-visual {
+   width:100%;height:100%;max-width:none;max-height:none;
+   display:flex;align-items:center;justify-content:center;overflow:hidden;
+ }
+ body.s00-desktop-cover-active .mobile-cover-s00 .desktop-start-visual img {
+   display:block;width:100%;height:100%;max-width:none;max-height:none;
+   object-fit:contain!important;object-position:center center;
+ }
+ body.s00-desktop-cover-active .mobile-cover-s00 .desktop-start-visual::before {
+   inset:-24px;z-index:0;pointer-events:none;
+ }
+}
+
+/* EDU-01 document viewer: fit the entire page at 100%; zoom only on demand.
+   Flex columns reserve space for title, zoom controls and original link. */
+.edu-document-dialog {
+ height:min(94dvh,900px);max-height:94dvh;
+ display:none;flex-direction:column;overflow:hidden;
+}
+.edu-document-dialog[open]{display:flex}
+.edu-document-dialog__header,.edu-document-dialog__zoom,
+.edu-document-dialog__original{flex:0 0 auto}
+.edu-document-dialog__body {
+ flex:1 1 0;min-height:0;max-height:none!important;
+ display:flex;align-items:center;justify-content:center;
+ overflow:auto;padding:10px;
+}
+.edu-document-dialog__body img {
+ display:block;width:auto!important;height:auto;
+ max-width:100%;max-height:100%;
+ object-fit:contain;margin:auto;flex-shrink:0;
+}
+.edu-document-dialog__body.is-zoomed {
+ display:block;text-align:center;
+}
+.edu-document-dialog__body.is-zoomed img {
+ max-width:none;max-height:none;
+ margin:0 auto;
+}
+@media(max-width:590px){
+ .edu-document-dialog{height:96dvh;max-height:96dvh}
+ .edu-document-dialog__body{padding:6px}
+}
