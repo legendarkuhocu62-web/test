@@ -418,7 +418,7 @@ function act(action,id){if(action==='eduToggleDocuments'&&s.scene==='S04'&&s.s04
  else if(action==='committeeStart'&&s.scene==='S04'&&s.s04Mode==='savedFinal'){s.scene='S05';s.committeeDecision=null;s.s05Phase='committee'}
  else if(action==='committeeChoose'&&s.scene==='S05'&&['conditions','confidence','stage'].includes(id)){s.committeeDecision=id}
  else if(action==='committeeRevise'&&s.scene==='S05'&&s.s05Phase==='committee'){s.committeeDecision=null}
- else if(action==='s05Continue'&&s.scene==='S05'&&s.s05Phase==='committee'&&['conditions','confidence','stage'].includes(s.committeeDecision)){s.s05Phase='notice0'}
+ else if(action==='s05Continue'&&s.scene==='S05'&&s.s05Phase==='committee'&&['conditions','confidence','stage'].includes(s.committeeDecision)){s.s05Phase='notice3'}
  else if(action==='s05Next'&&s.scene==='S05'&&/^notice[0-2]$/.test(s.s05Phase)){s.s05Phase='notice'+(Number(s.s05Phase.slice(-1))+1)}
  else if(action==='s05ToS06'&&s.scene==='S05'&&s.s05Phase==='notice3'&&['conditions','confidence','stage'].includes(s.committeeDecision)){s.s0608=O.clean(s.s0608);s.s06Page='documents';s.s06Message='';s.s06IntroSeen=false;s.scene='S06'}
  else if(action==='s06ReadDocs'&&s.scene==='S06'&&!s.s06IntroSeen){s.s06IntroSeen=true}
