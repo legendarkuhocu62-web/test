@@ -2301,3 +2301,18 @@ body.dialogue-mode-active #app .game-dialogue__text--question p{
     z-index:3!important;
   }
 }
+
+
+/* S03 desktop seating: match the APPROVED desktop composite positions.
+   Left: Andrey (andrey); center: Irina (irina); right: Marina (marina).
+   Rearranges complete buttons, preserving their data-id, names, roles and
+   the speech/reply each button opens. Mobile seating remains unchanged. */
+@media (min-width:721px){
+  #app .s03-group-scene .s03-chooser .choices{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+  #app .s03-group-scene .s03-chooser .choices .person-choice[data-id="andrey"]{grid-column:1;grid-row:1;order:1}
+  #app .s03-group-scene .s03-chooser .choices .person-choice[data-id="irina"]{grid-column:2;grid-row:1;order:2}
+  #app .s03-group-scene .s03-chooser .choices .person-choice[data-id="marina"]{grid-column:3;grid-row:1;order:3}
+}
