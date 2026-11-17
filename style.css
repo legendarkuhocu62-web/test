@@ -2238,3 +2238,54 @@ body.dialogue-mode-active #app .game-dialogue__text--question p{
    background-size:cover,cover;
  }
 }
+
+
+/* 17.11 · Desktop QA: the approved S00 poster is 1672x941 (16:9).
+   It must NOT be stretched to a browser viewport with a different ratio.
+   The blurred background fills the remaining space, not the poster itself. */
+@media(min-width:721px){
+  body.s00-desktop-cover-active .stage-scene.mobile-cover-s00 .desktop-start-visual{
+    display:flex!important;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+  }
+  body.s00-desktop-cover-active .stage-scene.mobile-cover-s00 .desktop-start-visual > img{
+    display:block!important;
+    flex:0 0 auto;
+    width:min(100%,calc(100dvh * 1.77683))!important;
+    height:auto!important;
+    max-width:100%!important;
+    max-height:100dvh!important;
+    aspect-ratio:1672 / 941;
+    object-fit:contain!important;
+    object-position:center center!important;
+  }
+  /* Anchor the backdrop to the viewport, not to the changing content height.
+     Do not alter the mobile-specific scene compositions or S00. */
+  body:not(.s00-desktop-cover-active) .stage-scene:not(.mobile-cover-s00){
+    background-attachment:fixed,fixed!important;
+    background-position:center center,center center!important;
+    background-size:cover,cover!important;
+    background-repeat:no-repeat!important;
+  }
+}
+/* EDU-01: whole-sheet document view at 100%; scrolling is zoom-only.
+   JS explicitly sets fitted width/height from the image's native aspect ratio. */
+.edu-document-dialog[open] .edu-document-dialog__body:not(.is-zoomed){
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden!important;
+}
+.edu-document-dialog[open] .edu-document-dialog__body:not(.is-zoomed) > img{
+  flex:0 0 auto;
+  object-fit:contain;
+  margin:auto;
+}
+.edu-document-dialog[open] .edu-document-dialog__body.is-zoomed{
+  display:block;
+  overflow:auto;
+}
