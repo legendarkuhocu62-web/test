@@ -265,12 +265,19 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
  if(s.s04Mode==='priority'){
   h+='<p>Выбери основной приоритет инвестиционной программы. Это ориентир для анализа, а не условие допуска к формированию портфеля.</p><div class="choices">'+d.goals.map(x=>btn((s.priority===x.id?'✓ ':'')+x.label,'priority',x.id,s.priority===x.id?'selected':'')).join('')+'</div>'+btn('Перейти к выбору мероприятий','catalog','','primary');
  }else if(s.s04Mode==='catalog'){
-  const spent=L.spent(s);
-  h+=s.budgetMessage?'<p class="warning budget-message" role="alert">'+e(s.budgetMessage)+'</p>':'';
-  h+='<div class="budget"><span>Бюджет <b>100 млн у.е.</b></span><span>Выбрано <b>'+spent+' млн у.е.</b></span><span>Осталось <b>'+(100-spent)+' млн у.е.</b></span></div><p>Все инициативы A–M доступны. Можно отменять выбор. Стоимость L и M в бюджете равна нулю, но это не означает отсутствия затрат и рисков.</p>';
-  h+=window.CEH_INVESTMENT_CATALOG.render(s,d,e,btn);
-  h+='<div class="portfolio-actions">'+btn(s.returnToReview?'Подтвердить пересмотренный портфель':'Подтвердить предварительный портфель','review','','primary')+'</div>';
-  if(s.showReview){h+='<div class="feedback"><h2>Подтверждение портфеля</h2><p>Выбрано: '+e(s.selected.join(', '))+'</p><p>Общая стоимость: <b>'+spent+' млн у.е.</b></p><p>Остаток бюджета: <b>'+(100-spent)+' млн у.е.</b></p><p>Приоритет: '+e(d.goals.find(x=>x.id===s.priority)?.label||'не выбран')+'</p><p>Вы действительно хотите сохранить этот предварительный портфель?</p>'+btn('Вернуться к редактору','catalog','','')+btn('Сохранить и продолжить','finish','','primary')+'</div>'}
+   const spent=L.spent(s);
+   h+='<div class="catalog-workspace"><div class="catalog-workspace__cards">'+window.CEH_INVESTMENT_CATALOG.render(s,d,e,btn)+'</div><aside class="catalog-workspace__summary" aria-label="Текущий инвестиционный портфель">';
+   if(s.budgetMessage)h+='<p class="warning budget-message" role="alert">'+e(s.budgetMessage)+'</p>';
+   h+='<div class="budget"><span>Бюджет <b>100 млн у.е.</b></span><span>Выбрано <b>'+spent+' млн у.е.</b></span><span>Осталось <b>'+(100-spent)+' млн у.е.</b></span></div>';
+   h+='<p class="catalog-summary__selection"><b>Инициативы:</b> '+e(s.selected.join(', ')||'пока не выбраны')+'</p>';
+   h+='<p class="catalog-summary__priority"><b>Приоритет:</b> '+e(d.goals.find(x=>x.id===s.priority)?.label||'не выбран')+'</p>';
+   h+='<p class="catalog-summary__hint">В каталоге доступны инициативы A–M. L и M имеют нулевую бюджетную стоимость, но не исключают рисков.</p>';
+   if(s.showReview){
+     h+='<div class="feedback"><h2>Подтверждение портфеля</h2><p>Выбрано: '+e(s.selected.join(', '))+'</p><p>Стоимость: <b>'+spent+' млн у.е.</b></p><p>Сохранить предварительный портфель?</p><div class="portfolio-review-actions">'+btn('Вернуться к редактору','catalog')+btn('Сохранить и продолжить','finish','','primary')+'</div></div>';
+   }else{
+     h+='<div class="portfolio-actions">'+btn(s.returnToReview?'Подтвердить пересмотренный портфель':'Подтвердить предварительный портфель','review','','primary')+'</div>';
+   }
+   h+='</aside></div>';
  }else if(s.s04Mode==='eduIntro'){
   // Programmatic industrial-style panel based on approved visual reference.
   // Do not use a flat screenshot: controls stay accessible and functional.
