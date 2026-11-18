@@ -40,7 +40,7 @@ window.CEH_INVESTMENT_CATALOG = (() => {
         '<div class="ic-card__body"><div class="invest-head"><b class="ic-card__letter">'+esc(x.id)+'</b></div>'+
         '<strong class="ic-card__title">'+esc(x.title)+'</strong>'+
         '<span class="ic-card__price"><span aria-hidden="true" class="ic-coins">▰</span>'+esc(x.cost)+' млн у.е.</span>'+
-        button('Открыть карту инвестиционного предложения','catalogOpen',x.id,'ic-card__open')+
+        button('Подробнее','catalogOpen',x.id,'ic-card__open')+
         (chosen?'<span class="ic-card__chosen">✓ В портфеле</span>':'')+
         '</div></article>';
     }
