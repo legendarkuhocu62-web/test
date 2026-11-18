@@ -91,7 +91,7 @@ const key='ceh404.rebuilt.qa50.20261108';
 
   await dlg.locator('.ic-poster__hit--add').click();
   assert.deepEqual((await page.evaluate(()=>window.__CEH_TEST__.getState())).selected,['A']);
-  assert.match(await page.locator('.budget').innerText(),/Выбрано 60 млн у.е./);
+  assert.match(await page.locator('.budget').innerText(),/Выбрано\s+60\s+млн у.е./,'budget total must remain correct even when responsive labels wrap');
   await page.locator('[data-act="catalogOpen"][data-id="A"]').click();
   await page.locator('.ic-poster__hit--add').click();
   assert.deepEqual((await page.evaluate(()=>window.__CEH_TEST__.getState())).selected,['A'],'no double add');
