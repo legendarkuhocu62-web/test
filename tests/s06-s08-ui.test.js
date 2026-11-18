@@ -26,19 +26,19 @@ const key='ceh404.rebuilt.qa50.20261108';
   await page.locator('[data-act="s05Continue"]').click();
   assert.equal(await page.locator('.s05-tablet-notice').count(),1,'tablet alert on first Gromov dialogue');
   assert.match(await page.locator('.s05-tablet-notice').innerText(),/З-214/);
-  for(let i=0;i<3;i++){
-   assert.equal((await page.evaluate(()=>window.__CEH_TEST__.getState())).s05Phase,'notice'+i);
-   while(await page.locator('[data-act="dlgMore"]').count())
-    await page.locator('[data-act="dlgMore"]').click();
-   await page.locator('[data-act="s05Next"]').click();
-  }
-  assert.equal((await page.evaluate(()=>window.__CEH_TEST__.getState())).s05Phase,'notice3');
+  assert.equal((await page.evaluate(()=>window.__CEH_TEST__.getState())).s05Phase,'notice3',
+   'current approved flow has one urgent Gromov notification without obsolete committee interludes');
+  assert.equal(await page.locator('[data-act="s05Next"]').count(),0,
+   'obsolete multi-dialogue route must not return');
   await page.reload();
   assert.equal((await page.evaluate(()=>window.__CEH_TEST__.getState())).s05Phase,'notice3','last dialogue resumes');
   while(await page.locator('[data-act="dlgMore"]').count())await page.locator('[data-act="dlgMore"]').click();
   await page.locator('[data-act="s05ToS06"]').click();
   assert.equal((await page.evaluate(()=>window.__CEH_TEST__.getState())).scene,'S06');
   assert.equal(await page.locator('[data-act="s06ReadDocs"]').count(),1,'Gromov briefing first');
+  assert.equal(await page.locator('.dialogue-stage--shop').count(),1,'intro uses shared dialogue presentation');
+  assert.match(await page.locator('.dialogue-stage--shop').getAttribute('style'),/CH1-IMG-009/,
+    'intro background is approved S06 factory image');
   await page.locator('[data-act="s06ReadDocs"]').click();
   assert.equal(await page.locator('[data-act="orderTask"]:disabled').count(),1,'3/3 must lock analysis');
   assert.equal(await page.locator('.order-doc-card--unread').count(),3,'all three initially highlighted');
