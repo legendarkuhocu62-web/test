@@ -371,7 +371,7 @@ function act(action,id){if(action==='eduToggleDocuments'&&s.scene==='S04'&&s.s04
  else if(action==='s02Close'&&s.scene==='S02'&&s.s02Step==='report')s.s02Step='intro';
  else if(action==='s02Conclude'&&s.scene==='S02'&&s.s02ReportSeen&&['intro','report'].includes(s.s02Step))s.s02Step='conclusion';
  else if(action==='s00next')s.s00=Math.min(3,s.s00+1);
- else if(action==='badge'){const name=L.cleanName(document.getElementById('name')?.value);if(!name){showBadgeNameRequired();return}s.name=name;s.s00=4}
+ else if(action==='badge'){const name=L.cleanName(document.getElementById('name')?.value);if(!name){showBadgeNameRequired();return}s.name=name;const avatar=window.CEH_NAME_REGISTRY?.detect(name);s.avatarRecommendation=avatar?.recommendedAvatar||null;s.s00=4}
  else if(action==='next'){const next={S00:'S01',S01:'S02',S02:'S03',S03:'S04'};if(next[s.scene]===id){if(s.scene==='S01'&&s.asked.length!==3)return;if(s.scene==='S02'&&(!s.hypothesisConfirmed||s.s02Step!=='feedback'))return;if(s.scene==='S03'&&(!s.s03ConclusionSeen||s.s03Read.length!==3))return;s.scene=id}}
  else if(action==='introNext')s.s01=Math.min(4,s.s01+1);
  else if(action==='ask'){s.reply=id;if(!s.asked.includes(id))s.asked.push(id)}
