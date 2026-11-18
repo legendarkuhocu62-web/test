@@ -375,3 +375,87 @@ dialog.ic-detail::backdrop { background:#020811d9; backdrop-filter:blur(3px); }
 @media(min-width:721px) and (max-width:1000px){
   #app .document--catalog .ic-grid .ic-card .ic-card__photo{flex-basis:31%;width:31%}
 }
+
+/* 18.11: S04 catalog has one persistent portfolio summary; no duplicate CTA.
+   Only this scene is viewport-locked. The card grid scrolls INSIDE the scene. */
+#app .investment-scene:has(.document--catalog){
+  box-sizing:border-box;height:calc(100dvh - 58px)!important;min-height:0!important;overflow:hidden;
+}
+#app .investment-scene:has(.document--catalog) .scene-content{
+  box-sizing:border-box;display:flex;min-height:0;height:100%;padding:8px 12px;overflow:hidden;
+}
+#app .investment-scene .glass.document--catalog{
+  box-sizing:border-box;display:flex;flex-direction:column;min-height:0;height:100%;
+  padding:12px 14px;overflow:hidden;
+}
+#app .document--catalog>h1{flex:0 0 auto;margin:0 0 8px;font-size:clamp(20px,2vw,28px);line-height:1.15}
+#app .document--catalog .catalog-workspace{
+  flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(250px,310px);
+  gap:13px;overflow:hidden;align-items:stretch;
+}
+#app .document--catalog .catalog-workspace__cards{display:flex;flex-direction:column;min-height:0;min-width:0;overflow:hidden}
+#app .document--catalog .catalog-workspace__cards .ic-catalog{
+  display:flex;flex-direction:column;min-height:0;height:100%;overflow:hidden;
+}
+#app .document--catalog .catalog-workspace__cards .ic-grid.invest-grid{
+  min-height:0;flex:1;overflow-y:auto;overscroll-behavior:contain;align-content:start;
+  margin:7px 0;scrollbar-gutter:stable;
+}
+#app .document--catalog .catalog-workspace__cards .ic-pager{
+  flex:0 0 auto;margin:5px auto 2px;
+}
+#app .document--catalog .catalog-workspace__summary{
+  display:flex;flex-direction:column;box-sizing:border-box;gap:8px;min-height:0;
+  padding:13px;border:1px solid #d0a15f;border-radius:12px;
+  background:linear-gradient(135deg,#142c44,#0b2035);overflow-y:auto;overscroll-behavior:contain;
+}
+#app .document--catalog .catalog-workspace__summary .budget{
+  display:grid;position:static;top:auto;z-index:auto;padding:0;margin:0;
+  border:0;background:transparent;box-shadow:none;backdrop-filter:none;
+}
+#app .document--catalog .catalog-workspace__summary .budget span{
+  display:flex;justify-content:space-between;gap:8px;padding:6px 9px;margin:0;min-width:0;
+}
+#app .document--catalog .catalog-workspace__summary .budget b{white-space:nowrap}
+#app .document--catalog .catalog-workspace__summary p{margin:0;line-height:1.32;font-size:clamp(12px,1vw,14px)}
+#app .document--catalog .catalog-summary__hint{color:#bdd0dd}
+#app .document--catalog .catalog-workspace__summary .portfolio-actions{
+  display:block;position:sticky!important;bottom:0;z-index:2;margin-top:auto;
+  padding:8px 0 0;width:100%;background:#0d253a;
+}
+#app .document--catalog .catalog-workspace__summary .portfolio-actions .btn{width:100%;margin:0!important;white-space:normal}
+#app .document--catalog .catalog-workspace__summary .feedback{
+  padding:12px 12px 12px 22px;overflow:visible;margin-top:auto;
+}
+#app .document--catalog .catalog-workspace__summary .feedback::before{left:6px;width:5px}
+#app .document--catalog .catalog-workspace__summary .feedback h2{font-size:clamp(17px,1.5vw,21px);margin:0 0 5px}
+#app .document--catalog .portfolio-review-actions{display:grid;gap:7px}
+#app .document--catalog .portfolio-review-actions .btn{width:100%;margin:0!important;white-space:normal}
+@media(max-width:720px){
+  #app .investment-scene:has(.document--catalog) .scene-content{padding:4px 6px}
+  #app .investment-scene .glass.document--catalog{padding:9px 9px}
+  #app .document--catalog>h1{font-size:19px;margin:0 0 5px}
+  #app .document--catalog .catalog-workspace{display:flex;flex-direction:column;gap:7px}
+  #app .document--catalog .catalog-workspace__summary{
+    order:-1;flex:0 1 auto;max-height:min(39dvh,240px);padding:7px 9px;gap:4px;
+  }
+  #app .document--catalog .catalog-workspace__summary .budget{display:flex;gap:4px}
+  #app .document--catalog .catalog-workspace__summary .budget span{font-size:11px;padding:4px 5px;flex:1;display:block}
+  #app .document--catalog .catalog-workspace__summary .budget b{display:block}
+  #app .document--catalog .catalog-summary__hint{display:none}
+  #app .document--catalog .catalog-workspace__cards{flex:1;min-height:0}
+  #app .document--catalog .catalog-workspace__cards .ic-grid.invest-grid{
+    overflow-y:auto;grid-template-columns:1fr!important;margin:4px 0;
+  }
+  #app .document--catalog .catalog-workspace__summary .portfolio-actions{
+    position:sticky!important;bottom:0;margin:0;padding:5px 0 0;
+  }
+  #app .document--catalog .catalog-workspace__summary .portfolio-actions .btn{
+    min-height:48px;font-size:clamp(12px,3vw,14px)!important;
+  }
+  #app .document--catalog .catalog-workspace__summary .feedback{padding:7px 7px 7px 17px}
+  #app .document--catalog .catalog-workspace__summary .feedback h2{font-size:15px}
+  #app .document--catalog .catalog-workspace__summary .feedback p{font-size:12px}
+  #app .document--catalog .portfolio-review-actions{grid-template-columns:1fr 1fr;gap:5px}
+  #app .document--catalog .portfolio-review-actions .btn{font-size:11px!important;padding:7px 5px!important;min-height:48px}
+}
