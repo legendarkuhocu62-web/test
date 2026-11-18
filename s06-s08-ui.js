@@ -15,10 +15,9 @@ function docList(state){
 function viewDocument(state){
  const doc=M.DOCUMENTS.find(x=>x.id===state.s06OpenDoc);
  if(!doc)return '';
- return '<section class="order-paper" aria-label="Открытый производственный документ">'+
-  '<div class="order-paper-top">ЦЕХ 404 · Производственный документооборот</div><h2>'+e(doc.title)+'</h2>'+
-  '<p>'+e(doc.body)+'</p><p class="order-paper-note">Обучающий документ для игрового заказа З-214. Дата игровой ситуации: '+e(M.GAME_CLOCK)+'.</p>'+
-  button('Закрыть документ','orderCloseDoc')+'</section>';
+ return '<section class="order-paper" aria-label="Открытый производственный документ" tabindex="0">'+
+  '<div class="order-paper-top"><span>ЦЕХ 404 · Производственный документооборот</span>'+button('Закрыть документ','orderCloseDoc')+'</div><h2>'+e(doc.title)+'</h2>'+
+  '<div class="order-paper__body">'+e(doc.body)+'</div></section>';
 }
 function renderS06(s){
  const z=M.clean(s.s0608),view=s.s06Page||'documents';
@@ -26,9 +25,11 @@ function renderS06(s){
  let h='<div class="glass order-screen"><div class="order-kicker">ГЛАВА 01 · ПРОИЗВОДСТВЕННЫЙ ЗАКАЗ</div><h1>Заказ под угрозой · З-214</h1>';
  if(view==='documents'){
   h+='<p>Плановая отгрузка — 13.11.2026, 16:00. Прежде чем делать выводы, изучи три документа. Время ситуации: <strong>'+e(M.GAME_CLOCK)+'</strong>.</p>';
-  h+='<p class="order-progress">Изучено документов: <b>'+z.docsOpened.length+' / 3</b></p>'+docList(s);
-  if(s.s06OpenDoc)h+=viewDocument(s);
-  h+=button(z.docsOpened.length===3?'Перейти к анализу':'Сначала изучи все документы','orderTask','',true,z.docsOpened.length!==3);
+  h+='<p class="order-progress">Изучено документов: <b>'+z.docsOpened.length+' / 3</b></p>';
+  h+='<div class="order-docs-layout"><div class="order-docs-layout__list">'+docList(s)+
+   button(z.docsOpened.length===3?'Перейти к анализу':'Сначала изучи все документы','orderTask','',true,z.docsOpened.length!==3)+'</div>';
+  h+=s.s06OpenDoc?viewDocument(s):'<div class="order-paper-placeholder" aria-hidden="true">Выбери документ, чтобы открыть вертикальный лист А4.</div>';
+  h+='</div>';
  }else if(view==='task'){
   h+='<h2>Проверка профессиональных выводов</h2><p>Отметь, подтверждается ли каждое утверждение документами. Если доказательств недостаточно, выбирай «Требует проверки».</p>';
   h+='<div class="order-statements">'+M.STATEMENTS.map((sentence,i)=>{
