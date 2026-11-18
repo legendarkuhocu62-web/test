@@ -21,7 +21,7 @@ function viewDocument(state){
 }
 function renderS06(s){
  const z=M.clean(s.s0608),view=s.s06Page||'documents';
- if(!s.s06IntroSeen)return '<div class="glass order-screen s06-intro"><div class="order-kicker">ЗАКАЗ З-214 · ПРОИЗВОДСТВЕННЫЙ УЧАСТОК</div><h1>Поручение Андрея Громова</h1><p>'+e(s.name?s.name+', ':'')+'вот данные по заказу З-214. Нам нужно разобраться, насколько серьёзно отклонение от графика и что действительно известно о ситуации. Изучи документы и подготовь оперативное заключение.</p>'+button('Изучить документы заказа','s06ReadDocs','',true)+'</div>';
+
  let h='<div class="glass order-screen"><div class="order-kicker">ГЛАВА 01 · ПРОИЗВОДСТВЕННЫЙ ЗАКАЗ</div><h1>Заказ под угрозой · З-214</h1>';
  if(view==='documents'){
   h+='<p>Плановая отгрузка — 13.11.2026, 16:00. Прежде чем делать выводы, изучи три документа. Время ситуации: <strong>'+e(M.GAME_CLOCK)+'</strong>.</p>';
@@ -79,7 +79,12 @@ function renderS08(s,data){
  else h+='<div class="order-report-sections">'+sections.map(x=>'<section><h2>'+e(x.title)+'</h2><p>'+e(x.body)+'</p></section>').join('')+'</div>';
  return h+'</div>';
 }
-function render(s,data,bg,frame){
+function render(s,data,bg,frame,chapterDialogue,portrait){
+ if(s.scene==='S06'&&!s.s06IntroSeen){
+  const message=(s.name?s.name+', ':'')+'вот данные по заказу З-214. Нам нужно разобраться, насколько серьёзно отклонение от графика и что действительно известно о ситуации. Изучи документы и подготовь оперативное заключение.';
+  const content=chapterDialogue('S06:intro:gromov','Андрей Громов','Участник инвесткомитета',message,portrait,button('Изучить документы заказа','s06ReadDocs','',true));
+  return frame(bg,content,'dialogue-stage dialogue-stage--shop');
+ }
  const content=s.scene==='S06'?renderS06(s):s.scene==='S07'?renderS07(s):renderS08(s,data);
  return frame(bg,content,'order-stage');
 }
