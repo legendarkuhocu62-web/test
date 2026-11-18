@@ -1,0 +1,35 @@
+name: Import approved S06 production-floor asset
+on:
+  push:
+    branches: [main]
+    paths:
+      - '_asset_upload/s06-shop/**'
+      - '.github/workflows/import-s06-shop.yml'
+permissions:
+  contents: write
+jobs:
+  import:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Reconstruct approved file and verify SHA256
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/backgrounds
+          cat _asset_upload/s06-shop/part-*.b64 | base64 --decode > 'assets/backgrounds/CH1-IMG-009_Производственный цех.png'
+          echo "35c193ab444cefc493d42e25cfb20a91892ace4f73eb5df89531837a1f3951a4  assets/backgrounds/CH1-IMG-009_Производственный цех.png" | sha256sum -c -
+          test "$(stat -c%s 'assets/backgrounds/CH1-IMG-009_Производственный цех.png')" -eq 3600570
+      - name: Commit only the approved background and remove transport chunks
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm -r --ignore-unmatch _asset_upload/s06-shop
+          git add -- 'assets/backgrounds/CH1-IMG-009_Производственный цех.png'
+          git commit -m "assets(s06): import verified CH1-IMG-009 [skip ci]"
+          git push origin HEAD:main
