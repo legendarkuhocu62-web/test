@@ -427,7 +427,7 @@ dialog.ic-detail::backdrop { background:#020811d9; backdrop-filter:blur(3px); }
 #app .document--catalog .catalog-workspace__summary .feedback{
   padding:12px 12px 12px 22px;overflow:visible;margin-top:auto;
 }
-#app .document--catalog .catalog-workspace__summary .feedback::before{left:6px;width:8px}
+#app .document--catalog .catalog-workspace__summary .feedback::before{left:0;width:8px}
 #app .document--catalog .catalog-workspace__summary .feedback h2{font-size:clamp(17px,1.5vw,21px);margin:0 0 5px}
 #app .document--catalog .portfolio-review-actions{display:grid;gap:7px}
 #app .document--catalog .portfolio-review-actions .btn{width:100%;margin:0!important;white-space:normal}
