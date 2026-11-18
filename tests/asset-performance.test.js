@@ -26,7 +26,7 @@ assert.equal(newTotal,report.optimized_total_bytes);
 assert.ok(newTotal<oldTotal*.4,'expected significant reduction in bytes');
 const index=fs.readFileSync('index.html','utf8');
 assert.match(index,/media="\(max-width: 720px\)".+S00_start_mobile_composite\.jpeg/);
-assert.match(index,/media="\(min-width: 721px\)".+Главный-экран\.webp/);
+assert.match(index,/media="\(min-width: 721px\)".+CH1-IMG-001_S00_desktop_wide_2048x941\.svg/,"desktop preload must point to the currently approved panoramic S00 asset");
 console.log('PASS optimized artwork: '+report.assets.length+
   ' originals preserved, original='+oldTotal+'B optimized='+newTotal+
   'B saved='+report.saved_percent+'%');
