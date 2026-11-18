@@ -150,6 +150,14 @@
       "source": "https://drive.google.com/file/d/1jn79xeppqKKGrweO9CVGnfunvptZpO9g/view",
       "status": "provided_for_integration",
       "note": "Женский вариант пропуска; без изменений исходного изображения. Мужской пропуск CH404-CH1-S00-001 сохраняется; выбор изображения по рекомендованному avatarRecommendation."
+    },
+    "bg_shop": {
+      "id": "CH1-IMG-009",
+      "type": "background",
+      "scene": "S06",
+      "path": "assets/backgrounds/CH1-IMG-009_Производственный цех.png",
+      "status": "approved",
+      "source": "https://drive.google.com/file/d/1WFe7JlB7oNOyZpgHs81moLB_daVm-FPo/view"
     }
   }
 }
