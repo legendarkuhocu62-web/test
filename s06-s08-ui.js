@@ -27,7 +27,7 @@ function renderS06(s){
   h+='<p>Плановая отгрузка — 13.11.2026, 16:00. Прежде чем делать выводы, изучи три документа. Время ситуации: <strong>'+e(M.GAME_CLOCK)+'</strong>.</p>';
   h+='<p class="order-progress">Изучено документов: <b>'+z.docsOpened.length+' / 3</b></p>';
   h+='<div class="order-docs-layout"><div class="order-docs-layout__list">'+docList(s)+
-   button(z.docsOpened.length===3?'Перейти к анализу':'Сначала изучи все документы','orderTask','',true,z.docsOpened.length!==3)+'</div>';
+   button('К анализу','orderTask','',true,z.docsOpened.length!==3)+'</div>';
   h+=s.s06OpenDoc?viewDocument(s):'<div class="order-paper-placeholder" aria-hidden="true">Выбери документ, чтобы открыть вертикальный лист А4.</div>';
   h+='</div>';
  }else if(view==='task'){
