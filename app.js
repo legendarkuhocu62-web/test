@@ -2,7 +2,9 @@
 const d=window.CEH_DATA,L=window.CEH_LOGIC,D=window.CEH_DIALOGUE,O=window.CEH_S06_S08_PREP,app=document.getElementById('app'),key='ceh404.rebuilt.qa50.20261108';
 const INVESTMENT_IMAGE_IDS={"A":"15D-LxpZJ6TM6Okyj9d7hGycq9B5chkGo","B":"1_lGMCZtgH8y3Lw2EJxrkbu4c0Q9a8ZJg","C":"1r6YYWkhtOj0C871WZLDkwFsIr_PS-kow","D":"1zH0Sky2pJbyMk6qbb0WhdErfI_TKE_Jf","E":"1HFI1GHkz1ZqGC7KazXdLOsSGfwDT9JWn","F":"1G_687hAS3B9OstBgMzfI_fX08lMCbpfY","G":"15aIs9zLjd1N0dtG_0IVmjvceBHWICqS4","H":"1xEI2FWSmzXVU-3QDLitoIHr_-i76dSdj","I":"1lCBaS6H9xmzp9wm3KpNfhwFu3aLdCZyc","J":"1Sq7IhrZ8DDjtUOca77Nmm3Oyu8ExJdGb","K":"1iGVXtESXqUWZjuN6I64b1eC5nmvh7WE-","L":"1XKLQSBxwA8L2aLIpIsvyCLJohbYEvC9F","M":"1dM03d_dg35ENzi9ZlUHgJ3rLgG0sDxXl"};
 let s;try{s=L.validState(JSON.parse(localStorage.getItem(key)||'null'))}catch(_){s=L.initial()}
-const materialsUI=window.CEH_MATERIALS.create({getState:()=>s,data:d,root:app});
+// Preserve older EDU-01 saves while skipping the duplicate document-intro screen.
+ if(s.scene==='S04'&&s.s04Mode==='eduIntro'){s.s04Mode='edu';s.eduPage='documents';}
+ const materialsUI=window.CEH_MATERIALS.create({getState:()=>s,data:d,root:app});
  const A={title:'assets/optimized/backgrounds/CH1-IMG-001_Главный-экран.webp',gate:'assets/optimized/backgrounds/CH1-IMG-006_Внешняя проходная.webp',entry:'assets/optimized/backgrounds/CH1-IMG-002_Входная зона и турникеты.webp?v=approved-20261109',office:'assets/optimized/backgrounds/CH1-IMG-005_Технологический отдел.webp',engineer:'assets/optimized/backgrounds/CH1-IMG-014_Инженерный кабинет.webp',group:'assets/backgrounds/CH1-IMG-020_S03_three_characters.jpeg',badge:'assets/optimized/icons/CH404-CH1-S00-001_employee_badge_technician.webp',badgeFemale:'assets/icons/CH404-CH1-S00-002_employee_badge_female_blurred.png',irina:'assets/optimized/characters/CH1-IMG-013_Женский персонаж с планшетом.webp',irina_friendly:'assets/optimized/characters/CH1-IMG-015_irina_friendly.webp',irina_focused:'assets/optimized/characters/CH1-IMG-016_irina_focused.webp',meeting:'assets/backgrounds/CH1-IMG-019_S03_Переговорная_без_персонажей.jpeg',andrey:'assets/optimized/characters/CH1-IMG-012_Персонаж Андрей Громов.webp',marina:'assets/optimized/characters/CH1-IMG-011_Персонаж Марина Власова.webp'};
 function e(x){return String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function btn(t,act,id='',cls=''){return `<button type="button" class="btn ${cls}" data-act="${e(act)}" data-id="${e(id)}">${e(t)}</button>`}
@@ -341,7 +343,7 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
    h+='<div class="committee-result"><div class="committee-result-label">Ваш ответ комитету</div>'+
     '<div class="committee-selected"><span aria-hidden="true"></span><strong>'+e(choices.find(x=>x.id===s.committeeDecision).label)+'</strong></div>'+
     '<p class="committee-feedback">'+e(comments[s.committeeDecision])+'</p>'+
-    '<p>Это учебная проектная версия заседания. Решение комитета об инвестициях не моделируется как подтверждённое.</p>'+
+    
     '<div class="committee-actions">'+btn('Изменить ответ','committeeRevise')+btn('Продолжить заседание','s05Continue','','primary')+'</div></div>';
   }
   if(s.s05Phase!=='committee'){
@@ -402,7 +404,7 @@ function act(action,id){if(action==='eduToggleDocuments'&&s.scene==='S04'&&s.s04
 
  else if(action==='toggle'){if(s.selected.includes(id)){s.selected=s.selected.filter(x=>x!==id);s.budgetMessage=''}else{const item=d.initiatives.find(x=>x.id===id);const remaining=100-L.spent(s);if(item&&L.spent(s)+item.cost>100){s.budgetMessage='';showBudgetLimit(item,remaining);return}else if(item){s.selected=[...s.selected,id];s.budgetMessage=''}}s.showReview=false}
  else if(action==='review'&&s.selected.length&&L.spent(s)<=100)s.showReview=true;
- else if(action==='finish'&&L.spent(s)<=100&&s.selected.length){if(s.returnToReview){s.returnToReview=false;s.showReview=false;s.s04Mode='reviewFinal'}else{s.initialSelected=[...s.selected];s.eduStep=1;s.eduMessage='';s.eduPage='documents';s.eduResult=null;s.s04Mode='eduIntro'}}
+ else if(action==='finish'&&L.spent(s)<=100&&s.selected.length){if(s.returnToReview){s.returnToReview=false;s.showReview=false;s.s04Mode='reviewFinal'}else{s.initialSelected=[...s.selected];s.eduStep=1;s.eduMessage='';s.eduPage='documents';s.eduResult=null;s.s04Mode='edu'}}
  else if(action==='startEdu'){s.s04Mode='edu';s.eduPage='documents'}
  else if(action==='eduGoTask')s.eduPage='task';
  else if(action==='eduGoDocuments')s.eduPage='documents';
