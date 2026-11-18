@@ -141,6 +141,15 @@
       "status": "requires_approval",
       "source": "https://drive.google.com/file/d/15mDT7BD0_gA4Ho8n2P6vEH5xORNbtioX/view",
       "note": "Визуальный концепт, не используется напрямую в S08; итог должен формироваться динамически из состояния игрока"
+    },
+    "employee_badge_female": {
+      "id": "CH404-CH1-S00-002",
+      "type": "object",
+      "scene": "S00",
+      "path": "assets/icons/CH404-CH1-S00-002_employee_badge_female_blurred.png",
+      "source": "https://drive.google.com/file/d/1jn79xeppqKKGrweO9CVGnfunvptZpO9g/view",
+      "status": "provided_for_integration",
+      "note": "Женский вариант пропуска; без изменений исходного изображения. Мужской пропуск CH404-CH1-S00-001 сохраняется; выбор изображения по рекомендованному avatarRecommendation."
     }
   }
 }
