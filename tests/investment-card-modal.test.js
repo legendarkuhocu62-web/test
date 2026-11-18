@@ -9,6 +9,16 @@ const key='ceh404.rebuilt.qa50.20261108';
   await page.goto('http://127.0.0.1:8765/');
   await page.evaluate(key=>{const s=window.CEH_LOGIC.initial();localStorage.setItem(key,JSON.stringify({...s,name:'Каталог QA',scene:'S04',s04Mode:'catalog'}));},key);
   await page.reload();
+  await page.screenshot({path:'tests/screenshot-s04-catalog-'+width+'x'+height+'.png'});
+  const firstView=await page.evaluate(()=>{
+   const btn=document.querySelector('.catalog-workspace__summary [data-act="review"]');
+   const rect=btn?.getBoundingClientRect();
+   return {scrollHeight:document.scrollingElement.scrollHeight,viewport:innerHeight,
+     cta:rect?{top:rect.top,bottom:rect.bottom,left:rect.left,right:rect.right}:null};
+  });
+  assert.ok(firstView.cta,'S04 portfolio confirmation must exist');
+  assert.ok(firstView.cta.top>=-2&&firstView.cta.bottom<=height+2,
+    'S04 confirmation must be visible without scrolling '+width+'x'+height+' '+JSON.stringify(firstView));
   const count=width<=720?4:6;
   assert.equal(await page.locator('.ic-grid .ic-card').count(),count);
   const buttonVisuals=await page.locator('.ic-grid .ic-card .ic-card__open.btn').evaluateAll(buttons=>
@@ -127,6 +137,10 @@ const key='ceh404.rebuilt.qa50.20261108';
   await page.locator('[data-act="review"]').click();
   const feedback=page.locator('.document--catalog .feedback');
   assert.equal(await feedback.count(),1,'portfolio confirmation expected');
+  await page.screenshot({path:'tests/screenshot-s04-review-'+width+'x'+height+'.png'});
+  const save=await page.locator('[data-act="finish"]').boundingBox();
+  assert.ok(save&&save.y>=-2&&save.y+save.height<=height+2,
+    'save-continue must remain visible without outer scroll '+width+'x'+height+' '+JSON.stringify(save));
   const accent=await feedback.evaluate(el=>{
     const s=getComputedStyle(el),p=getComputedStyle(el,'::before');
     return {left:s.borderLeftWidth,content:p.content,gradient:p.backgroundImage,
