@@ -232,13 +232,13 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
    const asset=s.reply==='problems'?'irina_focused':'irina';
    text=chapterDialogue('S01:reply:'+s.reply,speaker.name,speaker.role,q.answer,A[asset],btn('Вернуться к вопросам','replyClose','','primary'));
  }else{
-   text='<div class="glass s01-questions"><h2>О чём ты хочешь спросить?</h2><div class="choices">'+d.questions.map(q=>btn((s.asked.includes(q.id)?'✓ ':'')+q.label,'ask',q.id,s.asked.includes(q.id)?'seen':'')).join('')+'</div>'+(s.asked.length===3?btn('Изучить производственный отчёт','next','S02','primary'):'')+'</div>';
+   text='<div class="glass s01-questions"><h2>О чём ты хочешь спросить?</h2><div class="choices">'+d.questions.map(q=>btn((s.asked.includes(q.id)?'✓ ':'')+q.label,'ask',q.id,s.asked.includes(q.id)?'seen':'')).join('')+'</div>'+(s.asked.length===3?btn('Открыть отчёт','next','S02','primary'):'')+'</div>';
  }
  html=frame(A.office,text,'dialogue-stage dialogue-stage--office');
  }else if(s.scene==='S02'){html=window.CEH_S02.render(s,d,A,frame,btn,chapterDialogue,e);
  }else if(s.scene==='S03'){
  if(s.s03ConclusionSeen){
-   html=frame(A.meeting,chapterDialogue('S03:conclusion','Ирина Соколова','Главный технолог','Теперь у тебя есть несколько точек зрения. Изучи возможные направления инвестиций и подумай, какие из них действительно помогут предприятию.',A.irina,btn('Перейти к выбору инвестиционного приоритета','next','S04','primary')),'dialogue-stage dialogue-stage--meeting');
+   html=frame(A.meeting,chapterDialogue('S03:conclusion','Ирина Соколова','Главный технолог','Теперь у тебя есть несколько точек зрения. Изучи возможные направления инвестиций и подумай, какие из них действительно помогут предприятию.',A.irina,btn('Выбрать приоритет','next','S04','primary')),'dialogue-stage dialogue-stage--meeting');
  }else if(s.s03Person){
    const p=d.people.find(x=>x.id===s.s03Person);
    // One pre-written question per specialist: no redundant chooser screen.
@@ -248,8 +248,8 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
    const content=chapterDialogue(
      isAnswer?'S03:answer:'+p.id:'S03:speech:'+p.id,
      p.name,p.role,isAnswer?p.reply:p.speech,A[p.id],
-     isAnswer?btn('Вернуться к специалистам','closePerson',p.id,'primary'):
-       (btn(p.question,'s03Ask',p.id,'primary')+btn('Вернуться к специалистам','closePerson',p.id,''))
+     isAnswer?btn('К специалистам','closePerson',p.id,'primary'):
+       (btn(p.question,'s03Ask',p.id,'primary')+btn('К специалистам','closePerson',p.id,''))
    );
    html=frame(A.meeting,content,'dialogue-stage dialogue-stage--meeting');
  }else{
@@ -263,7 +263,7 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
  }else if(s.scene==='S04'){
  let h='<div class="glass document document--'+e(s.s04Mode)+'">'+(['savedFinal','reviewFinal'].includes(s.s04Mode)?'<h1 class="s04-saved__page-title"><span class="s04-saved__title-icon" aria-hidden="true">▤</span><span>Инвестиционное предложение</span></h1>':'<h1>Инвестиционное предложение</h1>');
  if(s.s04Mode==='priority'){
-  h+='<p>Выбери основной приоритет инвестиционной программы. Это ориентир для анализа, а не условие допуска к формированию портфеля.</p><div class="choices">'+d.goals.map(x=>btn((s.priority===x.id?'✓ ':'')+x.label,'priority',x.id,s.priority===x.id?'selected':'')).join('')+'</div>'+btn('Перейти к выбору мероприятий','catalog','','primary');
+  h+='<p>Выбери основной приоритет инвестиционной программы. Это ориентир для анализа, а не условие допуска к формированию портфеля.</p><div class="choices">'+d.goals.map(x=>x.id==='quality'?btn((s.priority===x.id?'✓ ':'')+x.label,'priority',x.id,s.priority===x.id?'selected priority-quality':'priority-quality').replace('качества и устойчивости','качества<span class="priority-quality-break"> </span>и устойчивости'):btn((s.priority===x.id?'✓ ':'')+x.label,'priority',x.id,s.priority===x.id?'selected':'')).join('')+'</div>'+btn('Выбрать мероприятия','catalog','','primary');
  }else if(s.s04Mode==='catalog'){
    const spent=L.spent(s);
    h+='<div class="catalog-workspace"><div class="catalog-workspace__cards">'+window.CEH_INVESTMENT_CATALOG.render(s,d,e,btn)+'</div><aside class="catalog-workspace__summary" aria-label="Текущий инвестиционный портфель">';
@@ -275,7 +275,7 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
    if(s.showReview){
      h+='<div class="feedback"><h2>Подтверждение портфеля</h2><p>Выбрано: '+e(s.selected.join(', '))+'</p><p>Стоимость: <b>'+spent+' млн у.е.</b></p><p>Сохранить предварительный портфель?</p><div class="portfolio-review-actions">'+btn('Вернуться к редактору','catalog')+btn('Сохранить и продолжить','finish','','primary')+'</div></div>';
    }else{
-     h+='<div class="portfolio-actions">'+btn(s.returnToReview?'Подтвердить пересмотренный портфель':'Подтвердить предварительный портфель','review','','primary')+'</div>';
+     h+='<div class="portfolio-actions">'+btn(s.returnToReview?'Проверить изменения':'Проверить портфель','review','','primary')+'</div>';
    }
    h+='</aside></div>';
  }else if(s.s04Mode==='eduIntro'){
@@ -318,7 +318,7 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
   // fixed dialogue renderer paginate only when the physical panel is full,
   // rather than forcing a click after each short authored sentence.
   const lines=['Видишь, по этому акту одну деталь изолировали, а партию задержали до дополнительной проверки. Подобные случаи у нас бывают: после окончательного контроля часть деталей возвращается на доработку. Это время, которое производство теряет.','Где именно возникают отклонения, мы пока не установили.','Я по-прежнему считаю, что нам нужно обновлять оборудование. Но прежде чем защищать инвестиционные предложения, стоит учесть и эти потери.'];
-  const content=chapterDialogue('S04:gromov:combined','Андрей Громов','Начальник производства',lines.join('\n\n'),A.andrey,btn('Перейти к пересмотру портфеля','gromovNext','','primary'));
+  const content=chapterDialogue('S04:gromov:combined','Андрей Громов','Начальник производства',lines.join('\n\n'),A.andrey,btn('Пересмотреть портфель','gromovNext','','primary'));
   html=frame(A.meeting,content,'dialogue-stage dialogue-stage--meeting');
  }else if(s.s04Mode==='reviewFinal'){
   const initial=Array.isArray(s.initialSelected)?s.initialSelected:[];
