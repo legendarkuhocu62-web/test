@@ -154,14 +154,16 @@
     const first=s.firstSubmitted;
     const list=(ids)=>ids===null?'данные не сохранились':ids.length?ids.map(id=>id+' «'+names.get(id).title+'»').join(', '):'мероприятия не выбраны';
     const cost=(ids)=>ids===null?null:ids.reduce((v,id)=>v+(Number(names.get(id).cost)||0),0);
+    const shortList=(ids)=>ids===null?'не сохранился':ids.length?ids.slice(0,2).map(id=>id+' «'+names.get(id).title+'»').join(', ')+(ids.length>2?' и ещё '+(ids.length-2):''):'не выбраны';
+    const shortPriced=(ids)=>shortList(ids)+(ids===null?'':' — '+cost(ids)+' млн у.е.');
     const priced=(ids)=>list(ids)+(ids===null?'':' — '+cost(ids)+' млн у.е.');
     const changed=initial!==null&&final!==null?initial.length!==final.length||initial.some(x=>!final.includes(x)):null;
     const added=changed?final.filter(id=>!initial.includes(id)):[];
     const removed=changed?initial.filter(id=>!final.includes(id)):[];
     const changeText=changed===null?'Данные для сравнения двух портфелей сохранились не полностью.':
       !changed?'После проверки документов ты оставил первоначальный портфель. Это не оценка его правильности.':
-      'В предложении изменилось: добавлены '+(added.length?list(added):'нет')+
-      '; исключены '+(removed.length?list(removed):'нет')+
+      'В предложении изменилось: добавлены '+(added.length?shortList(added):'нет')+
+      '; исключены '+(removed.length?shortList(removed):'нет')+
       '. Сам пересмотр не гарантирует лучший результат.';
     const docText=!first?'Заключение по трём документам принято. Данных о первой попытке нет.':
       first.correct?'С первого раза ты отделил факты от догадок в документах З-214.':
@@ -189,13 +191,13 @@
       chosen?.id==='extra'?'Дополнительные часы не гарантируют выполнения заказа.':
       'Прежде чем менять график, установи причину задержки.';
     const committeeText=committee||'Выбор аргумента для комитета не сохранился; результат заседания не предполагаем.';
-    const before=priced(initial),after=priced(final);
+    const before=priced(initial),after=priced(final),shortBefore=shortPriced(initial),shortAfter=shortPriced(final);
     return {
       initial,final,changed,added,removed,first,committeeDecision:committee?history.committeeDecision:null,
       summary:[
         {title:'С чего всё началось',text:'Сначала ты предположил: '+(hypothesis||'первоначальная гипотеза не сохранилась')+
           '. Ориентир для инвестиций: '+(goal?.label||'не сохранился')+'.'},
-        {title:'Твоё инвестиционное предложение',text:'Первый портфель: '+before+'. Итоговый: '+after+'. '+(changed===null?'Сравнение не подтверждено.':changed?'Ты изменил состав мероприятий.':'Ты оставил состав без изменений.')},
+        {title:'Твоё инвестиционное предложение',text:'Первый портфель: '+shortBefore+'. Итоговый: '+shortAfter+'. '+(changed===null?'Сравнение не подтверждено.':changed?'Ты изменил состав мероприятий.':'Ты оставил состав без изменений.')},
         {title:'Документы и заказ З-214',text:docText+' '+option}
       ],
       chains:[
@@ -205,7 +207,7 @@
           investmentMeaning
         ]},
         {title:'От портфеля к разговору с комитетом',parts:[
-          'Твой ориентир: '+(goal?.label||'данные не сохранились')+'. Финальный портфель: '+after+'.',
+          'Твой ориентир: '+(goal?.label||'данные не сохранились')+'. Финальный портфель: '+shortAfter+'.',
           committeeText,
           'Выбранные инициативы не внедрены. Проверка условий и рисков необходима до вложений.'
         ]},
