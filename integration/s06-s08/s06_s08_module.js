@@ -157,14 +157,16 @@
     const shortList=(ids)=>ids===null?'не сохранился':ids.length?ids.slice(0,2).map(id=>id+' «'+names.get(id).title+'»').join(', ')+(ids.length>2?' и ещё '+(ids.length-2):''):'не выбраны';
     const shortPriced=(ids)=>shortList(ids)+(ids===null?'':' — '+cost(ids)+' млн у.е.');
     const priced=(ids)=>list(ids)+(ids===null?'':' — '+cost(ids)+' млн у.е.');
+    const tiny=(ids)=>ids===null?'нет данных':ids.length?ids[0]+' «'+names.get(ids[0]).title+'»'+(ids.length>1?' и ещё '+(ids.length-1):'')+' — '+cost(ids)+' млн':'не выбраны';
+    const shortHypothesis={machine:'нужен новый станок',insufficient:'данных недостаточно для вывода',quality:'основная проблема — качество'};
+    const shortGoal={capacity:'мощности',losses:'сокращение потерь',quality:'качество и устойчивость'};
     const changed=initial!==null&&final!==null?initial.length!==final.length||initial.some(x=>!final.includes(x)):null;
     const added=changed?final.filter(id=>!initial.includes(id)):[];
     const removed=changed?initial.filter(id=>!final.includes(id)):[];
     const changeText=changed===null?'Данные для сравнения двух портфелей сохранились не полностью.':
       !changed?'После проверки документов ты оставил первоначальный портфель. Это не оценка его правильности.':
-      'В предложении изменилось: добавлены '+(added.length?shortList(added):'нет')+
-      '; исключены '+(removed.length?shortList(removed):'нет')+
-      '. Сам пересмотр не гарантирует лучший результат.';
+      'После проверки документов добавлены '+(added.length?added.map(id=>id+' «'+names.get(id).title+'»').join(', '):'нет')+
+      '; исключены '+(removed.length?removed.map(id=>id+' «'+names.get(id).title+'»').join(', '):'нет')+'. Эффект не гарантирован.';
     const docText=!first?'Заключение по трём документам принято. Данных о первой попытке нет.':
       first.correct?'С первого раза ты отделил факты от догадок в документах З-214.':
       'Сначала в заключении были неподтверждённые выводы. После проверки документов ты их исправил.';
@@ -174,9 +176,9 @@
     const portfolioFocus=final&&final.length?final.slice(0,2):[];
     const feature=portfolioFocus.length?names.get(portfolioFocus[0]):null;
     const investmentMeaning=feature?
-      feature.id+' «'+feature.title+'» может помочь, если '+feature.conditions.toLowerCase()+
-      '. Риск: '+feature.risks.charAt(0).toLowerCase()+feature.risks.slice(1)+
-      '. Это не означает, что мера уже внедрена.':
+      feature.id+' «'+feature.title+'» может помочь, если '+feature.conditions.split(';')[0].toLowerCase()+
+      '. Риск: '+feature.risks.split(';')[0].toLowerCase()+
+      '. Мера ещё не внедрена.':
       'Выбранные инвестиции не внедрены. Их возможную пользу надо проверять на реальных причинах потерь.';
     const investmentTip=final?.includes('A')?'Новый станок нужен только при подтверждённом ограничении мощности.':
       final?.includes('J')?'Доска покажет очередь, но сама не ускорит обработку.':
@@ -195,10 +197,9 @@
     return {
       initial,final,changed,added,removed,first,committeeDecision:committee?history.committeeDecision:null,
       summary:[
-        {title:'С чего всё началось',text:'Сначала ты предположил: '+(hypothesis||'первоначальная гипотеза не сохранилась')+
-          '. Ориентир для инвестиций: '+(goal?.label||'не сохранился')+'.'},
-        {title:'Твоё инвестиционное предложение',text:'Первый портфель: '+shortBefore+'. Итоговый: '+shortAfter+'. '+(changed===null?'Сравнение не подтверждено.':changed?'Ты изменил состав мероприятий.':'Ты оставил состав без изменений.')},
-        {title:'Документы и заказ З-214',text:docText+' '+option}
+        {title:'С чего всё началось',text:'Гипотеза: '+(shortHypothesis[history.hypothesis]||'не сохранилась')+'. Приоритет: '+(shortGoal[history.priority]||'не сохранился')+'.'},
+        {title:'Твои инвестиции',text:'Первый: '+tiny(initial)+'. Итог: '+tiny(final)+'. '+(changed===null?'Сравнение недоступно.':changed?'Состав изменён.':'Состав сохранён.')},
+        {title:'По заказу З-214',text:(first?first.correct?'Заключение принято с первого раза.':'Заключение исправлено после проверки.':'Заключение принято.')+' '+(chosen?.id==='priority'?'Ты предложил проверить приоритет заказа.':chosen?.id==='extra'?'Ты предложил проверить дополнительную смену.':'Ты предложил уточнить причину задержки.')}
       ],
       chains:[
         {title:'От предположения к инвестициям',parts:[
