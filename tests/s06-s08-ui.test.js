@@ -102,6 +102,11 @@ const key='ceh404.rebuilt.qa50.20261108';
   assert.equal((await page.evaluate(()=>window.__CEH_TEST__.getState())).scene,'S08');
   assert.equal(await page.locator('[data-s08-view="summary"]').count(),1);
   assert.equal(await page.locator('.s08-summary-card').count(),3);
+  const summaryClips=await page.locator('.s08-summary-card').evaluateAll(cards=>cards.map(el=>({
+   panel:el.getBoundingClientRect().bottom,text:el.querySelector('p').getBoundingClientRect().bottom
+  })));
+  assert.ok(summaryClips.every(x=>x.text<=x.panel+2),
+   'S08 summary text must not be cut '+width+'x'+height+' '+JSON.stringify(summaryClips));
   assert.match(await page.locator('.s08-summary-grid').innerText(),/станок/);
   assert.match(await page.locator('.s08-summary-grid').innerText(),/Первый портфель/);
   assert.equal(await page.locator('[data-act="s08ShowCauses"]').count(),1);
@@ -112,6 +117,9 @@ const key='ceh404.rebuilt.qa50.20261108';
   assert.equal(await page.locator('[data-s08-view="causes"]').count(),1);
   assert.match(await page.locator('.s08-chain-head').innerText(),/1 \/ 3/);
   assert.equal(await page.locator('.s08-takeaway li').count(),3);
+  const causeClips=await page.locator('.s08-chain-parts').evaluate(el=>({height:el.clientHeight,scroll:el.scrollHeight}));
+  assert.ok(causeClips.scroll<=causeClips.height+3,
+   'S08 causal paragraphs must not clip '+width+'x'+height+' '+JSON.stringify(causeClips));
   const geometry=await page.locator('.s08-screen').evaluate(el=>{
    const a=el.getBoundingClientRect(),take=el.querySelector('.s08-takeaway').getBoundingClientRect(),
       foot=el.querySelector('.s08-footer').getBoundingClientRect();
@@ -167,8 +175,14 @@ const key='ceh404.rebuilt.qa50.20261108';
   },key);
   await page.reload();
   assert.equal(await page.locator('.s08-summary-card').count(),3);
+  const smallClips=await page.locator('.s08-summary-card').evaluateAll(cards=>cards.map(el=>({
+    panel:el.getBoundingClientRect().bottom,text:el.querySelector('p').getBoundingClientRect().bottom
+  })));
+  assert.ok(smallClips.every(x=>x.text<=x.panel+2),'S08 tiny screen text clipping '+width+' '+JSON.stringify(smallClips));
   await page.screenshot({path:'tests/screenshot-s08-summary-'+width+'x'+height+'.png'});
   await page.locator('[data-act="s08ShowCauses"]').click();
+  const causes=await page.locator('.s08-chain-parts').evaluate(el=>({height:el.clientHeight,scroll:el.scrollHeight}));
+  assert.ok(causes.scroll<=causes.height+3,'S08 tiny screen chain clipping '+width+' '+JSON.stringify(causes));
   const fit=await page.locator('.s08-screen').evaluate(el=>({
    bottom:el.getBoundingClientRect().bottom,
    takeaway:el.querySelector('.s08-takeaway').getBoundingClientRect().bottom,
