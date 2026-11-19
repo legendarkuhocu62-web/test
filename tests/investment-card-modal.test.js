@@ -21,6 +21,27 @@ const key='ceh404.rebuilt.qa50.20261108';
     'S04 confirmation must be visible without scrolling '+width+'x'+height+' '+JSON.stringify(firstView));
   const count=width<=720?4:6;
   assert.equal(await page.locator('.ic-grid .ic-card').count(),count);
+  if(width<=720){
+    const compact=await page.evaluate(()=>{
+      const grid=document.querySelector('.catalog-workspace__cards .ic-grid');
+      const cards=[...grid.querySelectorAll('.ic-card')];
+      const bounds=grid.getBoundingClientRect();
+      return {innerOverflow:grid.scrollHeight-grid.clientHeight,
+        cardBounds:cards.map(el=>{const r=el.getBoundingClientRect();return {top:r.top,bottom:r.bottom};}),
+        gridTop:bounds.top,gridBottom:bounds.bottom,
+        overlaps:cards.map(el=>{
+          const title=el.querySelector('.ic-card__title').getBoundingClientRect();
+          const button=el.querySelector('.ic-card__open').getBoundingClientRect();
+          return title.bottom-button.top;
+        })};
+    });
+    assert.ok(compact.innerOverflow<=2,
+      'S04 mobile cards must fit without inner scrolling '+width+' '+JSON.stringify(compact));
+    assert.ok(compact.cardBounds.every(c=>c.top>=compact.gridTop-2&&c.bottom<=compact.gridBottom+2),
+      'All four S04 mobile cards must fit in viewport '+width+' '+JSON.stringify(compact));
+    assert.ok(compact.overlaps.every(n=>n<=2),
+      'S04 compact card title/button overlap '+width+' '+JSON.stringify(compact));
+  }
   const buttonVisuals=await page.locator('.ic-grid .ic-card .ic-card__open.btn').evaluateAll(buttons=>
     buttons.map(button=>{
       const style=getComputedStyle(button);
