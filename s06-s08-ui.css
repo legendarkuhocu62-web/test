@@ -392,7 +392,7 @@ body:has(.order-stage) .reset{position:relative;clear:both;margin-top:0;padding:
  border:1px solid #7791a9;border-radius:20px;padding:4px 9px;
 }
 #app .s08-chain-parts{
- display:grid;align-content:center;flex:1;min-height:0;gap:clamp(4px,1vh,10px);overflow:hidden;
+ display:grid;align-content:start;flex:1;min-height:0;gap:clamp(4px,1vh,10px);overflow:hidden;
 }
 #app .s08-chain-parts p{
  display:flex;align-items:flex-start;gap:9px;margin:0;
