@@ -108,7 +108,7 @@ const key='ceh404.rebuilt.qa50.20261108';
   assert.ok(summaryClips.every(x=>x.text<=x.panel+2),
    'S08 summary text must not be cut '+width+'x'+height+' '+JSON.stringify(summaryClips));
   assert.match(await page.locator('.s08-summary-grid').innerText(),/станок/);
-  assert.match(await page.locator('.s08-summary-grid').innerText(),/Первый портфель/);
+  assert.match(await page.locator('.s08-summary-grid').innerText(),/Первый:/);
   assert.equal(await page.locator('[data-act="s08ShowCauses"]').count(),1);
   await page.screenshot({path:'tests/screenshot-s08-summary-'+width+'x'+height+'.png'});
   await page.reload();
