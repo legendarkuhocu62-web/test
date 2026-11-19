@@ -368,6 +368,8 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
   html=window.CEH_ORDER_UI.render(s,d,(s.scene==='S06'&&!s.s06IntroSeen)?A.shop:A.engineer,frame,chapterDialogue,A.andrey);
  }
  app.innerHTML=`<div class="statusline" aria-hidden="true"></div>${html}<div class="reset">${btn('Начать заново','reset')}</div>`;
+ // S08 must start at the visible top after entering from a long S07 page.
+ if(s.scene==='S08')requestAnimationFrame(()=>window.scrollTo(0,0));
  if(s.scene==='S04'&&s.s04Mode==='catalog')window.CEH_INVESTMENT_CATALOG.attach(app,()=>render());
 
   materialsUI.attach();
