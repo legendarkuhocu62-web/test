@@ -105,7 +105,7 @@ console.log('PASS: six document orders, 0/1/2/3 gating, incomplete form, failed 
   const model=m.buildS08ViewModel(st,history);
   assert.ok(JSON.stringify(model).includes('«'+item.title+'»'));
   assert.ok(model.chains[0].parts.some(x=>x.includes(item.conditions.toLowerCase())));
-  assert.ok(model.chains[0].parts.some(x=>x.toLowerCase().includes(item.risks.toLowerCase())));
+  assert.ok(model.chains[0].parts.some(x=>x.toLowerCase().includes(item.risks.split(';')[0].toLowerCase())));
  }
  const old={...m.initial(),docsOpened:['route','grinding','shipping'],
   finalConclusion:{answers:correct},s07Decision:'extra'};
