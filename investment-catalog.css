@@ -531,3 +531,28 @@ dialog.ic-detail::backdrop { background:#020811d9; backdrop-filter:blur(3px); }
     transform:none!important;
   }
 }
+
+/* Narrow tablets: the catalog column sits beside the persistent portfolio.
+   Two cards per row are too thin even at 768px (split the CTA mid-word).
+   Use one legible card per row; keep the catalogue's existing inner scroll. */
+@media (min-width:721px) and (max-width:900px) {
+  #app .document--catalog .catalog-workspace__cards .ic-grid.invest-grid {
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:7px!important;
+  }
+  #app .document--catalog .ic-grid .ic-card.investment {
+    min-height:110px!important;
+    height:auto!important;
+  }
+  #app .document--catalog .ic-grid .ic-card .ic-card__photo {
+    min-height:0!important;
+    flex-basis:28%!important;
+    width:28%!important;
+  }
+  #app .document--catalog .ic-grid .ic-card .ic-card__open.btn {
+    font-size:13px!important;
+    overflow-wrap:normal;
+    word-break:normal;
+    hyphens:none;
+  }
+}
