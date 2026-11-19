@@ -9,7 +9,7 @@ const key='ceh404.rebuilt.qa50.20261108';
   await page.goto('http://127.0.0.1:8765/');
   await page.evaluate(key=>{
    const s=window.CEH_LOGIC.initial();
-   localStorage.setItem(key,JSON.stringify({...s,scene:'S04',s04Mode:'savedFinal',name:'Игрок QA',selected:['A','C'],initialSelected:['A'],finalSelected:['A','C'],priority:'losses',eduStep:4}));
+   localStorage.setItem(key,JSON.stringify({...s,scene:'S04',s04Mode:'savedFinal',name:'Игрок QA',selected:['A','C'],initialSelected:['A'],finalSelected:['A','C'],priority:'losses',hypothesis:'machine',eduStep:4}));
   },key);
   await page.reload();
   assert.equal(await page.locator('[data-act="committeeStart"]').count(),1,'meeting after saved portfolio');
@@ -100,15 +100,84 @@ const key='ceh404.rebuilt.qa50.20261108';
   await page.locator('[data-act="orderChoose"][data-id="priority"]').click();
   await page.locator('[data-act="orderToS08"]').click();
   assert.equal((await page.evaluate(()=>window.__CEH_TEST__.getState())).scene,'S08');
-  assert.equal(await page.locator('.order-report-sections section').count(),8);
-  assert.match(await page.locator('.order-report-sections').innerText(),/Первоначальный: A/);
-  assert.match(await page.locator('.order-report-sections').innerText(),/Итоговый: A, C/);
+  assert.equal(await page.locator('[data-s08-view="summary"]').count(),1);
+  assert.equal(await page.locator('.s08-summary-card').count(),3);
+  assert.match(await page.locator('.s08-summary-grid').innerText(),/станок/);
+  assert.match(await page.locator('.s08-summary-grid').innerText(),/Первый портфель/);
+  assert.equal(await page.locator('[data-act="s08ShowCauses"]').count(),1);
+  await page.screenshot({path:'tests/screenshot-s08-summary-'+width+'x'+height+'.png'});
   await page.reload();
-  assert.equal(await page.locator('.order-report-sections section').count(),8,'resume S08');
+  assert.equal(await page.locator('.s08-summary-card').count(),3,'old localStorage resumes summary');
+  await page.locator('[data-act="s08ShowCauses"]').click();
+  assert.equal(await page.locator('[data-s08-view="causes"]').count(),1);
+  assert.match(await page.locator('.s08-chain-head').innerText(),/1 \/ 3/);
+  assert.equal(await page.locator('.s08-takeaway li').count(),3);
+  const geometry=await page.locator('.s08-screen').evaluate(el=>{
+   const a=el.getBoundingClientRect(),take=el.querySelector('.s08-takeaway').getBoundingClientRect(),
+      foot=el.querySelector('.s08-footer').getBoundingClientRect();
+   return {top:a.top,bottom:a.bottom,takeBottom:take.bottom,footBottom:foot.bottom,
+     viewport:innerHeight,outer:document.scrollingElement.scrollHeight};
+  });
+  assert.ok(geometry.footBottom<=height+3&&geometry.takeBottom<=height+3,
+    'S08 second screen content must remain visible '+width+'x'+height+' '+JSON.stringify(geometry));
+  await page.screenshot({path:'tests/screenshot-s08-causes-1-'+width+'x'+height+'.png'});
+  await page.locator('[data-act="s08ChainNext"]').click();
+  assert.match(await page.locator('.s08-chain-head').innerText(),/2 \/ 3/);
+  assert.match(await page.locator('.s08-chain').innerText(),/Комитет/);
+  await page.reload();
+  assert.match(await page.locator('.s08-chain-head').innerText(),/2 \/ 3/,'chain index persists after reload');
+  await page.locator('[data-act="s08ChainNext"]').click();
+  assert.match(await page.locator('.s08-chain-head').innerText(),/3 \/ 3/);
+  assert.match(await page.locator('.s08-chain').innerText(),/два заказа/);
+  await page.screenshot({path:'tests/screenshot-s08-causes-3-'+width+'x'+height+'.png'});
+  await page.locator('[data-act="s08ReportOpen"]').click();
+  assert.equal(await page.locator('.s08-report-modal').count(),1);
+  assert.equal(await page.locator('.s08-report-modal .order-report-sections section').count(),8);
+  assert.match(await page.locator('.s08-report-modal').innerText(),/Первоначальный: A/);
+  assert.match(await page.locator('.s08-report-modal').innerText(),/Итоговый: A.*C/);
+  assert.match(await page.locator('.s08-report-modal').innerText(),/Комитет/);
+  assert.ok(!(await page.locator('.s08-report-modal').innerText()).includes('Не переданы утверждённые данные'));
+  await page.screenshot({path:'tests/screenshot-s08-teacher-'+width+'x'+height+'.png'});
+  await page.reload();
+  assert.equal(await page.locator('.s08-report-modal').count(),1,'report survives refresh');
+  await page.locator('[data-act="s08ReportClose"]').click();
+  assert.equal(await page.locator('.s08-report-modal').count(),0,'close report');
+  await page.locator('[data-act="s08Back"]').click();
+  assert.equal(await page.locator('[data-s08-view="summary"]').count(),1,'back to student result');
   assert.equal((await page.evaluate(()=>window.__CEH_TEST__.getState().s0608.firstSubmitted)).correct,false);
   assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=width+3,'no horizontal overflow '+width);
   assert.deepEqual(errors,[],'browser error '+width);
-  console.log('PASS S06–S08 integration '+width+'x'+height);
+  console.log('PASS S06–S08 integration + personalized S08 '+width+'x'+height);
+  await page.close();
+ }
+
+ // S08 direct old-save smoke on the smallest phone and on tablet: no S06/S07 mutation.
+ for(const [width,height] of [[320,568],[1024,768]]){
+  const page=await browser.newPage({viewport:{width,height}});
+  await page.goto('http://127.0.0.1:8765/');
+  await page.evaluate(key=>{
+   const s=window.CEH_LOGIC.initial();
+   localStorage.setItem(key,JSON.stringify({...s,name:'Сохранённый игрок',scene:'S08',
+    hypothesis:'insufficient',priority:'capacity',
+    initialSelected:['A','J'],finalSelected:['D','F','J'],
+    committeeDecision:'stage',eduStep:4,
+    s0608:{docsOpened:['route','grinding','shipping'],
+      firstSubmitted:{answers:['confirmed','confirmed','check','check','confirmed']},
+      finalConclusion:{answers:['confirmed','confirmed','check','check','confirmed']},s07Decision:'extra'}}));
+  },key);
+  await page.reload();
+  assert.equal(await page.locator('.s08-summary-card').count(),3);
+  await page.screenshot({path:'tests/screenshot-s08-summary-'+width+'x'+height+'.png'});
+  await page.locator('[data-act="s08ShowCauses"]').click();
+  const fit=await page.locator('.s08-screen').evaluate(el=>({
+   bottom:el.getBoundingClientRect().bottom,
+   takeaway:el.querySelector('.s08-takeaway').getBoundingClientRect().bottom,
+   buttons:el.querySelector('.s08-footer').getBoundingClientRect().bottom,
+   viewport:innerHeight
+  }));
+  assert.ok(fit.takeaway<=height+3&&fit.buttons<=height+3,
+   'S08 direct save viewport fit '+width+' '+JSON.stringify(fit));
+  await page.screenshot({path:'tests/screenshot-s08-causes-1-'+width+'x'+height+'.png'});
   await page.close();
  }
  await browser.close();
