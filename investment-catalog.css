@@ -556,3 +556,199 @@ dialog.ic-detail::backdrop { background:#020811d9; backdrop-filter:blur(3px); }
     hyphens:none;
   }
 }
+
+/* 19.11 compact no-scroll mobile catalogue: show all four initiatives A–D,
+   E–H, I–L (and M) in one screen. No JS, state, paging or card image changes.
+   Preserve 44px touch targets; move the letter and price onto the photo. */
+@media (max-width:720px) {
+  #app .investment-scene .glass.document--catalog {
+    padding:6px 7px;
+  }
+  #app .document--catalog>h1 {
+    margin:0 0 3px;
+    font-size:clamp(17px,4.8vw,19px);
+    line-height:1.1;
+  }
+  #app .document--catalog .catalog-workspace {
+    gap:4px;
+  }
+  #app .document--catalog .catalog-workspace__summary:has(>.portfolio-actions) {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);
+    grid-template-rows:auto auto auto;
+    column-gap:5px;
+    row-gap:1px;
+    flex:0 0 auto;
+    max-height:none;
+    min-height:0;
+    padding:5px 6px;
+    overflow:visible;
+    align-items:center;
+  }
+  #app .document--catalog .catalog-workspace__summary:has(>.portfolio-actions) .budget {
+    grid-column:1/-1;
+    grid-row:1;
+    gap:4px;
+    min-height:0;
+    margin:0 0 2px;
+  }
+  #app .document--catalog .catalog-workspace__summary:has(>.portfolio-actions) .budget span {
+    font-size:clamp(9px,2.9vw,11px);
+    line-height:1.08;
+    padding:3px 4px;
+    min-width:0;
+  }
+  #app .document--catalog .catalog-workspace__summary:has(>.portfolio-actions) .budget b {
+    line-height:1.1;
+  }
+  #app .document--catalog .catalog-workspace__summary:has(>.portfolio-actions) .catalog-summary__selection {
+    grid-column:1;
+    grid-row:2;
+    font-size:clamp(10px,3vw,12px);
+    line-height:1.15;
+  }
+  #app .document--catalog .catalog-workspace__summary:has(>.portfolio-actions) .catalog-summary__priority {
+    grid-column:1;
+    grid-row:3;
+    font-size:clamp(10px,3vw,12px);
+    line-height:1.15;
+  }
+  #app .document--catalog .catalog-workspace__summary:has(>.portfolio-actions) .portfolio-actions {
+    position:static!important;
+    grid-column:2;
+    grid-row:2/span 2;
+    align-self:stretch;
+    display:flex;
+    align-items:center;
+    min-height:44px;
+    padding:0;
+    margin:0;
+    background:transparent;
+  }
+  #app .document--catalog .catalog-workspace__summary:has(>.portfolio-actions) .portfolio-actions .btn {
+    min-height:44px!important;
+    width:100%;
+    font-size:clamp(10px,3vw,13px)!important;
+    padding:5px 7px!important;
+    line-height:1.1;
+  }
+  /* The per-card "Подробнее" button makes the explanatory sentence redundant on
+     narrow screens. Keep the source text unchanged for larger breakpoints. */
+  #app .document--catalog .ic-catalog__head {
+    display:none;
+  }
+  #app .document--catalog .catalog-workspace__cards .ic-grid.invest-grid {
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    grid-template-rows:repeat(4,minmax(0,1fr));
+    align-content:stretch;
+    overflow-y:hidden;
+    overflow-x:hidden;
+    min-height:0;
+    gap:4px;
+    margin:0;
+    padding:1px 0;
+    scrollbar-gutter:auto;
+  }
+  #app .document--catalog .ic-grid .ic-card.investment {
+    height:100%!important;
+    min-height:0!important;
+    max-height:none;
+    box-sizing:border-box;
+    padding:3px!important;
+    gap:5px!important;
+    overflow:hidden;
+    align-items:stretch;
+  }
+  #app .document--catalog .ic-grid .ic-card .ic-card__photo {
+    flex:0 0 33%!important;
+    width:33%!important;
+    min-height:0!important;
+    height:auto!important;
+    align-self:stretch;
+    overflow:hidden;
+  }
+  #app .document--catalog .ic-grid .ic-card .ic-card__body {
+    height:100%!important;
+    box-sizing:border-box;
+    min-height:0;
+    display:flex;
+    flex:1 1 0;
+    flex-direction:column;
+    justify-content:space-between;
+    padding:0!important;
+    gap:1px!important;
+  }
+  #app .document--catalog .ic-grid .ic-card .invest-head {
+    position:absolute;
+    top:5px;
+    left:5px;
+    z-index:4;
+    margin:0;
+  }
+  #app .document--catalog .ic-grid .ic-card .ic-card__letter {
+    width:21px;
+    height:21px;
+    flex:0 0 21px;
+    font-size:14px;
+    box-shadow:0 1px 4px #000b;
+  }
+  #app .document--catalog .ic-grid .ic-card .ic-card__price {
+    position:absolute;
+    z-index:4;
+    left:5px;
+    bottom:5px;
+    display:inline-flex;
+    flex-wrap:nowrap;
+    gap:2px;
+    padding:2px 4px;
+    border-radius:4px;
+    background:rgba(9,23,38,.92);
+    font-size:clamp(10px,2.9vw,12px);
+    line-height:1.1;
+    white-space:nowrap;
+    text-shadow:0 1px 1px #000;
+  }
+  #app .document--catalog .ic-grid .ic-card .ic-card__price .ic-coins {
+    display:none;
+  }
+  #app .document--catalog .ic-grid .ic-card .ic-card__title {
+    flex:1 1 auto;
+    min-height:0;
+    margin:0;
+    display:flex;
+    align-items:center;
+    font-size:clamp(11px,3.3vw,13px);
+    line-height:1.13;
+    overflow-wrap:normal;
+    word-break:normal;
+    hyphens:none;
+  }
+  #app .document--catalog .ic-grid .ic-card .ic-card__open.btn {
+    display:flex!important;
+    box-sizing:border-box!important;
+    flex:0 0 44px!important;
+    width:100%!important;
+    height:44px!important;
+    min-height:44px!important;
+    max-height:44px!important;
+    margin:0!important;
+    padding:5px 6px!important;
+    border-radius:7px!important;
+    font-size:clamp(11px,3.2vw,13px)!important;
+    line-height:1.1!important;
+  }
+  #app .document--catalog .catalog-workspace__cards .ic-pager {
+    min-height:44px;
+    height:44px;
+    margin:2px auto 0;
+    gap:12px;
+  }
+  #app .document--catalog .ic-pager .ic-pager__button.btn {
+    height:44px;
+    min-height:44px;
+    width:44px;
+    min-width:44px;
+    padding:3px!important;
+  }
+}
