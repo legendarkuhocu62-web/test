@@ -142,6 +142,22 @@ const key='ceh404.rebuilt.qa50.20261108';
   await page.screenshot({path:'tests/screenshot-s08-causes-3-'+width+'x'+height+'.png'});
   await page.locator('[data-act="s08ReportOpen"]').click();
   assert.equal(await page.locator('.s08-report-modal').count(),1);
+  const reportFrame=await page.evaluate(()=>{
+    const header=document.querySelector('.masthead').getBoundingClientRect();
+    const modal=document.querySelector('.s08-report-modal').getBoundingClientRect();
+    const head=document.querySelector('.s08-report-head').getBoundingClientRect();
+    const close=document.querySelector('[data-act="s08ReportClose"]').getBoundingClientRect();
+    const scroller=document.querySelector('.s08-report-scroll');
+    return {headerBottom:header.bottom,modalTop:modal.top,headTop:head.top,
+      closeTop:close.top,closeBottom:close.bottom,scrollHeight:scroller.scrollHeight,
+      clientHeight:scroller.clientHeight,viewport:innerHeight};
+  });
+  assert.ok(reportFrame.headTop>=reportFrame.headerBottom-1&&
+    reportFrame.closeTop>=reportFrame.headerBottom-1&&
+    reportFrame.closeBottom<=reportFrame.viewport+2,
+    'S08 report header and close must be visible outside site masthead '+width+' '+JSON.stringify(reportFrame));
+  assert.ok(reportFrame.scrollHeight>=reportFrame.clientHeight,
+    'Teacher report must use its own content scroller');
   assert.equal(await page.locator('.s08-report-modal .order-report-sections section').count(),8);
   assert.match(await page.locator('.s08-report-modal').innerText(),/Первоначальный: A/);
   assert.match(await page.locator('.s08-report-modal').innerText(),/Итоговый: A.*C/);
