@@ -454,12 +454,21 @@ function act(action,id){if(action==='eduToggleDocuments'&&s.scene==='S04'&&s.s04
   if(O.canMoveToS08(s.s0608))s.s07Page='result';
  }
  else if(action==='orderToS08'&&s.scene==='S07'&&s.s07Page==='result'&&O.canMoveToS08(s.s0608)){
-  s.scene='S08';
+  s.scene='S08';s.s08View='summary';s.s08ChainIndex=0;s.s08ReportOpen=false;
+ }
+ else if(s.scene==='S08'&&O.canMoveToS08(s.s0608)){
+  if(action==='s08ShowCauses'){s.s08View='causes';s.s08ChainIndex=0;s.s08ReportOpen=false}
+  else if(action==='s08Back'){s.s08View='summary';s.s08ReportOpen=false}
+  else if(action==='s08ChainPrev')s.s08ChainIndex=Math.max(0,(Number.isInteger(s.s08ChainIndex)?s.s08ChainIndex:0)-1);
+  else if(action==='s08ChainNext')s.s08ChainIndex=Math.min(2,(Number.isInteger(s.s08ChainIndex)?s.s08ChainIndex:0)+1);
+  else if(action==='s08ReportOpen'&&s.s08View==='causes')s.s08ReportOpen=true;
+  else if(action==='s08ReportClose')s.s08ReportOpen=false;
  }
  render()}
 app.addEventListener('click',ev=>{const b=ev.target.closest('[data-act]');if(b)act(b.dataset.act,b.dataset.id)});
 app.addEventListener('change',ev=>{const input=ev.target.closest('input[data-order-answer]');if(input&&s.scene==='S06')act('orderAnswer',input.dataset.orderAnswer+':'+input.value)});
 app.addEventListener('keydown',ev=>{
+ if(s.scene==='S08'&&s.s08ReportOpen&&ev.key==='Escape'){ev.preventDefault();act('s08ReportClose','');return}
  if(s.scene==='S02'&&s.s02Step==='report'){
    if(ev.key==='Escape'){ev.preventDefault();act('s02Close','');return}
    if(ev.key==='Tab'){
