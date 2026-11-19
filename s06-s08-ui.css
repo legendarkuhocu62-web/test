@@ -463,3 +463,12 @@ body:has(.order-stage) .reset{position:relative;clear:both;margin-top:0;padding:
  #app .s08-report-modal{padding:8px}
  #app .s08-report-head .btn{padding:7px 10px!important;font-size:12px!important}
 }
+
+/* 320x568: reclaim spacing rather than shrinking text or touch targets.
+   The S08 cause chain and all three takeaways must remain fully visible. */
+@media (max-width:340px) and (max-height:600px){
+ #app .s08-screen[data-s08-view="causes"]{gap:2px}
+ #app .s08-screen[data-s08-view="causes"] .s08-chain{padding:5px}
+ #app .s08-screen[data-s08-view="causes"] .s08-chain-parts{gap:2px}
+ #app .s08-screen[data-s08-view="causes"] .s08-takeaway{padding:4px 7px}
+}
