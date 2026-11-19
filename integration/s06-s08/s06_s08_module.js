@@ -165,8 +165,7 @@
     const removed=changed?initial.filter(id=>!final.includes(id)):[];
     const changeText=changed===null?'Данные для сравнения двух портфелей сохранились не полностью.':
       !changed?'После проверки документов ты оставил первоначальный портфель. Это не оценка его правильности.':
-      'После документов: добавлено '+(added.length?shortList(added):'ничего')+
-      '; исключено '+(removed.length?shortList(removed):'ничего')+'. Эффект не гарантирован.';
+      'После документов: добавлены '+(added.join(', ')||'нет')+'; исключены '+(removed.join(', ')||'нет')+'. Эффект не гарантирован.';
     const docText=!first?'Заключение по трём документам принято. Данных о первой попытке нет.':
       first.correct?'С первого раза ты отделил факты от догадок в документах З-214.':
       'Сначала в заключении были неподтверждённые выводы. После проверки документов ты их исправил.';
@@ -176,9 +175,8 @@
     const portfolioFocus=final&&final.length?final.slice(0,2):[];
     const feature=portfolioFocus.length?names.get(portfolioFocus[0]):null;
     const investmentMeaning=feature?
-      feature.id+' «'+feature.title+'» может помочь, если '+feature.conditions.split(';')[0].toLowerCase()+
-      '. Риск: '+feature.risks.split(';')[0].toLowerCase()+
-      '. Это ещё не внедрено.':
+      feature.id+' «'+feature.title+'»: может помочь, если '+feature.conditions.split(';')[0].toLowerCase()+
+      '. Риск — '+feature.risks.split(';')[0].toLowerCase()+'.':
       'Выбранные инвестиции не внедрены. Их возможную пользу надо проверять на реальных причинах потерь.';
     const investmentTip=final?.includes('A')?'Перед покупкой станка проверь ограничение мощности.':
       final?.includes('J')?'Электронная доска не ускоряет станок.':
