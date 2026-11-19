@@ -136,6 +136,8 @@ const key='ceh404.rebuilt.qa50.20261108';
   assert.match(await page.locator('.s08-chain-head').innerText(),/2 \/ 3/,'chain index persists after reload');
   await page.locator('[data-act="s08ChainNext"]').click();
   assert.match(await page.locator('.s08-chain-head').innerText(),/3 \/ 3/);
+  const finalClips=await page.locator('.s08-chain-parts').evaluate(el=>({height:el.clientHeight,scroll:el.scrollHeight}));
+  assert.ok(finalClips.scroll<=finalClips.height+3,'S08 final chain clipping '+width+'x'+height+' '+JSON.stringify(finalClips));
   assert.match(await page.locator('.s08-chain').innerText(),/два заказа/);
   await page.screenshot({path:'tests/screenshot-s08-causes-3-'+width+'x'+height+'.png'});
   await page.locator('[data-act="s08ReportOpen"]').click();
@@ -192,6 +194,11 @@ const key='ceh404.rebuilt.qa50.20261108';
   assert.ok(fit.takeaway<=height+3&&fit.buttons<=height+3,
    'S08 direct save viewport fit '+width+' '+JSON.stringify(fit));
   await page.screenshot({path:'tests/screenshot-s08-causes-1-'+width+'x'+height+'.png'});
+  for(let step=2;step<=3;step++){
+   await page.locator('[data-act="s08ChainNext"]').click();
+   const c=await page.locator('.s08-chain-parts').evaluate(el=>({height:el.clientHeight,scroll:el.scrollHeight}));
+   assert.ok(c.scroll<=c.height+3,'S08 tiny screen chain '+step+' clipping '+width+' '+JSON.stringify(c));
+  }
   await page.close();
  }
  await browser.close();
