@@ -63,20 +63,55 @@ function renderS07(s){
  return h+'</div>';
 }
 function renderS08(s,data){
- const z=M.clean(s.s0608);
+ // All decisions are read from existing game state; S06/S07 renderers are unchanged.
  const history={
+  hypothesis:s.hypothesis,priority:s.priority,
   initialPriority:(data.goals||[]).find(x=>x.id===s.priority)?.label??null,
-  initialSelected:s.initialSelected,
-  finalSelected:s.finalSelected,
+  goals:data.goals||[],initiatives:data.initiatives||[],
+  initialSelected:s.initialSelected,finalSelected:s.finalSelected,
   finalCost:Array.isArray(s.finalSelected)?s.finalSelected.reduce((sum,id)=>sum+((data.initiatives||[]).find(x=>x.id===id)?.cost||0),0):null,
-  edu01Result:Array.isArray(s.finalSelected)&&s.eduStep===4?'Задание EDU-01 пройдено, расчёт и выводы проверены.':null,
-  s05:null
+  edu01Complete:Array.isArray(s.finalSelected)&&s.eduStep>=4,
+  edu01Result:Array.isArray(s.finalSelected)&&s.eduStep>=4?'Проверка документов ОТК пройдена; причина отклонения одной детали не подтверждена.':null,
+  committeeDecision:s.committeeDecision
  };
- const sections=M.buildS08(z,history);
- let h='<div class="glass order-screen order-screen--report"><div class="order-kicker">ПЕРСОНАЛЬНЫЙ ИТОГ · ГЛАВА 01</div><h1>Твоё производственное заключение</h1>';
- h+='<p>Игрок: <b>'+e(s.name||'Без имени')+'</b>. Результат отражает твои решения и подтверждённые данные, а не гарантированное улучшение предприятия.</p>';
- if(!sections)h+='<p class="order-feedback">Не завершены предшествующие этапы. Вернись к заказу З-214.</p>';
- else h+='<div class="order-report-sections">'+sections.map(x=>'<section><h2>'+e(x.title)+'</h2><p>'+e(x.body)+'</p></section>').join('')+'</div>';
+ const model=M.buildS08ViewModel(s.s0608,history);
+ const report=M.buildS08(s.s0608,history);
+ const viewing=s.s08View==='causes'?'causes':'summary';
+ const index=Number.isInteger(s.s08ChainIndex)?Math.max(0,Math.min(2,s.s08ChainIndex)):0;
+ let h='<div class="glass order-screen s08-screen" data-s08-view="'+e(viewing)+'">';
+ if(!model){
+  return h+'<div class="order-kicker">ЭФФЕКТ ДОМИНО</div><h1>Итог пока недоступен</h1>'+
+   '<p>Сначала заверши заключение по заказу З-214 и выбери оперативное решение.</p></div>';
+ }
+ if(viewing==='summary'){
+  h+='<div class="order-kicker">ЭФФЕКТ ДОМИНО · ТВОЙ ИТОГ</div><h1>Твой итог</h1>';
+  h+='<p class="s08-intro">Что ты предложил и какие выводы проверил по документам.</p>';
+  h+='<div class="s08-summary-grid">'+model.summary.map((x,i)=>
+   '<section class="s08-summary-card" aria-label="'+e(x.title)+'"><span class="s08-step">'+(i+1)+'</span><div><h2>'+e(x.title)+'</h2><p>'+e(x.text)+'</p></div></section>'
+  ).join('')+'</div>';
+  h+='<div class="s08-footer">'+button('Посмотреть последствия решений','s08ShowCauses','',true)+'</div>';
+ }else{
+  const chain=model.chains[index];
+  h+='<div class="order-kicker">ЭФФЕКТ ДОМИНО · ПОСЛЕДСТВИЯ РЕШЕНИЙ</div><h1>Последствия твоих решений</h1>';
+  h+='<div class="s08-chain"><div class="s08-chain-head"><h2>'+e(chain.title)+'</h2><span class="s08-page">'+(index+1)+' / 3</span></div>';
+  h+='<div class="s08-chain-parts">'+chain.parts.map((p,i)=>
+   '<p><span class="s08-chain-marker" aria-hidden="true">'+['1','2','3'][i]+'</span>'+e(p)+'</p>'
+  ).join('')+'</div></div>';
+  h+='<div class="s08-chain-nav" aria-label="Переключение причинных цепочек">'+
+   button('Назад','s08ChainPrev','',false,index===0)+
+   button('Далее','s08ChainNext','',false,index===2)+'</div>';
+  h+='<section class="s08-takeaway"><h2>Главное, что стоит запомнить</h2><ul>'+model.takeaway.map(x=>'<li>'+e(x)+'</li>').join('')+'</ul></section>';
+  h+='<div class="s08-footer s08-footer--two">'+button('К твоему итогу','s08Back')+
+   button('Подробный отчёт','s08ReportOpen')+'</div>';
+  if(s.s08ReportOpen&&report){
+   h+='<div class="s08-report-overlay"><section class="s08-report-modal" role="dialog" aria-modal="true" aria-label="Подробный отчёт" tabindex="-1">'+
+    '<div class="s08-report-head"><h2>Подробный отчёт для преподавателя</h2>'+
+    button('Закрыть','s08ReportClose')+'</div>'+
+    '<div class="s08-report-scroll" tabindex="0"><div class="order-report-sections">'+
+    report.map(x=>'<section><h2>'+e(x.title)+'</h2><p>'+e(x.body)+'</p></section>').join('')+
+    '</div></div></section></div>';
+  }
+ }
  return h+'</div>';
 }
 function render(s,data,bg,frame,chapterDialogue,portrait){
