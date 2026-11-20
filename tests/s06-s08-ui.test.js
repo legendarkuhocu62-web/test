@@ -1,6 +1,17 @@
 'use strict';
 const {chromium}=require('playwright'),assert=require('node:assert/strict');
 const key='ceh404.rebuilt.qa50.20261108';
+async function assertInternalChainScroll(page,where){
+ const info=await page.locator('.s08-chain-parts').evaluate(el=>{
+  const height=el.clientHeight,scroll=el.scrollHeight,overflow=getComputedStyle(el).overflowY;
+  el.scrollTop=scroll;
+  return {height,scroll,overflow,scrollTop:el.scrollTop,tabIndex:el.tabIndex};
+ });
+ assert.ok(info.height>0&&info.scroll>=info.height-3,'chain area collapsed '+where+' '+JSON.stringify(info));
+ assert.ok(['auto','scroll'].includes(info.overflow),'long consequences need an internal scroller '+where+' '+JSON.stringify(info));
+ assert.ok(info.tabIndex>=0,'keyboard users must be able to focus consequences '+where);
+ if(info.scroll>info.height+3)assert.ok(info.scrollTop>0,'last consequences must be reachable '+where);
+}
 (async()=>{
  const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
  for(const [width,height] of [[375,667],[390,844],[1366,768]]){
@@ -117,9 +128,9 @@ const key='ceh404.rebuilt.qa50.20261108';
   assert.equal(await page.locator('[data-s08-view="causes"]').count(),1);
   assert.match(await page.locator('.s08-chain-head').innerText(),/1 \/ 3/);
   assert.equal(await page.locator('.s08-takeaway li').count(),3);
-  const causeClips=await page.locator('.s08-chain-parts').evaluate(el=>({height:el.clientHeight,scroll:el.scrollHeight}));
-  assert.ok(causeClips.scroll<=causeClips.height+3,
-   'S08 causal paragraphs must not clip '+width+'x'+height+' '+JSON.stringify(causeClips));
+  await assertInternalChainScroll(page,'first chain '+width+'x'+height);
+  assert.equal(await page.locator('.s08-initiative-item').count(),2,'all chosen A and C initiatives must appear');
+  assert.match(await page.locator('.s08-initiative-list').innerText(),/Не решает автоматически/);
   const geometry=await page.locator('.s08-screen').evaluate(el=>{
    const a=el.getBoundingClientRect(),take=el.querySelector('.s08-takeaway').getBoundingClientRect(),
       foot=el.querySelector('.s08-footer').getBoundingClientRect();
@@ -136,8 +147,8 @@ const key='ceh404.rebuilt.qa50.20261108';
   assert.match(await page.locator('.s08-chain-head').innerText(),/2 \/ 3/,'chain index persists after reload');
   await page.locator('[data-act="s08ChainNext"]').click();
   assert.match(await page.locator('.s08-chain-head').innerText(),/3 \/ 3/);
-  const finalClips=await page.locator('.s08-chain-parts').evaluate(el=>({height:el.clientHeight,scroll:el.scrollHeight}));
-  assert.ok(finalClips.scroll<=finalClips.height+3,'S08 final chain clipping '+width+'x'+height+' '+JSON.stringify(finalClips));
+  await assertInternalChainScroll(page,'final chain '+width+'x'+height);
+  assert.equal(await page.locator('.s08-edu-details li').count(),4,'all four EDU-01 lessons must appear');
   assert.match(await page.locator('.s08-chain').innerText(),/два заказа/);
   await page.screenshot({path:'tests/screenshot-s08-causes-3-'+width+'x'+height+'.png'});
   await page.locator('[data-act="s08ReportOpen"]').click();
@@ -199,8 +210,7 @@ const key='ceh404.rebuilt.qa50.20261108';
   assert.ok(smallClips.every(x=>x.text<=x.panel+2),'S08 tiny screen text clipping '+width+' '+JSON.stringify(smallClips));
   await page.screenshot({path:'tests/screenshot-s08-summary-'+width+'x'+height+'.png'});
   await page.locator('[data-act="s08ShowCauses"]').click();
-  const causes=await page.locator('.s08-chain-parts').evaluate(el=>({height:el.clientHeight,scroll:el.scrollHeight}));
-  assert.ok(causes.scroll<=causes.height+3,'S08 tiny screen chain clipping '+width+' '+JSON.stringify(causes));
+  await assertInternalChainScroll(page,'first chain tiny '+width);
   const fit=await page.locator('.s08-screen').evaluate(el=>({
    bottom:el.getBoundingClientRect().bottom,
    takeaway:el.querySelector('.s08-takeaway').getBoundingClientRect().bottom,
@@ -212,8 +222,7 @@ const key='ceh404.rebuilt.qa50.20261108';
   await page.screenshot({path:'tests/screenshot-s08-causes-1-'+width+'x'+height+'.png'});
   for(let step=2;step<=3;step++){
    await page.locator('[data-act="s08ChainNext"]').click();
-   const c=await page.locator('.s08-chain-parts').evaluate(el=>({height:el.clientHeight,scroll:el.scrollHeight}));
-   assert.ok(c.scroll<=c.height+3,'S08 tiny screen chain '+step+' clipping '+width+' '+JSON.stringify(c));
+   await assertInternalChainScroll(page,'chain '+step+' tiny '+width);
   }
   await page.close();
  }
