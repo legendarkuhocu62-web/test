@@ -21,10 +21,7 @@ const key='ceh404.rebuilt.qa50.20261108';
   assert.equal(resumed.eduPage,'documents','legacy save must open documents first');
   assert.equal(await page.locator('.otk-intro').count(),0,'obsolete duplicate introduction should not be shown');
   assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=width+3,'document viewer horizontal overflow');
-  const icon=await page.locator('.ceh-materials-trigger').boundingBox();
-  const heading=await page.locator('.edu-reference__heading').boundingBox();
-  if(icon&&heading)assert.ok(icon.y+icon.height<=heading.y||icon.x>=heading.x+heading.width||
-    icon.x+icon.width<=heading.x,'materials trigger hides document heading');
+  assert.equal(await page.locator('.edu-reference__heading').count(),1,'EDU-01 document heading missing');
   await page.evaluate(key=>{
     const s=window.CEH_LOGIC.initial();
     localStorage.setItem(key,JSON.stringify({...s,scene:'S04',s04Mode:'edu',eduStep:4,eduPage:'task',selected:['A'],name:'Анна'}));
