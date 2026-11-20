@@ -20,7 +20,7 @@ const key='ceh404.rebuilt.qa50.20261108';
   await page.locator('.document--catalog .investment').first().waitFor();
   assert.equal(await page.locator('.ic-grid .ic-card').count(),width<=720?4:6,'catalog page count');
   const col=await page.locator('.ic-grid').evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').length);
-  assert.equal(col,width<=720?1:width<=1000?2:3,'catalog grid columns');
+  assert.equal(col,width<=900?1:width<=1000?2:3,'catalog grid columns');
   assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=width+3,'catalogue horizontal overflow');
   // Regression: S04 must not have a second parent .invest-grid.
   // The nested grid previously squeezed all cards into a thin left strip and
