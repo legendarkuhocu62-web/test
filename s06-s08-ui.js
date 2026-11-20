@@ -85,7 +85,7 @@ function renderS08(s,data){
  }
  if(viewing==='summary'){
   h+='<div class="order-kicker">ЭФФЕКТ ДОМИНО · ТВОЙ ИТОГ</div><h1>Твой итог</h1>';
-  h+='<p class="s08-intro">Что ты предложил и какие выводы проверил по документам.</p>';
+  h+='<p class="s08-intro">'+(s.name?'Игрок: '+e(s.name)+'. ':'')+'Что ты предложил и какие выводы проверил по документам.</p>';
   h+='<div class="s08-summary-grid">'+model.summary.map((x,i)=>
    '<section class="s08-summary-card" aria-label="'+e(x.title)+'"><span class="s08-step">'+(i+1)+'</span><div><h2>'+e(x.title)+'</h2><p>'+e(x.text)+'</p></div></section>'
   ).join('')+'</div>';
@@ -96,7 +96,23 @@ function renderS08(s,data){
   h+='<div class="s08-chain"><div class="s08-chain-head"><h2>'+e(chain.title)+'</h2><span class="s08-page">'+(index+1)+' / 3</span></div>';
   h+='<div class="s08-chain-parts">'+chain.parts.map((p,i)=>
    '<p><span class="s08-chain-marker" aria-hidden="true">'+['1','2','3'][i]+'</span>'+e(p)+'</p>'
-  ).join('')+'</div></div>';
+  ).join('');
+  if(index===0){
+   h+='<section class="s08-initiative-details" aria-label="Условия и риски всех выбранных инициатив"><h3>Все мероприятия твоего портфеля</h3>';
+   if(!model.initiativeDetails.length)h+='<p>Данные о выбранных мероприятиях не сохранились.</p>';
+   else h+='<div class="s08-initiative-list">'+model.initiativeDetails.map(x=>
+    '<article class="s08-initiative-item"><h4>'+e(x.id)+' · '+e(x.title)+' <span>'+e(x.cost)+' млн у.е.</span></h4>'+
+    '<p><b>Когда может помочь:</b> '+e(x.conditions)+'</p>'+
+    '<p><b>Риск:</b> '+e(x.risks)+'</p>'+
+    '<p><b>Не решает автоматически:</b> '+e(x.not)+'</p></article>'
+   ).join('')+'</div>';
+  h+='</section>';
+  }
+  if(index===2){
+   h+='<section class="s08-edu-details" aria-label="Какие задания EDU-01 пройдены"><h3>Что ты проверял в EDU-01</h3><ol>'+
+     model.eduDetails.map(x=>'<li>'+e(x)+'</li>').join('')+'</ol></section>';
+  }
+  h+='</div></div>';
   h+='<div class="s08-chain-nav" aria-label="Переключение причинных цепочек">'+
    button('Назад','s08ChainPrev','',false,index===0)+
    button('Далее','s08ChainNext','',false,index===2)+'</div>';
