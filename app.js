@@ -457,13 +457,17 @@ function act(action,id){if(action==='eduToggleDocuments'&&s.scene==='S04'&&s.s04
  }
  else if(action==='orderToS08'&&s.scene==='S07'&&s.s07Page==='result'&&O.canMoveToS08(s.s0608)){
   s.scene='S08';s.s08View='summary';s.s08ChainIndex=0;s.s08ReportOpen=false;
+  s.s08PageIndex=0;s.s08SummaryPage=0;s.s08ReportPage=0;
  }
  else if(s.scene==='S08'&&O.canMoveToS08(s.s0608)){
-  if(action==='s08ShowCauses'){s.s08View='causes';s.s08ChainIndex=0;s.s08ReportOpen=false}
+  if(action==='s08ShowCauses'){s.s08View='causes';s.s08ReportOpen=false;if(!Number.isInteger(s.s08PageIndex))s.s08PageIndex=0}
   else if(action==='s08Back'){s.s08View='summary';s.s08ReportOpen=false}
+  else if(action==='s08PageGo'&&/^\d+$/.test(id))s.s08PageIndex=Number(id);
+  else if(action==='s08SummaryGo'&&/^\d+$/.test(id))s.s08SummaryPage=Number(id);
+  else if(action==='s08ReportGo'&&s.s08ReportOpen&&/^\d+$/.test(id))s.s08ReportPage=Number(id);
   else if(action==='s08ChainPrev')s.s08ChainIndex=Math.max(0,(Number.isInteger(s.s08ChainIndex)?s.s08ChainIndex:0)-1);
   else if(action==='s08ChainNext')s.s08ChainIndex=Math.min(2,(Number.isInteger(s.s08ChainIndex)?s.s08ChainIndex:0)+1);
-  else if(action==='s08ReportOpen'&&s.s08View==='causes')s.s08ReportOpen=true;
+  else if(action==='s08ReportOpen'&&s.s08View==='causes'){s.s08ReportOpen=true;s.s08ReportPage=0;}
   else if(action==='s08ReportClose')s.s08ReportOpen=false;
  }
  render()}
