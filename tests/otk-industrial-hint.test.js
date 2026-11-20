@@ -11,16 +11,20 @@ const key='ceh404.rebuilt.qa50.20261108';
     const s=window.CEH_LOGIC.initial();
     localStorage.setItem(key,JSON.stringify({...s,scene:'S04',s04Mode:'eduIntro',selected:['A'],name:'Анна'}));
   },key);await page.reload();
-  const intro=page.locator('.otk-intro');await intro.waitFor();
-  assert.match(await intro.locator('h2').innerText(),/Проверка документов ОТК/);
-  assert.equal(await intro.locator('.otk-intro__doc').count(),2);
-  assert.equal(await page.locator('.document--eduIntro>h1:visible').count(),0,'duplicate old title visible');
-  assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=width+3,'intro horizontal overflow');
+  // Old EDU-01 saves in mode eduIntro migrate directly to the current
+  // approved document viewer; the duplicate intro is intentionally gone.
+  const docs=page.locator('.edu-reference .edu-document-card--row');
+  await docs.first().waitFor({state:'visible'});
+  assert.equal(await docs.count(),2,'legacy EDU-01 save must expose both approved documents');
+  const resumed=await page.evaluate(()=>window.__CEH_TEST__.getState());
+  assert.equal(resumed.s04Mode,'edu','legacy eduIntro save must migrate to active EDU-01');
+  assert.equal(resumed.eduPage,'documents','legacy save must open documents first');
+  assert.equal(await page.locator('.otk-intro').count(),0,'obsolete duplicate introduction should not be shown');
+  assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=width+3,'document viewer horizontal overflow');
   const icon=await page.locator('.ceh-materials-trigger').boundingBox();
-  const badge=await intro.locator('.otk-intro__badge').boundingBox();
-  if(icon&&badge)assert.ok(icon.y+icon.height<=badge.y||icon.x>=badge.x+badge.width||icon.x+icon.width<=badge.x,'materials covers badge');
-  await page.locator('[data-act="startEdu"]').click();
-  assert.equal(await page.locator('.edu-reference .edu-document-card--row').count(),2,'docs screen lost');
+  const heading=await page.locator('.edu-reference__heading').boundingBox();
+  if(icon&&heading)assert.ok(icon.y+icon.height<=heading.y||icon.x>=heading.x+heading.width||
+    icon.x+icon.width<=heading.x,'materials trigger hides document heading');
   await page.evaluate(key=>{
     const s=window.CEH_LOGIC.initial();
     localStorage.setItem(key,JSON.stringify({...s,scene:'S04',s04Mode:'edu',eduStep:4,eduPage:'task',selected:['A'],name:'Анна'}));
