@@ -51,7 +51,7 @@ const key='ceh404.rebuilt.qa50.20261108';
    }
    assert.equal(await page.locator('[data-act="s05ToS06"]').count(),1,'production transition absent at '+width);
    assert.equal(await page.locator('[data-act="s05Next"]').count(),0,'old multi-step interlude unexpectedly restored');
-   assert.match(await page.locator('[data-act="s05ToS06"]').innerText(),/Перейти на производственный участок/);
+   assert.match(await page.locator('[data-act="s05ToS06"]').textContent(),/Перейти на производственный участок/);
    await page.locator('[data-act="s05ToS06"]').dispatchEvent('click');
    await page.waitForTimeout(90);
    const state=await page.evaluate(()=>window.__CEH_TEST__.getState());
