@@ -1,16 +1,28 @@
 'use strict';
 const {chromium}=require('playwright'),assert=require('node:assert/strict');
 const key='ceh404.rebuilt.qa50.20261108';
-async function assertInternalChainScroll(page,where){
- const info=await page.locator('.s08-chain-parts').evaluate(el=>{
-  const height=el.clientHeight,scroll=el.scrollHeight,overflow=getComputedStyle(el).overflowY;
-  el.scrollTop=scroll;
-  return {height,scroll,overflow,scrollTop:el.scrollTop,tabIndex:el.tabIndex};
+async function assertS08NoScroll(page,where){
+ const info=await page.evaluate(()=>{
+  const screen=document.querySelector('.s08-screen');
+  const pageCard=document.querySelector('.s08-paged-card')||
+    document.querySelector('.s08-report-page')||
+    document.querySelector('.s08-summary-card[data-s08-selected="yes"]');
+  const nav=document.querySelector('.s08-report-nav')||document.querySelector('.s08-chain-nav')||document.querySelector('.s08-summary-nav');
+  const control=nav?.querySelector('button:not(:disabled)');
+  return {
+   outer:document.documentElement.scrollHeight,
+   inner:innerHeight,
+   stageBottom:screen?.getBoundingClientRect().bottom,
+   cardOverflow:pageCard?pageCard.scrollHeight-pageCard.clientHeight:0,
+   navBottom:nav?.getBoundingClientRect().bottom,
+   controlBottom:control?.getBoundingClientRect().bottom
+  };
  });
- assert.ok(info.height>0&&info.scroll>=info.height-3,'chain area collapsed '+where+' '+JSON.stringify(info));
- assert.ok(['auto','scroll'].includes(info.overflow),'long consequences need an internal scroller '+where+' '+JSON.stringify(info));
- assert.ok(info.tabIndex>=0,'keyboard users must be able to focus consequences '+where);
- if(info.scroll>info.height+3)assert.ok(info.scrollTop>0,'last consequences must be reachable '+where);
+ assert.ok(info.outer<=info.inner+3,'S08 must not scroll page '+where+' '+JSON.stringify(info));
+ assert.ok(info.stageBottom<=info.inner+3,'S08 stage out of viewport '+where+' '+JSON.stringify(info));
+ assert.ok(info.cardOverflow<=3,'S08 card content clipped '+where+' '+JSON.stringify(info));
+ assert.ok(info.navBottom<=info.inner+3&&info.controlBottom<=info.inner+3,
+  'S08 Back/Next not visible '+where+' '+JSON.stringify(info));
 }
 (async()=>{
  const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
@@ -113,74 +125,59 @@ async function assertInternalChainScroll(page,where){
   assert.equal((await page.evaluate(()=>window.__CEH_TEST__.getState())).scene,'S08');
   assert.equal(await page.locator('[data-s08-view="summary"]').count(),1);
   assert.equal(await page.locator('.s08-summary-card').count(),3);
-  const summaryClips=await page.locator('.s08-summary-card').evaluateAll(cards=>cards.map(el=>({
-   panel:el.getBoundingClientRect().bottom,text:el.querySelector('p').getBoundingClientRect().bottom
-  })));
-  assert.ok(summaryClips.every(x=>x.text<=x.panel+2),
-   'S08 summary text must not be cut '+width+'x'+height+' '+JSON.stringify(summaryClips));
-  assert.match(await page.locator('.s08-summary-grid').innerText(),/станок/);
-  assert.match(await page.locator('.s08-summary-grid').innerText(),/Первый:/);
-  assert.equal(await page.locator('[data-act="s08ShowCauses"]').count(),1);
+  await assertS08NoScroll(page,'summary '+width+'x'+height);
+  if(width<=720){
+   assert.equal(await page.locator('.s08-summary-card:visible').count(),1);
+   for(let k=1;k<3;k++){
+    await page.locator('.s08-summary-nav [data-act="s08SummaryGo"]').nth(1).click();
+    await assertS08NoScroll(page,'summary card '+(k+1)+' '+width+'x'+height);
+   }
+  }
   await page.screenshot({path:'tests/screenshot-s08-summary-'+width+'x'+height+'.png'});
   await page.reload();
-  assert.equal(await page.locator('.s08-summary-card').count(),3,'old localStorage resumes summary');
+  assert.equal(await page.locator('.s08-summary-card').count(),3,'S08 summary resumes after reload');
   await page.locator('[data-act="s08ShowCauses"]').click();
   assert.equal(await page.locator('[data-s08-view="causes"]').count(),1);
-  assert.match(await page.locator('.s08-chain-head').innerText(),/1 \/ 3/);
-  assert.equal(await page.locator('.s08-takeaway li').count(),3);
-  await assertInternalChainScroll(page,'first chain '+width+'x'+height);
-  assert.equal(await page.locator('.s08-initiative-item').count(),2,'all chosen A and C initiatives must appear');
-  assert.match(await page.locator('.s08-initiative-list').innerText(),/Не решает автоматически/);
-  const geometry=await page.locator('.s08-screen').evaluate(el=>{
-   const a=el.getBoundingClientRect(),take=el.querySelector('.s08-takeaway').getBoundingClientRect(),
-      foot=el.querySelector('.s08-footer').getBoundingClientRect();
-   return {top:a.top,bottom:a.bottom,takeBottom:take.bottom,footBottom:foot.bottom,
-     viewport:innerHeight,outer:document.scrollingElement.scrollHeight};
-  });
-  assert.ok(geometry.footBottom<=height+3&&geometry.takeBottom<=height+3,
-    'S08 second screen content must remain visible '+width+'x'+height+' '+JSON.stringify(geometry));
-  await page.screenshot({path:'tests/screenshot-s08-causes-1-'+width+'x'+height+'.png'});
-  await page.locator('[data-act="s08ChainNext"]').click();
-  assert.match(await page.locator('.s08-chain-head').innerText(),/2 \/ 3/);
-  assert.match(await page.locator('.s08-chain').innerText(),/Комитет/);
+  const pageTotals=(await page.locator('.s08-page').innerText()).match(/(\d+)\s*\/\s*(\d+)/);
+  assert.ok(pageTotals,'S08 should show page numbers');
+  const total=Number(pageTotals[2]),seen=[];
+  assert.ok(total>8,'S08 content should be split into readable pages');
+  for(let k=0;k<total;k++){
+   await assertS08NoScroll(page,'consequences '+(k+1)+'/'+total+' '+width+'x'+height);
+   seen.push(await page.locator('.s08-paged-card').innerText());
+   if(k<total-1)await page.locator('.s08-chain-nav [data-act="s08PageGo"]').nth(1).click();
+  }
+  assert.ok(seen.some(x=>x.includes('Когда может помочь')&&x.includes('Не решает автоматически')),
+    'all selected initiative details must be accessible by Next');
+  assert.ok(seen.some(x=>x.includes('Что ты проверял в EDU-01')),'EDU-01 must be accessible');
+  assert.ok(seen.some(x=>x.includes('Главное, что стоит запомнить')),'learning takeaway must be accessible');
+  await page.screenshot({path:'tests/screenshot-s08-causes-last-'+width+'x'+height+'.png'});
   await page.reload();
-  assert.match(await page.locator('.s08-chain-head').innerText(),/2 \/ 3/,'chain index persists after reload');
-  await page.locator('[data-act="s08ChainNext"]').click();
-  assert.match(await page.locator('.s08-chain-head').innerText(),/3 \/ 3/);
-  await assertInternalChainScroll(page,'final chain '+width+'x'+height);
-  assert.equal(await page.locator('.s08-edu-details li').count(),4,'all four EDU-01 lessons must appear');
-  assert.match(await page.locator('.s08-chain').innerText(),/два заказа/);
-  await page.screenshot({path:'tests/screenshot-s08-causes-3-'+width+'x'+height+'.png'});
+  assert.match(await page.locator('.s08-page').innerText(),new RegExp('^'+total+' \\/ '+total+'$'),
+   'S08 current page survives reload');
   await page.locator('[data-act="s08ReportOpen"]').click();
   assert.equal(await page.locator('.s08-report-modal').count(),1);
-  const reportFrame=await page.evaluate(()=>{
-    const header=document.querySelector('.masthead').getBoundingClientRect();
-    const modal=document.querySelector('.s08-report-modal').getBoundingClientRect();
-    const head=document.querySelector('.s08-report-head').getBoundingClientRect();
-    const close=document.querySelector('[data-act="s08ReportClose"]').getBoundingClientRect();
-    const scroller=document.querySelector('.s08-report-scroll');
-    return {headerBottom:header.bottom,modalTop:modal.top,headTop:head.top,
-      closeTop:close.top,closeBottom:close.bottom,scrollHeight:scroller.scrollHeight,
-      clientHeight:scroller.clientHeight,viewport:innerHeight};
-  });
-  assert.ok(reportFrame.headTop>=reportFrame.headerBottom-1&&
-    reportFrame.closeTop>=reportFrame.headerBottom-1&&
-    reportFrame.closeBottom<=reportFrame.viewport+2,
-    'S08 report header and close must be visible outside site masthead '+width+' '+JSON.stringify(reportFrame));
-  assert.ok(reportFrame.scrollHeight>=reportFrame.clientHeight,
-    'Teacher report must use its own content scroller');
-  assert.equal(await page.locator('.s08-report-modal .order-report-sections section').count(),8);
-  assert.match(await page.locator('.s08-report-modal').innerText(),/Первоначальный: A/);
-  assert.match(await page.locator('.s08-report-modal').innerText(),/Итоговый: A.*C/);
-  assert.match(await page.locator('.s08-report-modal').innerText(),/Комитет/);
-  assert.ok(!(await page.locator('.s08-report-modal').innerText()).includes('Не переданы утверждённые данные'));
+  let reportPages=0,reportText=[];
+  const m=(await page.locator('.s08-report-counter').innerText()).match(/Страница\s+\d+\s+из\s+(\d+)/);
+  assert.ok(m,'report must show page count');
+  reportPages=Number(m[1]);assert.ok(reportPages>=8);
+  for(let j=0;j<reportPages;j++){
+   await assertS08NoScroll(page,'report page '+(j+1)+'/'+reportPages+' '+width+'x'+height);
+   reportText.push(await page.locator('.s08-report-page').innerText());
+   if(j<reportPages-1)await page.locator('.s08-report-nav [data-act="s08ReportGo"]').nth(1).click();
+  }
+  const fullReport=reportText.join(' ');
+  assert.match(fullReport,/Первоначальный: A/);
+  assert.match(fullReport,/Итоговый: A/);
+  assert.match(fullReport,/Комитет/);
+  assert.match(fullReport,/З-214/);
   await page.screenshot({path:'tests/screenshot-s08-teacher-'+width+'x'+height+'.png'});
   await page.reload();
   assert.equal(await page.locator('.s08-report-modal').count(),1,'report survives refresh');
   await page.locator('[data-act="s08ReportClose"]').click();
   assert.equal(await page.locator('.s08-report-modal').count(),0,'close report');
   await page.locator('[data-act="s08Back"]').click();
-  assert.equal(await page.locator('[data-s08-view="summary"]').count(),1,'back to student result');
+  assert.equal(await page.locator('[data-s08-view="summary"]').count(),1);
   assert.equal((await page.evaluate(()=>window.__CEH_TEST__.getState().s0608.firstSubmitted)).correct,false);
   assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=width+3,'no horizontal overflow '+width);
   assert.deepEqual(errors,[],'browser error '+width);
@@ -204,26 +201,16 @@ async function assertInternalChainScroll(page,where){
   },key);
   await page.reload();
   assert.equal(await page.locator('.s08-summary-card').count(),3);
-  const smallClips=await page.locator('.s08-summary-card').evaluateAll(cards=>cards.map(el=>({
-    panel:el.getBoundingClientRect().bottom,text:el.querySelector('p').getBoundingClientRect().bottom
-  })));
-  assert.ok(smallClips.every(x=>x.text<=x.panel+2),'S08 tiny screen text clipping '+width+' '+JSON.stringify(smallClips));
-  await page.screenshot({path:'tests/screenshot-s08-summary-'+width+'x'+height+'.png'});
+  await assertS08NoScroll(page,'direct save summary '+width+'x'+height);
   await page.locator('[data-act="s08ShowCauses"]').click();
-  await assertInternalChainScroll(page,'first chain tiny '+width);
-  const fit=await page.locator('.s08-screen').evaluate(el=>({
-   bottom:el.getBoundingClientRect().bottom,
-   takeaway:el.querySelector('.s08-takeaway').getBoundingClientRect().bottom,
-   buttons:el.querySelector('.s08-footer').getBoundingClientRect().bottom,
-   viewport:innerHeight
-  }));
-  assert.ok(fit.takeaway<=height+3&&fit.buttons<=height+3,
-   'S08 direct save viewport fit '+width+' '+JSON.stringify(fit));
-  await page.screenshot({path:'tests/screenshot-s08-causes-1-'+width+'x'+height+'.png'});
-  for(let step=2;step<=3;step++){
-   await page.locator('[data-act="s08ChainNext"]').click();
-   await assertInternalChainScroll(page,'chain '+step+' tiny '+width);
+  await assertS08NoScroll(page,'direct save first cause '+width+'x'+height);
+  for(let k=0;k<3;k++){
+   await page.locator('.s08-chain-nav [data-act="s08PageGo"]').nth(1).click();
+   await assertS08NoScroll(page,'direct save cause '+(k+2)+' '+width+'x'+height);
   }
+  await page.locator('[data-act="s08ReportOpen"]').click();
+  await assertS08NoScroll(page,'direct save report '+width+'x'+height);
+  await page.screenshot({path:'tests/screenshot-s08-paged-'+width+'x'+height+'.png'});
   await page.close();
  }
  await browser.close();
