@@ -4,8 +4,8 @@ const key='ceh404.rebuilt.qa50.20261108';
 async function assertS08NoScroll(page,where){
  const info=await page.evaluate(()=>{
   const screen=document.querySelector('.s08-screen');
-  const pageCard=document.querySelector('.s08-paged-card')||
-    document.querySelector('.s08-report-page')||
+  const pageCard=document.querySelector('.s08-report-page')||
+    document.querySelector('.s08-paged-card')||
     document.querySelector('.s08-summary-card[data-s08-selected="yes"]');
   const nav=document.querySelector('.s08-report-nav')||document.querySelector('.s08-chain-nav')||document.querySelector('.s08-summary-nav');
   const control=nav?.querySelector('button:not(:disabled)');
