@@ -169,8 +169,8 @@
       !changed?'После проверки документов ты оставил прежний портфель. Это не доказывает его эффективность.':
       'После документов ты добавил: '+labelledList(added)+'; исключил: '+labelledList(removed)+'. Никакая инвестиция ещё не внедрена.';
     const firstErrors=first&&!first.correct?first.errors.slice():[];
-    const docText=!first?'Заключение принято, но запись первой попытки отсутствует.':
-      first.correct?'Ты с первого раза отличил факты от предположений по документам З-214.':
+    const docText=!first?'Данных о первой попытке нет. Заключение принято, но ранние ответы не сохранились.':
+      first.correct?'С первого раза ты отличил факты от предположений по документам З-214.':
       'В первой попытке были неподтверждённые выводы: '+firstErrors.join(' ')+' После проверки документов ты исправил заключение.';
     const edu=history.edu01Complete===true?'Ты проверил документы ОТК, но причина отклонения одной детали не доказана.':'Подтверждение прохождения EDU-01 не сохранилось.';
     const eduDetails=history.edu01Complete===true?[
@@ -183,7 +183,10 @@
     const initiativeDetails=(final||[]).map(id=>{const x=names.get(id);return {id,title:x.title,cost:Number(x.cost)||0,
         conditions:x.conditions||'Условие не указано',risks:x.risks||'Риски не указаны',not:x.not||'Ограничения не указаны'};});
     const investmentMeaning=initiativeDetails.length?
-      'Итоговый портфель: '+initiativeDetails.length+' мероприятий. Условия, риски и ограничения каждой меры перечислены ниже. Эти меры пока не внедрены.':
+      'В итоговом портфеле '+initiativeDetails.length+' выбранных мер. '+
+      'Например, '+initiativeDetails[0].title+' может помочь, если '+initiativeDetails[0].conditions.split(';')[0].toLowerCase()+
+      '. Риск — '+initiativeDetails[0].risks.split(';')[0].toLowerCase()+
+      '. Условия, риски и ограничения остальных мер показаны ниже. Пока ничего не внедрено.':
       'Инвестиции не внедрены. Возможную пользу нужно проверять на реальных производственных причинах.';
     const investmentTip=final?.includes('A')?'Перед покупкой станка проверь нехватку мощности.':
       final?.includes('J')?'Электронная доска не ускоряет станок.':
@@ -213,7 +216,7 @@
           investmentMeaning
         ]},
         {title:'От портфеля к разговору с комитетом',parts:[
-          'Твой приоритет: '+(shortGoal[history.priority]||'не сохранился')+'. Итоговый портфель: '+shortAfter+'.',
+          'Твой приоритет: '+(shortGoal[history.priority]||'не сохранился')+'. Итоговый портфель: '+shortAfter,
           committeeText,
           'Выбранные инициативы не внедрены. Проверка условий и рисков необходима до вложений.'
         ]},
