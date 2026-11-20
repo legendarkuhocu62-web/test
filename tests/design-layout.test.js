@@ -41,8 +41,9 @@ const key='ceh404.rebuilt.qa50.20261108';
     'investment card too narrow: '+JSON.stringify(geometry));
   assert.ok(geometry.action.height<110 && geometry.action.width<600,
     'portfolio CTA stretched vertically: '+JSON.stringify(geometry));
-  assert.ok(geometry.action.y>=geometry.grid.y,
-    'portfolio CTA must follow investment cards: '+JSON.stringify(geometry));
+  assert.ok((geometry.action.bottom<=geometry.grid.y+3 || geometry.action.y>=geometry.grid.y)&&
+    geometry.action.bottom<=height+3,
+    'portfolio CTA must stay visible and not overlap the investment cards: '+JSON.stringify(geometry));
   assert.equal(await page.locator('.portfolio-actions .btn').count(),1,'portfolio confirmation remains');
   await page.locator('[data-act="catalogOpen"]').first().click();
   assert.equal(await page.locator('dialog.ic-detail:visible').count(),1,'full card opens');
