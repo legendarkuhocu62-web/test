@@ -94,7 +94,7 @@ function renderS08(s,data){
   const chain=model.chains[index];
   h+='<div class="order-kicker">ЭФФЕКТ ДОМИНО · ПОСЛЕДСТВИЯ РЕШЕНИЙ</div><h1>Последствия твоих решений</h1>';
   h+='<div class="s08-chain"><div class="s08-chain-head"><h2>'+e(chain.title)+'</h2><span class="s08-page">'+(index+1)+' / 3</span></div>';
-  h+='<div class="s08-chain-parts">'+chain.parts.map((p,i)=>
+  h+='<div class="s08-chain-parts" tabindex="0" aria-label="Данные и последствия выбранного решения">'+chain.parts.map((p,i)=>
    '<p><span class="s08-chain-marker" aria-hidden="true">'+['1','2','3'][i]+'</span>'+e(p)+'</p>'
   ).join('');
   if(index===0){
