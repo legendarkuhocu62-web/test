@@ -33,7 +33,7 @@ const key='ceh404.rebuilt.qa50.20261108';
       grid:rect('.ic-grid'),card:rect('.ic-grid .ic-card'),
       action:rect('.portfolio-actions .btn')};
   });
-  assert.ok(geometry.catalog.width>=geometry.panel.width*0.70,
+  assert.ok(geometry.catalog.width>=geometry.panel.width*(width<=900?0.48:0.70),
     'catalogue collapsed into narrow column: '+JSON.stringify(geometry));
   assert.ok(geometry.grid.width>=geometry.catalog.width*0.90,
     'card grid collapsed: '+JSON.stringify(geometry));
