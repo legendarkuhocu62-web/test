@@ -540,3 +540,159 @@ body:has(.order-stage) .reset{position:relative;clear:both;margin-top:0;padding:
  #app .s08-initiative-item p{font-size:12px;line-height:1.36}
  #app .s08-edu-details li{font-size:12px;line-height:1.38}
 }
+
+/* S08 · Page-by-page reading instead of scrolling (20 November 2026).
+   Scoped to S08 only. All substantive content is reached by Back/Next. */
+body:has(#app .s08-screen){height:100dvh;overflow:hidden}
+body:has(#app .s08-screen) .shell{
+  height:100dvh;min-height:0;display:flex;flex-direction:column;overflow:hidden;
+}
+body:has(#app .s08-screen) .masthead{flex:0 0 auto}
+body:has(#app .s08-screen) #app{
+  flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:hidden;
+}
+body:has(#app .s08-screen) #app>.reset{
+  flex:0 0 auto;margin:0;padding:2px 10px 3px;min-height:0;line-height:1;position:relative;
+}
+body:has(#app .s08-screen) #app>.reset .btn{
+  min-height:29px;max-height:32px;padding:4px 10px!important;
+  font-size:11px!important;line-height:1.1;margin:0!important;
+}
+#app .order-stage:has(.s08-screen){
+  display:flex;flex:1 1 auto;min-height:0;height:auto!important;
+  padding:0!important;margin:0;overflow:hidden;align-items:stretch;
+}
+#app .order-stage:has(.s08-screen) .scene-content{
+  display:flex;flex:1 1 auto;min-height:0;height:100%;overflow:hidden;
+}
+#app .s08-screen{height:100%;overflow:hidden}
+#app .s08-summary-nav{display:none}
+#app .s08-chain{
+  flex:1 1 auto;min-height:0;overflow:hidden;
+  gap:clamp(5px,1.2vh,13px);
+}
+#app .s08-paged-card{
+  box-sizing:border-box;min-height:0;min-width:0;flex:1 1 auto;
+  display:flex;flex-direction:column;justify-content:center;align-items:stretch;
+  overflow:hidden;padding:clamp(10px,2vw,20px);
+  border:1px solid #587d9a;border-radius:11px;
+  background:linear-gradient(145deg,#1d3e5a,#10273f);
+}
+#app .s08-page-stage{
+  align-self:flex-start;display:block;font-size:clamp(12px,1.14vw,15px);
+  letter-spacing:.02em;line-height:1.25;font-weight:800;color:#ffcd7c;
+  margin:0 0 clamp(6px,1.4vh,12px);
+}
+#app .s08-page-part{
+  display:block;font-size:clamp(11px,1vw,13px);color:#bfd7e8;margin-bottom:8px;
+}
+#app .s08-paged-card .s08-story-text{
+  margin:0;color:#f4f7fb;font-size:clamp(15px,1.58vw,20px);
+  line-height:1.5;overflow-wrap:anywhere;
+}
+#app .s08-paged-card h3{
+  color:#fff0ce;font-size:clamp(16px,1.75vw,24px);
+  line-height:1.22;margin:0 0 clamp(8px,1.5vh,16px);
+}
+#app .s08-paged-card h3 small{
+  display:inline-block;white-space:nowrap;font-size:clamp(11px,1vw,14px);
+  color:#ffca72;margin-left:6px;
+}
+#app .s08-initiative-fields{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:clamp(9px,1.3vw,15px);
+}
+#app .s08-initiative-fields>div{
+  background:#112d47;border:1px solid #4e7795;border-radius:9px;
+  padding:clamp(8px,1.4vw,13px);min-width:0;
+}
+#app .s08-initiative-fields strong{
+  display:block;color:#ffd18a;font-size:clamp(12px,1.1vw,15px);
+  margin-bottom:5px;line-height:1.2;
+}
+#app .s08-initiative-fields p{
+  margin:0;line-height:1.38;font-size:clamp(12px,1.13vw,16px);
+  color:#eff6fc;overflow-wrap:anywhere;
+}
+#app .s08-takeaway-list{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:clamp(8px,1.2vw,18px);padding:0;margin:0;
+  list-style:none;align-items:stretch;
+}
+#app .s08-takeaway-list li{
+  background:#1b3b50;border-left:3px solid #ffbf5b;
+  border-radius:8px;padding:clamp(9px,1.2vw,13px);
+  font-size:clamp(13px,1.15vw,17px);line-height:1.4;
+}
+#app .s08-chain-nav{justify-content:space-between}
+#app .s08-chain-nav .btn{min-width:112px;min-height:43px}
+#app .s08-report-overlay{padding:clamp(6px,1.4vw,13px)}
+#app .s08-report-modal{
+  height:100%;max-height:100%;min-height:0;
+  width:min(880px,100%);padding:clamp(9px,1.5vw,16px);
+  overflow:hidden;gap:8px;
+}
+#app .s08-report-head{margin:0;min-height:48px}
+#app .s08-report-page{
+  min-height:0;flex:1 1 auto;display:flex;flex-direction:column;
+  justify-content:center;overflow:hidden;
+  padding:clamp(10px,1.6vw,21px);
+  background:#17364f;border:1px solid #6688a4;border-radius:11px;
+}
+#app .s08-report-counter{
+  font-weight:800;color:#ffc67d;font-size:clamp(11px,1.04vw,14px);
+  line-height:1.3;margin-bottom:9px;
+}
+#app .s08-report-page h3{
+  color:#fff0ce;margin:0 0 9px;
+  font-size:clamp(15px,1.9vw,23px);line-height:1.25;
+}
+#app .s08-report-page small{color:#c5dbe9;font-size:12px;margin:0 0 8px}
+#app .s08-report-page p{
+  margin:0;color:#f3f7fc;font-size:clamp(14px,1.22vw,17px);
+  line-height:1.48;overflow-wrap:anywhere;white-space:pre-wrap;
+}
+#app .s08-report-nav{
+  display:flex;justify-content:space-between;gap:8px;
+  flex:0 0 auto;
+}
+#app .s08-report-nav .btn{margin:0!important;min-height:44px;min-width:100px}
+#app .s08-summary-nav .btn:disabled,
+#app .s08-chain-nav .btn:disabled,
+#app .s08-report-nav .btn:disabled{opacity:.42;cursor:not-allowed}
+#app .s08-screen :focus-visible{outline:3px solid #ffc776;outline-offset:2px}
+@media(max-width:720px){
+ #app .s08-summary-grid{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr);gap:0}
+ #app .s08-summary-card{display:none;padding:clamp(11px,3vw,18px);align-items:center}
+ #app .s08-summary-card[data-s08-selected="yes"]{display:flex}
+ #app .s08-summary-card h2{font-size:clamp(16px,4.4vw,21px);margin-bottom:10px}
+ #app .s08-summary-card p{font-size:clamp(14px,3.7vw,17px);line-height:1.42}
+ #app .s08-summary-nav{
+   display:flex;align-items:center;justify-content:space-between;gap:7px;
+   flex:0 0 auto;min-height:42px;
+ }
+ #app .s08-summary-nav span{font-size:12px;color:#d0dfec}
+ #app .s08-summary-nav .btn{margin:0!important;min-height:42px;padding:7px 10px!important;font-size:12px!important}
+ #app .s08-chain{padding:clamp(7px,2.2vw,12px)}
+ #app .s08-paged-card{padding:clamp(10px,3vw,16px)}
+ #app .s08-page-stage{font-size:12px;margin-bottom:8px}
+ #app .s08-paged-card .s08-story-text{font-size:clamp(14px,3.8vw,17px);line-height:1.44}
+ #app .s08-paged-card h3{font-size:clamp(15px,4vw,19px);margin-bottom:9px}
+ #app .s08-initiative-fields{grid-template-columns:1fr;gap:6px}
+ #app .s08-initiative-fields>div{padding:7px 10px}
+ #app .s08-initiative-fields strong{font-size:12px;margin-bottom:3px}
+ #app .s08-initiative-fields p{font-size:clamp(12px,3.3vw,14px);line-height:1.32}
+ #app .s08-takeaway-list{grid-template-columns:1fr;gap:6px}
+ #app .s08-takeaway-list li{padding:7px 10px;font-size:clamp(12px,3.4vw,14px);line-height:1.28}
+ #app .s08-report-page{padding:10px 12px}
+ #app .s08-report-page p{font-size:clamp(13px,3.6vw,15px);line-height:1.42}
+ #app .s08-report-page h3{font-size:clamp(15px,4vw,19px)}
+ #app .s08-report-nav .btn{min-width:96px;min-height:42px;font-size:12px!important;padding:7px 12px!important}
+}
+@media(max-height:620px){
+ #app .order-stage .s08-screen{gap:4px;padding:7px}
+ #app .s08-paged-card{padding:8px 10px}
+ #app .s08-screen>h1{font-size:clamp(18px,2.8vw,25px)}
+ #app .s08-report-modal{gap:5px;padding:7px}
+ #app .s08-report-head{min-height:42px}
+}
