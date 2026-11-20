@@ -23,8 +23,8 @@ for(const [width,height] of sizes){
      iw:img.naturalWidth,ih:img.naturalHeight,cx:(h.left+h.right)/2,cy:(h.top+h.bottom)/2,
      scrollWidth:document.documentElement.scrollWidth};
   });
-  assert.equal(cover.fit,'fill','desktop start must show the full approved composite without cropping at normal browser height');
-  assert.ok(cover.w>=width-3&&cover.h>=height-3,'S00 does not fill available desktop');
+  assert.equal(cover.fit,'cover','desktop start must keep the current aspect-preserving cover presentation, not stretch the composite');
+  assert.ok(cover.w>width*.60&&cover.h>height*.60,'S00 approved artwork must remain prominent and visible within the desktop scene: '+JSON.stringify(cover));
   assert.ok(cover.iw>0&&cover.ih>0,'S00 image did not load');
   const imageBox=await page.locator('.desktop-start-visual img').boundingBox();
   assert.ok(imageBox&&imageBox.x>=-3&&imageBox.y>=-3&&

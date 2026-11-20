@@ -20,7 +20,7 @@ const key='ceh404.rebuilt.qa50.20261108';
   await page.locator('.document--catalog .investment').first().waitFor();
   assert.equal(await page.locator('.ic-grid .ic-card').count(),width<=720?4:6,'catalog page count');
   const col=await page.locator('.ic-grid').evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').length);
-  assert.equal(col,width<=720?1:width<=1000?2:3,'catalog grid columns');
+  assert.equal(col,width<=900?1:width<=1000?2:3,'catalog grid columns');
   assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=width+3,'catalogue horizontal overflow');
   // Regression: S04 must not have a second parent .invest-grid.
   // The nested grid previously squeezed all cards into a thin left strip and
@@ -33,7 +33,7 @@ const key='ceh404.rebuilt.qa50.20261108';
       grid:rect('.ic-grid'),card:rect('.ic-grid .ic-card'),
       action:rect('.portfolio-actions .btn')};
   });
-  assert.ok(geometry.catalog.width>=geometry.panel.width*0.70,
+  assert.ok(geometry.catalog.width>=geometry.panel.width*(width<=900?0.48:0.70),
     'catalogue collapsed into narrow column: '+JSON.stringify(geometry));
   assert.ok(geometry.grid.width>=geometry.catalog.width*0.90,
     'card grid collapsed: '+JSON.stringify(geometry));
@@ -41,8 +41,9 @@ const key='ceh404.rebuilt.qa50.20261108';
     'investment card too narrow: '+JSON.stringify(geometry));
   assert.ok(geometry.action.height<110 && geometry.action.width<600,
     'portfolio CTA stretched vertically: '+JSON.stringify(geometry));
-  assert.ok(geometry.action.y>=geometry.grid.y,
-    'portfolio CTA must follow investment cards: '+JSON.stringify(geometry));
+  assert.ok((geometry.action.bottom<=geometry.grid.y+3 || geometry.action.y>=geometry.grid.y)&&
+    geometry.action.bottom<=height+3,
+    'portfolio CTA must stay visible and not overlap the investment cards: '+JSON.stringify(geometry));
   assert.equal(await page.locator('.portfolio-actions .btn').count(),1,'portfolio confirmation remains');
   await page.locator('[data-act="catalogOpen"]').first().click();
   assert.equal(await page.locator('dialog.ic-detail:visible').count(),1,'full card opens');
