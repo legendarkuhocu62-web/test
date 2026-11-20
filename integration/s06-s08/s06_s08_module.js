@@ -163,26 +163,33 @@
     const changed=initial!==null&&final!==null?initial.length!==final.length||initial.some(x=>!final.includes(x)):null;
     const added=changed?final.filter(id=>!initial.includes(id)):[];
     const removed=changed?initial.filter(id=>!final.includes(id)):[];
+    const labelled=id=>id+' «'+names.get(id).title+'»';
+    const labelledList=ids=>ids.length?ids.map(labelled).join(', '):'нет';
     const changeText=changed===null?'Данные для сравнения двух портфелей сохранились не полностью.':
-      !changed?'После проверки документов ты оставил первоначальный портфель. Это не оценка его правильности.':
-      'После документов: добавлены '+(added.join(', ')||'нет')+'; исключены '+(removed.join(', ')||'нет')+'. Эффект не гарантирован.';
-    const docText=!first?'Заключение по трём документам принято. Данных о первой попытке нет.':
-      first.correct?'С первого раза ты отделил факты от догадок в документах З-214.':
-      'Сначала в заключении были неподтверждённые выводы. После проверки документов ты их исправил.';
-    const edu=history.edu01Complete===true?
-      'EDU-01: одна деталь не соответствует требованиям. Причина отклонения неизвестна.':
-      'В доступном сохранении нет подтверждения завершения EDU-01.';
-    const portfolioFocus=final&&final.length?final.slice(0,2):[];
-    const feature=portfolioFocus.length?names.get(portfolioFocus[0]):null;
-    const investmentMeaning=feature?
-      feature.id+' «'+feature.title+'»: может помочь, если '+feature.conditions.split(';')[0].toLowerCase()+
-      '. Риск — '+feature.risks.split(';')[0].toLowerCase()+'.':
-      'Выбранные инвестиции не внедрены. Их возможную пользу надо проверять на реальных причинах потерь.';
-    const investmentTip=final?.includes('A')?'Перед покупкой станка проверь ограничение мощности.':
+      !changed?'После проверки документов ты оставил прежний портфель. Это не доказывает его эффективность.':
+      'После документов ты добавил: '+labelledList(added)+'; исключил: '+labelledList(removed)+'. Никакая инвестиция ещё не внедрена.';
+    const firstErrors=first&&!first.correct?first.errors.slice():[];
+    const docText=!first?'Заключение принято, но запись первой попытки отсутствует.':
+      first.correct?'Ты с первого раза отличил факты от предположений по документам З-214.':
+      'В первой попытке были неподтверждённые выводы: '+firstErrors.join(' ')+' После проверки документов ты исправил заключение.';
+    const edu=history.edu01Complete===true?'Ты проверил документы ОТК, но причина отклонения одной детали не доказана.':'Подтверждение прохождения EDU-01 не сохранилось.';
+    const eduDetails=history.edu01Complete===true?[
+      'По схеме ЭК-В20-01 ты вычислил предельные размеры: от 19,95 до 20,05 мм.',
+      'По акту ОТК ты определил: у детали В-20-02 размер 20,08 мм — превышение верхнего предела на 0,03 мм.',
+      'Ты отделил подтверждённое несоответствие одной детали от догадок о всей партии и причинах дефекта.',
+      'Ты выбрал дополнительные сведения для обоснования инвестиций. Отдельные ошибочные ответы в EDU-01 не записывались.'
+    ]:['Подтверждение выполнения EDU-01 в сохранении отсутствует.'];
+
+    const initiativeDetails=(final||[]).map(id=>{const x=names.get(id);return {id,title:x.title,cost:Number(x.cost)||0,
+        conditions:x.conditions||'Условие не указано',risks:x.risks||'Риски не указаны',not:x.not||'Ограничения не указаны'};});
+    const investmentMeaning=initiativeDetails.length?
+      'Итоговый портфель: '+initiativeDetails.length+' мероприятий. Условия, риски и ограничения каждой меры перечислены ниже. Эти меры пока не внедрены.':
+      'Инвестиции не внедрены. Возможную пользу нужно проверять на реальных производственных причинах.';
+    const investmentTip=final?.includes('A')?'Перед покупкой станка проверь нехватку мощности.':
       final?.includes('J')?'Электронная доска не ускоряет станок.':
-      final?.includes('D')?'Контроль не объясняет причину дефекта.':
-      final?.includes('L')||final?.includes('M')?'Ноль в бюджете не означает отсутствие затрат.':
-      feature?'У выбранной меры есть условия и риски.':
+      final?.includes('D')?'Контроль не устраняет причину брака.':
+      final?.includes('L')||final?.includes('M')?'Нулевые капитальные затраты не означают отсутствия других расходов.':
+      initiativeDetails.length?'У каждой инвестиции есть условия и риски.':
       'Перед инвестициями проверь причины потерь.';
     const option=chosen?DECISION[chosen.id]:'Оперативный выбор не сохранился.';
     const evidenceTip=first&&!first.correct?'После проверки данных можно исправлять вывод.':
@@ -193,7 +200,7 @@
     const committeeText=committee||'Выбор аргумента для комитета не сохранился; результат заседания не предполагаем.';
     const before=priced(initial),after=priced(final),shortBefore=shortPriced(initial),shortAfter=shortPriced(final);
     return {
-      initial,final,changed,added,removed,first,committeeDecision:committee?history.committeeDecision:null,
+      initial,final,changed,added,removed,first,firstErrors,eduDetails,initiativeDetails,changeText,committeeDecision:committee?history.committeeDecision:null,
       summary:[
         {title:'С чего всё началось',text:'Гипотеза: '+(shortHypothesis[history.hypothesis]||'не сохранилась')+'. Приоритет: '+(shortGoal[history.priority]||'не сохранился')+'.'},
         {title:'Твои инвестиции',text:'Первый: '+tiny(initial)+'. Итог: '+tiny(final)+'. '+(changed===null?'Сравнение недоступно.':changed?'Состав изменён.':'Состав сохранён.')},
@@ -212,7 +219,7 @@
         ]},
         {title:'От документов З-214 к оперативному решению',parts:[
           edu,
-          (first?first.correct?'С первого раза заключение было верным.':'После проверки ты исправил заключение.':'Данных о первой попытке нет.')+' З-214: шлифование не началось, впереди два заказа. Причина неизвестна.',
+          docText+' З-214: шлифование не началось, впереди два заказа. Причина неизвестна.',
           option+' Отгрузка пока не подтверждена.'
         ]}
       ],
@@ -244,15 +251,15 @@
       {title:'1. Инвестиционный приоритет',body:history.initialPriority||'Не сохранился.'},
       {title:'2. Инвестиционный портфель',body:'Первоначальный: '+portfolioText(initial,history)+
         '. Итоговый: '+portfolioText(final,history)+'. Расходы по итоговому портфелю: '+(finalCost==null?'данные не сохранились':finalCost+' млн у.е.')+'.'},
-      {title:'3. Результат EDU-01',body:history.edu01Result||(
-        history.edu01Complete?'Проверка документов ОТК пройдена; первая ошибочная попытка не фиксировалась.':'Подтверждение завершения EDU-01 не сохранилось.')},
+      {title:'3. Результат EDU-01',body:vm.eduDetails.join(' ')+' '+(history.edu01Result||(
+        history.edu01Complete?'Проверка документов ОТК пройдена; первая ошибочная попытка не фиксировалась.':'Подтверждение завершения EDU-01 не сохранилось.'))},
       {title:'4. Пересмотр решения',body:vm.changed===null?'Первый или итоговый портфель не сохранился.':
-        vm.changed?'Добавлены: '+(vm.added.join(', ')||'нет')+'. Исключены: '+(vm.removed.join(', ')||'нет')+
+        vm.changed?vm.changeText+'. Добавлены: '+(vm.added.map(id=>id+' «'+(history.initiatives||[]).find(x=>x.id===id)?.title+'»').join(', ')||'нет')+'. Исключены: '+(vm.removed.map(id=>id+' «'+(history.initiatives||[]).find(x=>x.id===id)?.title+'»').join(', ')||'нет')+
         '. Сам факт пересмотра не является оценкой правильности.':'Первоначальный портфель сохранён; это не оценка правильности.'},
       {title:'5. Инвестиционный комитет',body:committee},
-      {title:'6. Производственная ситуация З-214',body:'Изучено документов: '+s.docsOpened.length+' из 3. Шлифование не началось по плану, впереди два заказа. Причина неизвестна. Оперативное заключение принято; первая полная попытка: '+firstText+'.'},
+      {title:'6. Производственная ситуация З-214',body:'Изучено документов: '+s.docsOpened.length+' из 3. Шлифование не началось по плану, впереди два заказа. Причина неизвестна. Оперативное заключение принято; первая полная попытка: '+firstText+'. '+(vm.firstErrors.length?'Почему пришлось исправлять: '+vm.firstErrors.join(' '):'')},
       {title:'7. Оперативное решение',body:'Выбрано: '+option.title+'. Возможная польза: '+option.benefit+' Ограничения: '+option.limitations},
-      {title:'8. Профессиональный вывод',body:vm.takeaway.join(' ')+' Выбранные меры не внедрены, отгрузка З-214 не подтверждена.'}
+      {title:'8. Профессиональный вывод',body:vm.takeaway.join(' ')+' Выбранные меры не внедрены, отгрузка З-214 не подтверждена. '+vm.initiativeDetails.map(x=>x.id+' «'+x.title+'»: условие — '+x.conditions+'; риск — '+x.risks+'; не решает автоматически — '+x.not+'.').join(' ')}
     ];
   }
   return Object.freeze({GAME_CLOCK,DOCUMENTS,STATEMENTS,S07_OPTIONS,initial,clean,openDocument,canStart,setAnswer,submit,canMoveToS07,selectS07,canMoveToS08,materialsForExistingPanel,buildS08,buildS08ViewModel});
