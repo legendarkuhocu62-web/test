@@ -149,8 +149,8 @@ async function assertS08NoScroll(page,where){
   }
   assert.ok(seen.some(x=>x.includes('Когда может помочь')&&x.includes('Не решает автоматически')),
     'all selected initiative details must be accessible by Next');
-  assert.ok(seen.some(x=>x.includes('Что ты проверял в EDU-01')),'EDU-01 must be accessible');
-  assert.ok(seen.some(x=>x.includes('Главное, что стоит запомнить')),'learning takeaway must be accessible');
+  assert.ok(seen.some(x=>x.includes('По схеме ЭК-В20-01')),'EDU-01 must be accessible');
+  assert.ok(seen.some(x=>x.includes('Твой профессиональный вывод')),'learning takeaway must be accessible');
   await page.screenshot({path:'tests/screenshot-s08-causes-last-'+width+'x'+height+'.png'});
   await page.reload();
   assert.match(await page.locator('.s08-page').innerText(),new RegExp('^'+total+' \\/ '+total+'$'),
