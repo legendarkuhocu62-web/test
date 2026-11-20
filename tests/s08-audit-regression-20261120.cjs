@@ -3,7 +3,8 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
 const M=require('../integration/s06-s08/s06_s08_module.js');
-global.window={CEH_S06_S08_PREP:M};
+const P=require('../s08-pagination.js');
+global.window={CEH_S06_S08_PREP:M,CEH_S08_PAGES:P,innerWidth:390,innerHeight:844};
 require('../data.js');
 require('../s06-s08-ui.js');
 const data=window.CEH_DATA;
@@ -23,12 +24,17 @@ const display=s=>window.CEH_ORDER_UI.render(s,data,'',(_bg,html)=>html);
 test('All 13 initiatives are explained in the S08 first chain',()=>{
  const s=make('conditions','priority',good,data.initiatives.map(x=>x.id));
  const vm=M.buildS08ViewModel(s.s0608,history(s));
- const html=display(s);
+ const pages=P.causes(vm,390,844);
  assert.equal(vm.initiativeDetails.length,13);
- assert.equal((html.match(/class="s08-initiative-item"/g)||[]).length,13);
+ assert.equal(pages.filter(p=>p.type==='initiative').length,13);
  for(const x of vm.initiativeDetails){
   assert.ok(x.conditions&&x.risks&&x.not);
+  const i=pages.findIndex(p=>p.type==='initiative'&&p.item.id===x.id);
+  const html=display({...s,s08PageIndex:i});
   assert.ok(html.includes(x.title));
+  assert.ok(html.includes(x.conditions));
+  assert.ok(html.includes(x.risks));
+  assert.ok(html.includes(x.not));
  }
 });
 test('Portfolios show all added and removed initiatives and retain budget math',()=>{
@@ -48,7 +54,8 @@ test('EDU-01 is four tasks, without inventing answers before the saved progress'
  assert.equal(vm.eduDetails.length,4);
  assert.match(vm.eduDetails.join(' '),/19,95/);
  assert.match(vm.eduDetails.join(' '),/0,03/);
- assert.match(display({...s,s08ChainIndex:2}),/Что ты проверял в EDU-01/);
+ const pages=P.causes(vm,390,844);
+ assert.match(display({...s,s08PageIndex:pages.findIndex(p=>p.type==='edu')}),/Что ты проверял в EDU-01/);
 });
 test('The first incorrect S06 conclusion is explained from evidence, not guessed',()=>{
  const s=make();
@@ -66,7 +73,7 @@ test('Three committee choices, three S07 choices, two first S06 attempts',()=>{
   const vm=M.buildS08ViewModel(s.s0608,history(s));
   assert.equal(vm.chains.length,3);
   assert.equal(M.buildS08(s.s0608,history(s)).length,8);
-  assert.match(display(s),/Все мероприятия твоего портфеля/);
+  assert.match(display(s),/data-act="s08PageGo"/);
   assert.ok(vm.committeeDecision===committee);
   count++;
  }
@@ -82,11 +89,14 @@ test('S08 renders exactly two top-level views and escapes user-controlled text',
  const html=display({...s,s08View:'summary'});
  assert.doesNotMatch(html,/<script>alert/);
  assert.match(html,/&lt;script&gt;/);
- assert.match(display(s),/Главное, что стоит запомнить/);
+ const pages=P.causes(M.buildS08ViewModel(s.s0608,history(s)),390,844);
+ assert.match(display({...s,s08PageIndex:pages.length-1}),/Главное, что стоит запомнить/);
  assert.doesNotMatch(display(s),/Какое решение ты хотел бы перепроверить/);
 });
-test('Only internal causes panel scrolls; no global CSS changes in this patch',()=>{
+test('S08 results and report are paged without scrolling',()=>{
  const fs=require('node:fs');
  const css=fs.readFileSync(require('node:path').join(__dirname,'../s06-s08-ui.css'),'utf8');
- assert.match(css,/#app \.s08-screen\[data-s08-view="causes"\] \.s08-chain-parts\s*\{[\s\S]*?overflow-y:auto/);
+ assert.match(css,/S08 · Page-by-page reading/);
+ assert.match(css,/#app \.s08-paged-card\s*\{/);
+ assert.match(css,/#app \.s08-report-page\s*\{/);
 });
