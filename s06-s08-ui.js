@@ -63,7 +63,7 @@ function renderS07(s){
  return h+'</div>';
 }
 function renderS08(s,data){
- // All decisions are read from existing game state; S06/S07 renderers are unchanged.
+ // Two approved final screens. Each screen has self-contained pages instead of scrolling.
  const history={
   hypothesis:s.hypothesis,priority:s.priority,
   initialPriority:(data.goals||[]).find(x=>x.id===s.priority)?.label??null,
@@ -76,56 +76,66 @@ function renderS08(s,data){
  };
  const model=M.buildS08ViewModel(s.s0608,history);
  const report=M.buildS08(s.s0608,history);
+ const P=window.CEH_S08_PAGES;
  const viewing=s.s08View==='causes'?'causes':'summary';
- const index=Number.isInteger(s.s08ChainIndex)?Math.max(0,Math.min(2,s.s08ChainIndex)):0;
  let h='<div class="glass order-screen s08-screen" data-s08-view="'+e(viewing)+'">';
- if(!model){
+ if(!model||!P){
   return h+'<div class="order-kicker">ЭФФЕКТ ДОМИНО</div><h1>Итог пока недоступен</h1>'+
-   '<p>Сначала заверши заключение по заказу З-214 и выбери оперативное решение.</p></div>';
+   '<p>Не удалось загрузить итог. Обнови страницу и проверь, что заключение по З-214 принято.</p></div>';
  }
  if(viewing==='summary'){
+  const index=Number.isInteger(s.s08SummaryPage)?Math.max(0,Math.min(model.summary.length-1,s.s08SummaryPage)):0;
   h+='<div class="order-kicker">ЭФФЕКТ ДОМИНО · ТВОЙ ИТОГ</div><h1>Твой итог</h1>';
   h+='<p class="s08-intro">'+(s.name?'Игрок: '+e(s.name)+'. ':'')+'Что ты предложил и какие выводы проверил по документам.</p>';
   h+='<div class="s08-summary-grid">'+model.summary.map((x,i)=>
-   '<section class="s08-summary-card" aria-label="'+e(x.title)+'"><span class="s08-step">'+(i+1)+'</span><div><h2>'+e(x.title)+'</h2><p>'+e(x.text)+'</p></div></section>'
+   '<section class="s08-summary-card" data-s08-selected="'+(i===index?'yes':'no')+'" aria-label="'+e(x.title)+'"><span class="s08-step">'+(i+1)+'</span><div><h2>'+e(x.title)+'</h2><p>'+e(x.text)+'</p></div></section>'
   ).join('')+'</div>';
+  h+='<nav class="s08-summary-nav" aria-label="Карточки твоего итога">'+
+   button('Назад','s08SummaryGo',String(index-1),false,index===0)+
+   '<span>Карточка '+(index+1)+' из '+model.summary.length+'</span>'+
+   button('Далее','s08SummaryGo',String(index+1),false,index===model.summary.length-1)+'</nav>';
   h+='<div class="s08-footer">'+button('Посмотреть последствия решений','s08ShowCauses','',true)+'</div>';
  }else{
-  const chain=model.chains[index];
+  const width=window.innerWidth||390,height=window.innerHeight||844;
+  const pages=P.causes(model,width,height);
+  const index=Number.isInteger(s.s08PageIndex)?Math.max(0,Math.min(pages.length-1,s.s08PageIndex)):0;
+  const page=pages[index];
   h+='<div class="order-kicker">ЭФФЕКТ ДОМИНО · ПОСЛЕДСТВИЯ РЕШЕНИЙ</div><h1>Последствия твоих решений</h1>';
-  h+='<div class="s08-chain"><div class="s08-chain-head"><h2>'+e(chain.title)+'</h2><span class="s08-page">'+(index+1)+' / 3</span></div>';
-  h+='<div class="s08-chain-parts" tabindex="0" aria-label="Данные и последствия выбранного решения">'+chain.parts.map((p,i)=>
-   '<p><span class="s08-chain-marker" aria-hidden="true">'+['1','2','3'][i]+'</span>'+e(p)+'</p>'
-  ).join('');
-  if(index===0){
-   h+='<section class="s08-initiative-details" aria-label="Условия и риски всех выбранных инициатив"><h3>Все мероприятия твоего портфеля</h3>';
-   if(!model.initiativeDetails.length)h+='<p>Данные о выбранных мероприятиях не сохранились.</p>';
-   else h+='<div class="s08-initiative-list">'+model.initiativeDetails.map(x=>
-    '<article class="s08-initiative-item"><h4>'+e(x.id)+' · '+e(x.title)+' <span>'+e(x.cost)+' млн у.е.</span></h4>'+
-    '<p><b>Когда может помочь:</b> '+e(x.conditions)+'</p>'+
-    '<p><b>Риск:</b> '+e(x.risks)+'</p>'+
-    '<p><b>Не решает автоматически:</b> '+e(x.not)+'</p></article>'
-   ).join('')+'</div>';
-  h+='</section>';
+  h+='<div class="s08-chain"><div class="s08-chain-head"><h2>'+e(page.title)+'</h2><span class="s08-page">'+(index+1)+' / '+pages.length+'</span></div>';
+  h+='<article class="s08-paged-card" aria-label="'+e(page.stage)+'"><span class="s08-page-stage">'+e(page.stage)+'</span>';
+  if(page.label)h+='<small class="s08-page-part">'+e(page.label)+'</small>';
+  if(page.type==='statement'||page.type==='edu'){
+   h+='<p class="s08-story-text">'+e(page.text)+'</p>';
+  }else if(page.type==='initiative'){
+   const x=page.item;
+   h+='<h3>'+e(x.id)+' · '+e(x.title)+' <small>'+e(x.cost)+' млн у.е.</small></h3>'+
+    '<div class="s08-initiative-fields">'+
+    '<div><strong>Когда может помочь</strong><p>'+e(x.conditions)+'</p></div>'+
+    '<div><strong>Какой риск</strong><p>'+e(x.risks)+'</p></div>'+
+    '<div><strong>Не решает автоматически</strong><p>'+e(x.not)+'</p></div>'+
+    '</div>';
+  }else if(page.type==='takeaway'){
+   h+='<ul class="s08-takeaway-list">'+page.items.map(x=>'<li>'+e(x)+'</li>').join('')+'</ul>';
   }
-  if(index===2){
-   h+='<section class="s08-edu-details" aria-label="Какие задания EDU-01 пройдены"><h3>Что ты проверял в EDU-01</h3><ol>'+
-     model.eduDetails.map(x=>'<li>'+e(x)+'</li>').join('')+'</ol></section>';
-  }
-  h+='</div></div>';
-  h+='<div class="s08-chain-nav" aria-label="Переключение причинных цепочек">'+
-   button('Назад','s08ChainPrev','',false,index===0)+
-   button('Далее','s08ChainNext','',false,index===2)+'</div>';
-  h+='<section class="s08-takeaway"><h2>Главное, что стоит запомнить</h2><ul>'+model.takeaway.map(x=>'<li>'+e(x)+'</li>').join('')+'</ul></section>';
+  h+='</article></div>';
+  h+='<nav class="s08-chain-nav" aria-label="Переключение карточек последствий">'+
+   button('Назад','s08PageGo',String(index-1),false,index===0)+
+   button('Далее','s08PageGo',String(index+1),false,index===pages.length-1)+'</nav>';
   h+='<div class="s08-footer s08-footer--two">'+button('К твоему итогу','s08Back')+
    button('Подробный отчёт','s08ReportOpen')+'</div>';
   if(s.s08ReportOpen&&report){
+   const reportPages=P.report(report,width,height);
+   const reportIndex=Number.isInteger(s.s08ReportPage)?Math.max(0,Math.min(reportPages.length-1,s.s08ReportPage)):0;
+   const item=reportPages[reportIndex];
    h+='<div class="s08-report-overlay"><section class="s08-report-modal" role="dialog" aria-modal="true" aria-label="Подробный отчёт" tabindex="-1">'+
-    '<div class="s08-report-head"><h2>Подробный отчёт для преподавателя</h2>'+
-    button('Закрыть','s08ReportClose')+'</div>'+
-    '<div class="s08-report-scroll" tabindex="0"><div class="order-report-sections">'+
-    report.map(x=>'<section><h2>'+e(x.title)+'</h2><p>'+e(x.body)+'</p></section>').join('')+
-    '</div></div></section></div>';
+    '<div class="s08-report-head"><h2>Подробный отчёт</h2>'+button('Закрыть','s08ReportClose')+'</div>'+
+    '<article class="s08-report-page" aria-label="'+e(item.title)+'"><span class="s08-report-counter">Раздел '+item.section+' из '+report.length+' · Страница '+(reportIndex+1)+' из '+reportPages.length+'</span>'+
+    '<h3>'+e(item.title)+'</h3>'+(item.partTotal>1?'<small>Часть '+item.part+' из '+item.partTotal+'</small>':'')+
+    '<p>'+e(item.text)+'</p></article>'+
+    '<nav class="s08-report-nav" aria-label="Страницы подробного отчёта">'+
+    button('Назад','s08ReportGo',String(reportIndex-1),false,reportIndex===0)+
+    button('Далее','s08ReportGo',String(reportIndex+1),false,reportIndex===reportPages.length-1)+
+    '</nav></section></div>';
   }
  }
  return h+'</div>';
