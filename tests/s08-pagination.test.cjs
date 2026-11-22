@@ -109,6 +109,12 @@ test('Sentence boundary semantics do not split compound initiative markers',()=>
  ]);
  const measure='A «SMED»: условие — устойчивый процесс; риск — срыв; не решает автоматически — нехватку мощности.';
  assert.deepEqual(P.semanticSentences(measure),[measure]);
+ const long='Выбранные меры не внедрены. A «Станок»: условие — подтверждена мощность; риск — ввод в эксплуатацию; не решает автоматически — переналадки. J «Доска»: условие — нужны статусы; риск — устаревшие данные; не решает автоматически — нехватку оборудования.';
+ assert.deepEqual(P.semanticSentences(long),[
+  'Выбранные меры не внедрены.',
+  'A «Станок»: условие — подтверждена мощность; риск — ввод в эксплуатацию; не решает автоматически — переналадки.',
+  'J «Доска»: условие — нужны статусы; риск — устаревшие данные; не решает автоматически — нехватку оборудования.'
+ ]);
 });
 test('Semantic pages reduce clicks for a typical two-measure portfolio',()=>{
  const s=state(['A','J']), vm=M.buildS08ViewModel(s.s0608,history(s));
