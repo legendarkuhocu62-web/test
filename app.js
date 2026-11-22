@@ -251,7 +251,7 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
      isAnswer?btn('К специалистам','closePerson',p.id,'primary'):
        (btn(p.question,'s03Ask',p.id,'primary').replace(e(p.question),'<span class="s03-question-first">'+e(({andrey:'Что вы думаете',irina:'Что важно проверить',marina:'Что важно для'})[p.id]||p.question)+'</span> <span class="s03-question-second">'+e(({andrey:'об оборудовании?',irina:'в потерях?',marina:'бюджета?'})[p.id]||'')+'</span>')+btn('К специалистам','closePerson',p.id,''))
    );
-   html=frame(A.meeting,content,'dialogue-stage dialogue-stage--meeting');
+   html=frame(A.meeting,content,'dialogue-stage dialogue-stage--meeting'+(isAnswer?'':' s03-specialist-speech'));
  }else{
    const s03SeatOrder=['andrey','irina','marina'];
    const buttons=s03SeatOrder.map(id=>d.people.find(p=>p.id===id)).filter(Boolean).map(p=>`<button type="button" class="btn person-choice ${s.s03Read.includes(p.id)?'seen':''}" data-act="person" data-id="${e(p.id)}"><span class="person-choice__name">${s.s03Read.includes(p.id)?'✓ ':''}${e(p.name)}</span><span class="person-choice__role">${e(p.role)}</span></button>`).join('');
