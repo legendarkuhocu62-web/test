@@ -1342,6 +1342,9 @@ body.dialogue-mode-active #app .game-dialogue--scene .dialogue-control{
 }
 /* Very narrow phones: avoid compressing the two specialist actions into unreadable labels. */
 @media(max-width:350px){
+ body.dialogue-mode-active #app .s03-specialist-speech .game-dialogue--scene{
+   --dialogue-panel-height:clamp(235px,35dvh,260px);
+ }
  body.dialogue-mode-active #app .dialogue-stage--meeting .game-dialogue__actions:has([data-act="s03Ask"]){
    flex-wrap:wrap;justify-content:flex-end;
  }
