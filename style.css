@@ -1340,6 +1340,15 @@ body.dialogue-mode-active #app .game-dialogue--scene .dialogue-control{
    flex:0 0 auto;white-space:nowrap;hyphens:none;overflow-wrap:normal;word-break:normal;
  }
 }
+/* Very narrow phones: avoid compressing the two specialist actions into unreadable labels. */
+@media(max-width:350px){
+ body.dialogue-mode-active #app .dialogue-stage--meeting .game-dialogue__actions:has([data-act="s03Ask"]){
+   flex-wrap:wrap;justify-content:flex-end;
+ }
+ #app .dialogue-stage--meeting .game-dialogue__actions [data-act="s03Ask"]{
+   flex:0 0 100%;width:100%;
+ }
+}
 @media(max-width:720px) and (max-height:700px){
  body.dialogue-mode-active #app .game-dialogue--scene .dialogue-counter{display:none}
 }
