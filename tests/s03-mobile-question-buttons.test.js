@@ -11,7 +11,16 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict');
     localStorage.setItem(k,JSON.stringify({...s,scene:'S03',s03Person:id,s03QuestionMode:'speech',name:'Тест'}));
    },id);
    await page.reload();
-   while(await page.locator('[data-act="dlgMore"]').count())await page.locator('[data-act="dlgMore"]').click();
+   // The shared dialogue repaginates after layout measurement in requestAnimationFrame.
+   // Wait for that pass before counting pages; otherwise the CTA can be replaced mid-assertion.
+   await page.locator('.game-dialogue--scene .game-dialogue__panel').waitFor();
+   await page.waitForTimeout(110);
+   let guard=0;
+   while(await page.locator('[data-act="dlgMore"]').count()){
+    assert.ok(++guard<20,'specialist dialogue pagination loop');
+    await page.locator('[data-act="dlgMore"]').click();
+    await page.waitForTimeout(60);
+   }
    const q=page.locator('[data-act="s03Ask"]');
    assert.equal((await q.textContent()).trim(),parts.join(' '));
    const g=await page.evaluate(()=>{
