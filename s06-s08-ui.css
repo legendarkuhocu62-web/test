@@ -696,3 +696,49 @@ body:has(#app .s08-screen) #app>.reset .btn{
  #app .s08-report-modal{gap:5px;padding:7px}
  #app .s08-report-head{min-height:42px}
 }
+
+
+/* On 320x568, preserve the complete S08 paragraph after reserving a 44px
+   restart touch target. Recover 8px of vertical space from ornamental card padding,
+   not from text size or content. Other viewport sizes are untouched. */
+@media(max-width:350px) and (max-height:620px){
+ #app .s08-paged-card{padding-top:4px;padding-bottom:4px}
+}
+
+/* 23.11 · Mobile reset control: remain in document flow; protect Safari's bottom
+   browser UI and touch target without overlaying the last content panel. */
+@media(max-width:720px){
+ body:not(.s00-mobile-cover-active) #app>.reset{
+  box-sizing:border-box;
+  position:relative;
+  padding:8px 12px max(16px,calc(env(safe-area-inset-bottom,0px) + 12px));
+  margin:0;
+ }
+ #app>.reset .btn[data-act="reset"]{
+  box-sizing:border-box;
+  min-height:44px;
+  margin:0!important;
+  padding:9px 16px!important;
+  font-size:12px!important;
+  line-height:1.25;
+  max-height:none;
+  touch-action:manipulation;
+ }
+ body:has(#app .s08-screen) #app>.reset{
+  box-sizing:border-box;
+  position:relative;
+  flex:0 0 auto;
+  min-height:0;
+  padding:3px 12px max(12px,calc(env(safe-area-inset-bottom,0px) + 10px));
+  margin:0;
+  z-index:0;
+ }
+ body:has(#app .s08-screen) #app>.reset .btn[data-act="reset"]{
+  min-height:44px;
+  max-height:none;
+  padding:8px 14px!important;
+  margin:0!important;
+  font-size:12px!important;
+  line-height:1.25;
+ }
+}
