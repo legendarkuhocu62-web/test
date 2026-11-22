@@ -83,7 +83,8 @@
    const sections=new Set(candidate.map(x=>x.section)).size;
    // A long portfolio is a semantic list: do not crowd all A–M labels onto one card.
    const markers=(candidate.map(x=>x.text).join(' ').match(/\b[A-M] «/g)||[]).length;
-   if(current.length&&(pageCost(candidate,width,report)>budget||sections>maxSections||markers>(report?3:4))){
+   const stagesCount=new Set(candidate.map(x=>x.stage)).size;
+   if(current.length&&(pageCost(candidate,width,report)>budget||sections>maxSections||markers>(report?3:4)||(!report&&width>720&&stagesCount>2))){
     flush();
     current.push({...item,text:sentence});
    }else{
