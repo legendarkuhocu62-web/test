@@ -273,7 +273,9 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
    h+='<p class="catalog-summary__priority"><b>Приоритет:</b> '+e(d.goals.find(x=>x.id===s.priority)?.label||'не выбран')+'</p>';
    h+='<p class="catalog-summary__hint">В каталоге доступны инициативы A–M. L и M имеют нулевую бюджетную стоимость, но не исключают рисков.</p>';
    if(s.showReview){
-     h+='<div class="feedback"><h2>Подтверждение портфеля</h2><p>Выбрано: '+e(s.selected.join(', '))+'</p><p>Стоимость: <b>'+spent+' млн у.е.</b></p><p>Сохранить предварительный портфель?</p><div class="portfolio-review-actions">'+btn('Вернуться к редактору','catalog')+btn('Сохранить и продолжить','finish','','primary')+'</div></div>';
+     // One text label per button; explicit mobile line breaks change presentation only.
+     const reviewCta=(label,first,second,action,cls='')=>btn(label,action,'',cls).replace(e(label),'<span class="s04-review-cta-text"><span class="s04-review-cta-line">'+e(first)+'</span> <span class="s04-review-cta-line">'+e(second)+'</span></span>');
+     h+='<div class="feedback"><h2>Подтверждение портфеля</h2><p>Выбрано: '+e(s.selected.join(', '))+'</p><p>Стоимость: <b>'+spent+' млн у.е.</b></p><p>Сохранить предварительный портфель?</p><div class="portfolio-review-actions">'+reviewCta('Вернуться к редактору','Вернуться к','редактору','catalog')+reviewCta('Сохранить и продолжить','Сохранить и','продолжить','finish','primary')+'</div></div>';
    }else{
      h+='<div class="portfolio-actions">'+btn(s.returnToReview?'Проверить изменения':'Проверить портфель','review','','primary')+'</div>';
    }

@@ -460,6 +460,20 @@ dialog.ic-detail::backdrop { background:#020811d9; backdrop-filter:blur(3px); }
   #app .document--catalog .portfolio-review-actions .btn{font-size:11px!important;padding:7px 5px!important;min-height:48px}
 }
 
+/* S04 portfolio confirmation: preserve approved text and split ONLY its two mobile CTA labels at word boundaries. */
+@media(max-width:720px){
+ #app .document--catalog .portfolio-review-actions .btn{
+   min-width:0;hyphens:none;overflow-wrap:normal;word-break:normal;
+ }
+ #app .document--catalog .portfolio-review-actions .s04-review-cta-text{
+   display:flex;flex-direction:column;align-items:center;justify-content:center;
+   box-sizing:border-box;min-width:0;width:100%;line-height:1.25;
+ }
+ #app .document--catalog .portfolio-review-actions .s04-review-cta-line{
+   display:block;white-space:nowrap;hyphens:none;overflow-wrap:normal;word-break:normal;
+ }
+}
+
 /* 19.11 mobile S04 catalog: compact card + contained CTA, scoped to the catalog.
    Remove the old 150px thumbnail floor: it made cards taller than their content
    and hid lower buttons behind the scroll viewport. No game data/actions changed. */
