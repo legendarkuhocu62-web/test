@@ -7,7 +7,7 @@ let s;try{s=L.validState(JSON.parse(localStorage.getItem(key)||'null'))}catch(_)
  const materialsUI=window.CEH_MATERIALS.create({getState:()=>s,data:d,root:app});
  const A={title:'assets/optimized/backgrounds/CH1-IMG-001_Главный-экран.webp',gate:'assets/optimized/backgrounds/CH1-IMG-006_Внешняя проходная.webp',entry:'assets/optimized/backgrounds/CH1-IMG-002_Входная зона и турникеты.webp?v=approved-20261109',office:'assets/optimized/backgrounds/CH1-IMG-005_Технологический отдел.webp',engineer:'assets/optimized/backgrounds/CH1-IMG-014_Инженерный кабинет.webp',group:'assets/backgrounds/CH1-IMG-020_S03_three_characters.jpeg',badge:'assets/optimized/icons/CH404-CH1-S00-001_employee_badge_technician.webp',badgeFemale:'assets/icons/CH404-CH1-S00-002_employee_badge_female_blurred.png',irina:'assets/optimized/characters/CH1-IMG-013_Женский персонаж с планшетом.webp',irina_friendly:'assets/optimized/characters/CH1-IMG-015_irina_friendly.webp',irina_focused:'assets/optimized/characters/CH1-IMG-016_irina_focused.webp',meeting:'assets/backgrounds/CH1-IMG-019_S03_Переговорная_без_персонажей.jpeg',shop:'assets/backgrounds/CH1-IMG-009_Производственный цех.png',andrey:'assets/optimized/characters/CH1-IMG-012_Персонаж Андрей Громов.webp',marina:'assets/optimized/characters/CH1-IMG-011_Персонаж Марина Власова.webp'};
 function e(x){return String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function btn(t,act,id='',cls=''){return `<button type="button" class="btn ${cls}" data-act="${e(act)}" data-id="${e(id)}">${e(t)}</button>`}
+function btn(t,act,id='',cls='',disabled=false){return `<button type="button" class="btn ${cls}" data-act="${e(act)}" data-id="${e(id)}"${disabled?' disabled':''}>${e(t)}</button>`}
 /* EDU-01 documents: view original image without resetting scene or inputs. */
 let eduDocumentDialog=null,eduDocumentReturnFocus=null;
 function showEduDocument(src,title){
@@ -263,7 +263,7 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
  }else if(s.scene==='S04'){
  let h='<div class="glass document document--'+e(s.s04Mode)+'">'+(['savedFinal','reviewFinal'].includes(s.s04Mode)?'<h1 class="s04-saved__page-title"><span class="s04-saved__title-icon" aria-hidden="true">▤</span><span>Инвестиционное предложение</span></h1>':'<h1>Инвестиционное предложение</h1>');
  if(s.s04Mode==='priority'){
-  h+='<p>Выбери основной приоритет инвестиционной программы. Это ориентир для анализа, а не условие допуска к формированию портфеля.</p><div class="choices">'+d.goals.map(x=>x.id==='quality'?btn((s.priority===x.id?'✓ ':'')+x.label,'priority',x.id,s.priority===x.id?'selected priority-quality':'priority-quality').replace('качества и устойчивости','качества<span class="priority-quality-break"> </span>и устойчивости'):btn((s.priority===x.id?'✓ ':'')+x.label,'priority',x.id,s.priority===x.id?'selected':'')).join('')+'</div>'+btn('Выбрать мероприятия','catalog','','primary');
+  h+='<p>Выбери основной приоритет инвестиционной программы. После выбора одного приоритета можно перейти к мероприятиям.</p><div class="choices">'+d.goals.map(x=>x.id==='quality'?btn((s.priority===x.id?'✓ ':'')+x.label,'priority',x.id,s.priority===x.id?'selected priority-quality':'priority-quality').replace('качества и устойчивости','качества<span class="priority-quality-break"> </span>и устойчивости'):btn((s.priority===x.id?'✓ ':'')+x.label,'priority',x.id,s.priority===x.id?'selected':'')).join('')+'</div>'+btn('Выбрать мероприятия','catalog','','primary',!d.goals.some(x=>x.id===s.priority));
  }else if(s.s04Mode==='catalog'){
    const spent=L.spent(s);
    h+='<div class="catalog-workspace"><div class="catalog-workspace__cards">'+window.CEH_INVESTMENT_CATALOG.render(s,d,e,btn)+'</div><aside class="catalog-workspace__summary" aria-label="Текущий инвестиционный портфель">';
@@ -393,8 +393,8 @@ function act(action,id){if(action==='eduToggleDocuments'&&s.scene==='S04'&&s.s04
  else if(action==='s03Ask'&&s.scene==='S03'&&s.s03Person===id&&s.s03QuestionMode==='speech'&&d.people.some(p=>p.id===id)){if(!s.s03Read.includes(id))s.s03Read.push(id);s.s03QuestionMode='answer';if(!s.asked03.includes(id))s.asked03.push(id)}
  else if(action==='closePerson'&&s.scene==='S03'&&s.s03Person){if(s.s03QuestionMode==='speech'&&id===s.s03Person&&!s.s03Read.includes(id))s.s03Read.push(id);s.s03Person=null;s.s03QuestionMode='speech'}
  else if(action==='s03Conclusion'&&s.scene==='S03'&&!s.s03Person&&s.s03Read.length===3)s.s03ConclusionSeen=true;
- else if(action==='priority')s.priority=id;
- else if(action==='catalog'){window.CEH_INVESTMENT_CATALOG.reset();s.s04Mode='catalog';s.showReview=false;s.finished=false;s.budgetMessage=''}
+ else if(action==='priority'&&s.scene==='S04'&&s.s04Mode==='priority'&&d.goals.some(x=>x.id===id))s.priority=id;
+ else if(action==='catalog'&&s.scene==='S04'&&(s.s04Mode==='catalog'||(s.s04Mode==='priority'&&d.goals.some(x=>x.id===s.priority)))){window.CEH_INVESTMENT_CATALOG.reset();s.s04Mode='catalog';s.showReview=false;s.finished=false;s.budgetMessage=''}
  else if(action==='catalogOpen'&&s.scene==='S04'&&s.s04Mode==='catalog'){window.CEH_INVESTMENT_CATALOG.open(id)}
  else if(action==='catalogClose'&&s.scene==='S04'&&s.s04Mode==='catalog'){window.CEH_INVESTMENT_CATALOG.close()}
  else if(action==='catalogPage'&&s.scene==='S04'&&s.s04Mode==='catalog'){window.CEH_INVESTMENT_CATALOG.changePage(id==='next'?1:-1)}
