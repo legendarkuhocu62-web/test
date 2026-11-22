@@ -78,6 +78,8 @@ function plan(s,A){
    if(!s.s03Person)add(mobile?'assets/optimized/backgrounds/CH1-IMG-022_S03_meeting_three_characters_mobile.webp':A.group);
    if(s.asked03?.length>=2)add(A.engineer);
  }else if(mode==='S04'){
+   // Warm the approved meeting backdrop while the player reviews the final portfolio.
+   if(s.s04Mode==='reviewFinal'||s.s04Mode==='savedFinal')add(A.meeting);
    add(A.engineer);
    if(s.s04Mode==='eduIntro'||s.s04Mode==='edu')add('assets/edu01/schema-ek-v20-01.jpg','assets/edu01/act-ns-008-26.jpg');
    if(s.s04Mode==='catalog'){
