@@ -143,7 +143,7 @@ function renderS08(s,data){
 function render(s,data,bg,frame,chapterDialogue,portrait){
  if(s.scene==='S06'&&!s.s06IntroSeen){
   const message=(s.name?s.name+', ':'')+'вот данные по заказу З-214. Нам нужно разобраться, насколько серьёзно отклонение от графика и что действительно известно о ситуации. Изучи документы и подготовь оперативное заключение.';
-  const content=chapterDialogue('S06:intro:gromov','Андрей Громов','Участник инвесткомитета',message,portrait,button('Изучить документы заказа','s06ReadDocs','',true));
+  const content=chapterDialogue('S06:intro:gromov','Андрей Громов','Начальник производства',message,portrait,button('Изучить документы заказа','s06ReadDocs','',true));
   return frame(bg,content,'dialogue-stage dialogue-stage--shop');
  }
  const content=s.scene==='S06'?renderS06(s):s.scene==='S07'?renderS07(s):renderS08(s,data);
