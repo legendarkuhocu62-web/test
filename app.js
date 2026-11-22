@@ -249,7 +249,7 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
      isAnswer?'S03:answer:'+p.id:'S03:speech:'+p.id,
      p.name,p.role,isAnswer?p.reply:p.speech,A[p.id],
      isAnswer?btn('К специалистам','closePerson',p.id,'primary'):
-       (btn(p.question,'s03Ask',p.id,'primary')+btn('К специалистам','closePerson',p.id,''))
+       (btn(p.question,'s03Ask',p.id,'primary').replace(e(p.question),'<span class="s03-question-first">'+e(({andrey:'Что вы думаете',irina:'Что важно проверить',marina:'Что важно для'})[p.id]||p.question)+'</span> <span class="s03-question-second">'+e(({andrey:'об оборудовании?',irina:'в потерях?',marina:'бюджета?'})[p.id]||'')+'</span>')+btn('К специалистам','closePerson',p.id,''))
    );
    html=frame(A.meeting,content,'dialogue-stage dialogue-stage--meeting');
  }else{
