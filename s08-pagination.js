@@ -33,7 +33,7 @@
  function semanticSentences(source){
   const value=clean(source);
   if(!value)return [];
-  return value.replace(/([.!?])\s+(?=[А-ЯЁ«])/gu,'$1\n').split('\n').filter(Boolean);
+  return value.replace(/([.!?])\s+(?=(?:[А-ЯЁ«]|[A-M] «))/gu,'$1\n').split('\n').filter(Boolean);
  }
  const stages=[
   ['С чего началось','Что ты изменил','К чему это может привести'],
