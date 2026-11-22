@@ -61,6 +61,7 @@ jobs:
           node tests/dialogue-fill-panel.test.js
           node tests/dialogue-all-content.test.js
           node tests/dialogue-question-pages.test.js
+          node tests/s03-mobile-question-buttons.test.js
           node tests/edu01-reference-flow.test.js
           node tests/gromov-character-dialogue.test.js
           node tests/s05-dialogue-mobile-layout.test.js
