@@ -56,6 +56,7 @@ jobs:
           node tests/restart-confirmation.test.js
           node tests/badge-name-dialog.test.js
           node tests/investment-card-modal.test.js
+          node tests/s04-priority-one-choice.test.js
           node tests/dialogue-fixed-frame.test.js
           node tests/dialogue-fill-panel.test.js
           node tests/dialogue-all-content.test.js
