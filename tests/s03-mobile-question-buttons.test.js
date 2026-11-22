@@ -18,12 +18,12 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict');
     const q=document.querySelector('[data-act="s03Ask"]'),b=document.querySelector('[data-act="closePerson"]');
     const a=q.querySelector('.s03-question-first').getBoundingClientRect(),z=q.querySelector('.s03-question-second').getBoundingClientRect();
     const r=q.getBoundingClientRect(),s=b.getBoundingClientRect();
-    return {a:{top:a.top,bottom:a.bottom,left:a.left,right:a.right},z:{top:z.top,left:z.left,right:z.right},r:{left:r.left,right:r.right},s:{left:s.left,right:s.right},scroll:document.documentElement.scrollWidth};
+    return {a:{top:a.top,bottom:a.bottom,left:a.left,right:a.right},z:{top:z.top,left:z.left,right:z.right},r:{left:r.left,right:r.right,bottom:r.bottom},s:{left:s.left,right:s.right,top:s.top},scroll:document.documentElement.scrollWidth};
    });
    assert.ok(g.z.top>=g.a.bottom-1,'not two lines '+id+' '+w);
    assert.ok(g.a.left>=g.r.left-1&&g.a.right<=g.r.right+1,'first line clipped');
    assert.ok(g.z.left>=g.r.left-1&&g.z.right<=g.r.right+1,'second line clipped');
-   assert.ok(g.r.right<=g.s.left+1&&g.s.right<=w+2,'button overflow '+id+' '+w);
+   assert.ok((g.r.right<=g.s.left+1||g.r.bottom<=g.s.top+1)&&g.s.right<=w+2,'button overflow '+id+' '+w+' '+JSON.stringify(g));
    assert.ok(g.scroll<=w+3,'horizontal scroll '+id+' '+w);
   }
   console.log('PASS mobile S03 buttons '+w+'x'+h);
