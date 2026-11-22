@@ -44,7 +44,7 @@
  // The footer, navigation, heading and safe-area padding are reserved before packing.
  function heightBudget(width,height,report){
   const w=Number(width)||390,h=Number(height)||844;
-  return Math.max(report?148:128,h-(report?(w<=720?280:205):(w<=720?364:288)));
+  return Math.max(report?148:128,h-(report?(w<=720?345:205):(w<=720?364:288)));
  }
  function estimate(text,width,report){
   const w=Number(width)||390;
