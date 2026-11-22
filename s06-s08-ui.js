@@ -102,10 +102,15 @@ function renderS08(s,data){
   const page=pages[index];
   h+='<div class="order-kicker">ЭФФЕКТ ДОМИНО · ПОСЛЕДСТВИЯ РЕШЕНИЙ</div><h1>Последствия твоих решений</h1>';
   h+='<div class="s08-chain"><div class="s08-chain-head"><h2>'+e(page.title)+'</h2><span class="s08-page">'+(index+1)+' / '+pages.length+'</span></div>';
-  h+='<article class="s08-paged-card" aria-label="'+e(page.stage)+'"><span class="s08-page-stage">'+e(page.stage)+'</span>';
+  const multiNarrative=(page.type==='statement'||page.type==='edu')&&Array.isArray(page.blocks)&&page.blocks.length>1;
+  h+='<article class="s08-paged-card" aria-label="'+e(page.stage)+'"><span class="s08-page-stage">'+e(multiNarrative?'Этапы решения':page.stage)+'</span>';
   if(page.label)h+='<small class="s08-page-part">'+e(page.label)+'</small>';
   if(page.type==='statement'||page.type==='edu'){
-   h+='<p class="s08-story-text">'+e(page.text)+'</p>';
+   if(multiNarrative){
+    h+='<div class="s08-narrative-list">'+page.blocks.map(b=>
+     '<section class="s08-narrative-entry"><h3>'+e(b.stage)+'</h3><p class="s08-story-text">'+e(b.text)+'</p></section>'
+    ).join('')+'</div>';
+   }else h+='<p class="s08-story-text">'+e(page.text)+'</p>';
   }else if(page.type==='initiative'){
    const x=page.item;
    h+='<h3>'+e(x.id)+' · '+e(x.title)+' <small>'+e(x.cost)+' млн у.е.</small></h3>'+
@@ -129,9 +134,14 @@ function renderS08(s,data){
    const item=reportPages[reportIndex];
    h+='<div class="s08-report-overlay"><section class="s08-report-modal" role="dialog" aria-modal="true" aria-label="Подробный отчёт" tabindex="-1">'+
     '<div class="s08-report-head"><h2>Подробный отчёт</h2>'+button('Закрыть','s08ReportClose')+'</div>'+
-    '<article class="s08-report-page" aria-label="'+e(item.title)+'"><span class="s08-report-counter">Раздел '+item.section+' из '+report.length+' · Страница '+(reportIndex+1)+' из '+reportPages.length+'</span>'+
-    '<h3>'+e(item.title)+'</h3>'+(item.partTotal>1?'<small>Часть '+item.part+' из '+item.partTotal+'</small>':'')+
-    '<p>'+e(item.text)+'</p></article>'+
+    '<article class="s08-report-page" aria-label="'+e(item.title)+'"><span class="s08-report-counter">'+
+    (item.entries.length>1?'Разделы '+item.entries[0].section+'–'+item.entries[item.entries.length-1].section+' из '+report.length:'Раздел '+item.section+' из '+report.length)+
+    ' · Страница '+(reportIndex+1)+' из '+reportPages.length+'</span>'+
+    '<div class="s08-report-sections">'+item.entries.map(part=>
+     '<section class="s08-report-section"><h3>'+e(part.title)+'</h3>'+
+     (part.partTotal>1?'<small>Часть '+part.part+' из '+part.partTotal+'</small>':'')+
+     '<p>'+e(part.text)+'</p></section>'
+    ).join('')+'</div></article>'+
     '<nav class="s08-report-nav" aria-label="Страницы подробного отчёта">'+
     button('Назад','s08ReportGo',String(reportIndex-1),false,reportIndex===0)+
     button('Далее','s08ReportGo',String(reportIndex+1),false,reportIndex===reportPages.length-1)+

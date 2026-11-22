@@ -742,3 +742,72 @@ body:has(#app .s08-screen) #app>.reset .btn{
   line-height:1.25;
  }
 }
+
+
+/* Narrow short phones: recover a few ornamental pixels without shrinking words. */
+@media(min-width:351px) and (max-width:430px) and (max-height:700px){
+ #app .s08-paged-card{padding-top:6px;padding-bottom:6px}
+}
+
+/* Tiny phones: keep each initiative's complete condition/risk/limitation together.
+   Inline field labels save space without smaller text or removing any field. */
+@media(max-width:350px) and (max-height:620px){
+ #app .s08-paged-card:has(.s08-initiative-fields){padding:3px 6px}
+ #app .s08-paged-card:has(.s08-initiative-fields) .s08-page-stage{
+  margin-bottom:3px;font-size:11px;
+ }
+ #app .s08-paged-card:has(.s08-initiative-fields) h3{
+  margin-bottom:4px;font-size:14px;line-height:1.16;
+ }
+ #app .s08-initiative-fields{gap:2px}
+ #app .s08-initiative-fields>div{
+  display:block;padding:3px 5px;line-height:1.22;
+ }
+ #app .s08-initiative-fields strong{
+  display:inline;font-size:12px;line-height:1.22;margin:0 5px 0 0;
+ }
+ #app .s08-initiative-fields p{
+  display:inline;font-size:12px;line-height:1.22;
+ }
+}
+
+/* The 320x568 viewport has little vertical room after the safe restart footer.
+   Compress repeated chrome only on S08 initiative pages; keep readable content. */
+@media(max-width:350px) and (max-height:620px){
+ #app .s08-screen[data-s08-view="causes"]:has(.s08-initiative-fields){
+  gap:2px;padding:4px;
+ }
+ #app .s08-screen[data-s08-view="causes"]:has(.s08-initiative-fields)>.order-kicker{
+  padding:2px 6px;line-height:1.1;
+ }
+ #app .s08-screen[data-s08-view="causes"]:has(.s08-initiative-fields)>h1{
+  font-size:18px;line-height:1.04;
+ }
+ #app .s08-screen:has(.s08-initiative-fields) .s08-chain{padding:3px}
+ #app .s08-screen:has(.s08-initiative-fields) .s08-chain-head{
+  padding-bottom:3px;
+ }
+ #app .s08-screen:has(.s08-initiative-fields) .s08-page{
+  padding:2px 5px;
+ }
+}
+
+/* S08 semantic pages: complete decisions grouped with explicit headings. */
+#app .s08-narrative-list,#app .s08-report-sections{
+ display:grid;align-content:start;min-height:0;
+ gap:clamp(7px,1.3vh,13px);
+}
+#app .s08-narrative-entry,#app .s08-report-section{min-width:0}
+#app .s08-narrative-entry h3{
+ margin:0 0 3px;color:#ffcd7c;
+ font-size:clamp(13px,1.22vw,16px);line-height:1.25;
+}
+#app .s08-narrative-entry p.s08-story-text{margin:0}
+#app .s08-report-section h3{margin:0 0 5px}
+#app .s08-report-section small{display:block;margin:0 0 5px}
+#app .s08-report-section p{margin:0}
+@media(max-width:720px){
+ #app .s08-narrative-list,#app .s08-report-sections{gap:clamp(5px,1vh,9px)}
+ #app .s08-narrative-entry h3{font-size:13px;margin-bottom:2px}
+ #app .s08-report-section h3{font-size:14px;line-height:1.2;margin-bottom:3px}
+}
