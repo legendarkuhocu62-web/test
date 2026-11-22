@@ -573,7 +573,7 @@ body:has(#app .s08-screen) #app>.reset .btn{
 }
 #app .s08-paged-card{
   box-sizing:border-box;min-height:0;min-width:0;flex:1 1 auto;
-  display:flex;flex-direction:column;justify-content:center;align-items:stretch;
+  display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch;
   overflow:hidden;padding:clamp(10px,2vw,20px);
   border:1px solid #587d9a;border-radius:11px;
   background:linear-gradient(145deg,#1d3e5a,#10273f);
@@ -635,7 +635,7 @@ body:has(#app .s08-screen) #app>.reset .btn{
 #app .s08-report-head{margin:0;min-height:48px}
 #app .s08-report-page{
   min-height:0;flex:1 1 auto;display:flex;flex-direction:column;
-  justify-content:center;overflow:hidden;
+  justify-content:flex-start;overflow:hidden;
   padding:clamp(10px,1.6vw,21px);
   background:#17364f;border:1px solid #6688a4;border-radius:11px;
 }
