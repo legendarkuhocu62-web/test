@@ -131,3 +131,14 @@ test('Semantic pages reduce clicks for a typical two-measure portfolio',()=>{
  assert.ok(report.length>=4&&report.length<=13,'Report must be grouped; got '+report.length);
  assert.equal(new Set(report.flatMap(x=>x.entries.map(e=>e.section))).size,8);
 });
+
+
+test('Long portfolios keep no more than four initiative-list items per causes page',()=>{
+ const s=state(data.initiatives.map(x=>x.id));
+ const vm=M.buildS08ViewModel(s.s0608,history(s));
+ const pages=P.causes(vm,430,932);
+ for(const page of pages.filter(x=>x.type==='statement')){
+  const markers=(page.text.match(/\b[A-M] «/g)||[]).length;
+  assert.ok(markers<=4,'too many comma-list initiatives on one page: '+markers);
+ }
+});
