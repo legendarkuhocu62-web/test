@@ -744,6 +744,11 @@ body:has(#app .s08-screen) #app>.reset .btn{
 }
 
 
+/* Narrow short phones: recover a few ornamental pixels without shrinking words. */
+@media(min-width:351px) and (max-width:430px) and (max-height:700px){
+ #app .s08-paged-card{padding-top:6px;padding-bottom:6px}
+}
+
 /* S08 semantic pages: complete decisions grouped with explicit headings. */
 #app .s08-narrative-list,#app .s08-report-sections{
  display:grid;align-content:start;min-height:0;
