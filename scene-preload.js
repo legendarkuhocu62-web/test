@@ -89,6 +89,10 @@ function plan(s,A){
      const entries=catalog?.visibleIds?.()||[];
      for(const id of entries)add('assets/investments/CH1-VA-'+id+'-001.png');
    }
+ }else if(mode==='S05'){
+   // S06 shop background is large; begin its request during the committee scene.
+   // Keep the approved original image and all rendering unchanged.
+   add(A.shop);
  }
  return [...new Set(files)];
 }
