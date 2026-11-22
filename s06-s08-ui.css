@@ -698,6 +698,13 @@ body:has(#app .s08-screen) #app>.reset .btn{
 }
 
 
+/* On 320x568, preserve the complete S08 paragraph after reserving a 44px
+   restart touch target. Recover 8px of vertical space from ornamental card padding,
+   not from text size or content. Other viewport sizes are untouched. */
+@media(max-width:350px) and (max-height:620px){
+ #app .s08-paged-card{padding-top:4px;padding-bottom:4px}
+}
+
 /* 23.11 · Mobile reset control: remain in document flow; protect Safari's bottom
    browser UI and touch target without overlaying the last content panel. */
 @media(max-width:720px){
