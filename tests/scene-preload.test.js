@@ -14,14 +14,18 @@ const KEY='ceh404.rebuilt.qa50.20261108';
      {scene:'S01',s01:0,name:'Анна'},
      {scene:'S02',s02Step:'intro',name:'Анна'},
      {scene:'S03',name:'Анна',s03Person:null,asked03:[]},
-     {scene:'S04',s04Mode:'eduIntro',name:'Анна'}
+     {scene:'S04',s04Mode:'eduIntro',name:'Анна'},
+     {scene:'S05',s05Phase:'committee',name:'Анна'},
+     {scene:'S05',s05Phase:'notice3',committeeDecision:'stage',name:'Анна'}
    ];
    const expectations=[
      'Внешняя проходная.webp',
      'irina_focused.webp',
      'production-report-'+(width<=720?'mobile':'desktop')+'.webp',
      width<=720?'S03_meeting_three_characters_mobile.webp':'Переговорная_без_персонажей.jpeg',
-     'act-ns-008-26.jpg'
+     'act-ns-008-26.jpg',
+     'Производственный цех.png',
+     'Производственный цех.png'
    ];
    for(let i=0;i<scenarios.length;i++){
       const state=scenarios[i];
