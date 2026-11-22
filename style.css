@@ -1327,6 +1327,19 @@ body.dialogue-mode-active #app .game-dialogue--scene .dialogue-control{
    line-height:1.25;
  }
 }
+/* S03 mobile specialist choices: keep the approved phrase breaks and visible return action. */
+@media(max-width:720px){
+ #app .dialogue-stage--meeting .game-dialogue__actions [data-act="s03Ask"]{
+   flex:1 1 auto;min-width:0;hyphens:none;overflow-wrap:normal;word-break:normal;
+ }
+ #app .dialogue-stage--meeting .game-dialogue__actions [data-act="s03Ask"] .s03-question-first,
+ #app .dialogue-stage--meeting .game-dialogue__actions [data-act="s03Ask"] .s03-question-second{
+   display:block;white-space:nowrap;
+ }
+ #app .dialogue-stage--meeting .game-dialogue__actions [data-act="closePerson"]{
+   flex:0 0 auto;white-space:nowrap;hyphens:none;overflow-wrap:normal;word-break:normal;
+ }
+}
 @media(max-width:720px) and (max-height:700px){
  body.dialogue-mode-active #app .game-dialogue--scene .dialogue-counter{display:none}
 }
