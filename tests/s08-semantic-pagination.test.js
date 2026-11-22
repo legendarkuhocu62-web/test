@@ -37,7 +37,10 @@ const key='ceh404.rebuilt.qa50.20261108';
      return {over:card.scrollHeight-card.clientHeight,
       doc:document.documentElement.scrollHeight-innerHeight,
       wide:document.documentElement.scrollWidth-innerWidth,
-      navBottom:nav.getBoundingClientRect().bottom};
+      navBottom:nav.getBoundingClientRect().bottom,
+      label:card.querySelector('.s08-page-stage')?.textContent,
+      heading:card.querySelector('h3')?.textContent,
+      body:card.innerText.slice(0,500)};
     });
     assert.ok(info.over<=3,'causes text clipped '+width+' step '+(i+1)+'/'+n+' '+JSON.stringify(info));
     assert.ok(info.doc<=3&&info.wide<=3,'unwanted page scroll at '+width+' '+JSON.stringify(info));
