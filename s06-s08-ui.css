@@ -742,3 +742,24 @@ body:has(#app .s08-screen) #app>.reset .btn{
   line-height:1.25;
  }
 }
+
+
+/* S08 semantic pages: complete decisions grouped with explicit headings. */
+#app .s08-narrative-list,#app .s08-report-sections{
+ display:grid;align-content:start;min-height:0;
+ gap:clamp(7px,1.3vh,13px);
+}
+#app .s08-narrative-entry,#app .s08-report-section{min-width:0}
+#app .s08-narrative-entry h3{
+ margin:0 0 3px;color:#ffcd7c;
+ font-size:clamp(13px,1.22vw,16px);line-height:1.25;
+}
+#app .s08-narrative-entry p.s08-story-text{margin:0}
+#app .s08-report-section h3{margin:0 0 5px}
+#app .s08-report-section small{display:block;margin:0 0 5px}
+#app .s08-report-section p{margin:0}
+@media(max-width:720px){
+ #app .s08-narrative-list,#app .s08-report-sections{gap:clamp(5px,1vh,9px)}
+ #app .s08-narrative-entry h3{font-size:13px;margin-bottom:2px}
+ #app .s08-report-section h3{font-size:14px;line-height:1.2;margin-bottom:3px}
+}
