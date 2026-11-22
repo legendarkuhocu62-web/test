@@ -62,6 +62,42 @@ function renderS07(s){
  }
  return h+'</div>';
 }
+/* S08 F6: measure the three mobile summary cards before choosing a layout.
+   Approved text, saved game state and desktop presentation are unchanged. */
+function fitS08Summary(){
+ const screen=document.querySelector('#app .s08-screen[data-s08-view="summary"]');
+ if(!screen)return;
+ const grid=screen.querySelector('.s08-summary-grid'),nav=screen.querySelector('.s08-summary-nav');
+ const cards=grid?[...grid.querySelectorAll('.s08-summary-card')]:[];
+ if(!grid||!nav||cards.length!==3)return;
+ if(window.innerWidth>720){
+  delete screen.dataset.s08SummaryLayout;
+  delete screen.dataset.s08SummaryPage;
+  return;
+ }
+ screen.dataset.s08SummaryLayout='probe';
+ const gap=Number.parseFloat(getComputedStyle(grid).rowGap)||8;
+ const heights=cards.map(card=>Math.max(card.scrollHeight,card.getBoundingClientRect().height));
+ const available=grid.clientHeight;
+ const navHeight=nav.getBoundingClientRect().height;
+ let layout='single';
+ if(heights.reduce((sum,v)=>sum+v,0)+2*gap<=available+navHeight-10){
+  layout='all';
+ }else if(Math.max(heights[0]+heights[1]+gap,heights[2])<=available-8){
+  layout='pair';
+ }
+ screen.dataset.s08SummaryLayout=layout;
+ const selected=Number(grid.dataset.summaryIndex)||0;
+ const page=layout==='pair'&&selected>=2?1:0;
+ screen.dataset.s08SummaryPage=String(page);
+ const buttons=[...nav.querySelectorAll('[data-act="s08SummaryGo"]')];
+ const status=nav.querySelector('span');
+ if(layout==='pair'&&buttons.length===2){
+  buttons[0].dataset.id='0';buttons[0].disabled=page===0;
+  buttons[1].dataset.id='2';buttons[1].disabled=page===1;
+  if(status)status.textContent=page===0?'Карточки 1–2 из 3':'Карточка 3 из 3';
+ }
+}
 function renderS08(s,data){
  // Two approved final screens. Each screen has self-contained pages instead of scrolling.
  const history={
@@ -87,7 +123,7 @@ function renderS08(s,data){
   const index=Number.isInteger(s.s08SummaryPage)?Math.max(0,Math.min(model.summary.length-1,s.s08SummaryPage)):0;
   h+='<div class="order-kicker">ЭФФЕКТ ДОМИНО · ТВОЙ ИТОГ</div><h1>Твой итог</h1>';
   h+='<p class="s08-intro">'+(s.name?'Игрок: '+e(s.name)+'. ':'')+'Что ты предложил и какие выводы проверил по документам.</p>';
-  h+='<div class="s08-summary-grid">'+model.summary.map((x,i)=>
+  h+='<div class="s08-summary-grid" data-summary-index="'+index+'">'+model.summary.map((x,i)=>
    '<section class="s08-summary-card" data-s08-selected="'+(i===index?'yes':'no')+'" aria-label="'+e(x.title)+'"><span class="s08-step">'+(i+1)+'</span><div><h2>'+e(x.title)+'</h2><p>'+e(x.text)+'</p></div></section>'
   ).join('')+'</div>';
   h+='<nav class="s08-summary-nav" aria-label="Карточки твоего итога">'+
@@ -95,6 +131,7 @@ function renderS08(s,data){
    '<span>Карточка '+(index+1)+' из '+model.summary.length+'</span>'+
    button('Далее','s08SummaryGo',String(index+1),false,index===model.summary.length-1)+'</nav>';
   h+='<div class="s08-footer">'+button('Посмотреть последствия решений','s08ShowCauses','',true)+'</div>';
+  if(typeof requestAnimationFrame==='function')requestAnimationFrame(fitS08Summary);
  }else{
   const width=window.innerWidth||390,height=window.innerHeight||844;
   const pages=P.causes(model,width,height);
@@ -159,5 +196,6 @@ function render(s,data,bg,frame,chapterDialogue,portrait){
  const content=s.scene==='S06'?renderS06(s):s.scene==='S07'?renderS07(s):renderS08(s,data);
  return frame(bg,content,'order-stage');
 }
-window.CEH_ORDER_UI={render};
+window.CEH_ORDER_UI={render,fitS08Summary};
+if(typeof window.addEventListener==='function'&&typeof requestAnimationFrame==='function')window.addEventListener('resize',()=>requestAnimationFrame(fitS08Summary));
 })();

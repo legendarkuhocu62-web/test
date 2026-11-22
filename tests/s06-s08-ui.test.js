@@ -127,10 +127,22 @@ async function assertS08NoScroll(page,where){
   assert.equal(await page.locator('.s08-summary-card').count(),3);
   await assertS08NoScroll(page,'summary '+width+'x'+height);
   if(width<=720){
-   assert.equal(await page.locator('.s08-summary-card:visible').count(),1);
-   for(let k=1;k<3;k++){
+   await page.waitForFunction(()=>['all','pair','single'].includes(document.querySelector('.s08-screen')?.dataset.s08SummaryLayout));
+   const layout=await page.locator('.s08-screen').getAttribute('data-s08-summary-layout');
+   if(layout==='all'){
+    assert.equal(await page.locator('.s08-summary-card:visible').count(),3);
+   }else if(layout==='pair'){
+    assert.equal(await page.locator('.s08-summary-card:visible').count(),2);
     await page.locator('.s08-summary-nav [data-act="s08SummaryGo"]').nth(1).click();
-    await assertS08NoScroll(page,'summary card '+(k+1)+' '+width+'x'+height);
+    await page.waitForFunction(()=>document.querySelector('.s08-screen')?.dataset.s08SummaryPage==='1');
+    assert.equal(await page.locator('.s08-summary-card:visible').count(),1);
+    await assertS08NoScroll(page,'summary second pair '+width+'x'+height);
+   }else{
+    assert.equal(await page.locator('.s08-summary-card:visible').count(),1);
+    for(let k=1;k<3;k++){
+     await page.locator('.s08-summary-nav [data-act="s08SummaryGo"]').nth(1).click();
+     await assertS08NoScroll(page,'summary card '+(k+1)+' '+width+'x'+height);
+    }
    }
   }
   await page.screenshot({path:'tests/screenshot-s08-summary-'+width+'x'+height+'.png'});

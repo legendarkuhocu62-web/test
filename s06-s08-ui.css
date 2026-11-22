@@ -811,3 +811,33 @@ body:has(#app .s08-screen) #app>.reset .btn{
  #app .s08-narrative-entry h3{font-size:13px;margin-bottom:2px}
  #app .s08-report-section h3{font-size:14px;line-height:1.2;margin-bottom:3px}
 }
+
+
+/* S08 F6 · Compact mobile summary, selected by measured natural card heights.
+   Desktop layout unchanged. Never force an overflowing group into the screen. */
+@media(max-width:720px){
+ #app .s08-screen:is([data-s08-summary-layout="probe"],[data-s08-summary-layout="all"],[data-s08-summary-layout="pair"]) .s08-summary-grid{
+  grid-template-columns:minmax(0,1fr);
+  grid-template-rows:repeat(3,max-content);
+  gap:8px;align-content:start;min-height:0;
+ }
+ #app .s08-screen[data-s08-summary-layout="pair"] .s08-summary-grid{
+  grid-template-rows:repeat(2,max-content);
+ }
+ #app .s08-screen:is([data-s08-summary-layout="probe"],[data-s08-summary-layout="all"],[data-s08-summary-layout="pair"]) .s08-summary-card{
+  align-items:flex-start;padding:9px 10px;gap:8px;min-height:0;
+ }
+ #app .s08-screen:is([data-s08-summary-layout="probe"],[data-s08-summary-layout="all"]) .s08-summary-card{
+  display:flex;
+ }
+ #app .s08-screen[data-s08-summary-layout="pair"] .s08-summary-card{display:none}
+ #app .s08-screen[data-s08-summary-layout="pair"][data-s08-summary-page="0"] .s08-summary-card:nth-child(-n+2){display:flex}
+ #app .s08-screen[data-s08-summary-layout="pair"][data-s08-summary-page="1"] .s08-summary-card:nth-child(3){display:flex}
+ #app .s08-screen:is([data-s08-summary-layout="probe"],[data-s08-summary-layout="all"],[data-s08-summary-layout="pair"]) .s08-summary-card h2{
+  font-size:clamp(14px,3.8vw,16px);line-height:1.24;margin-bottom:4px;
+ }
+ #app .s08-screen:is([data-s08-summary-layout="probe"],[data-s08-summary-layout="all"],[data-s08-summary-layout="pair"]) .s08-summary-card p{
+  font-size:clamp(13px,3.55vw,15px);line-height:1.32;
+ }
+ #app .s08-screen[data-s08-summary-layout="all"] .s08-summary-nav{display:none}
+}
