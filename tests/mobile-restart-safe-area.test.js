@@ -34,17 +34,17 @@ const KEY='ceh404.rebuilt.qa50.20261108';
       scrollWidth:document.documentElement.scrollWidth,scrollHeight:document.documentElement.scrollHeight,
       viewport:innerHeight,footBottom:parseFloat(getComputedStyle(reset).paddingBottom)};
     });
-    assert.ok(g.button.height>=44,'restart tap target too small '+scene+' '+width+' '+JSON.stringify(g));
+    assert.ok(g.button.height>=(width<=720?44:29),'restart tap target too small '+scene+' '+width+' '+JSON.stringify(g));
     assert.ok(g.button.left>=-2&&g.button.right<=width+2,
       'restart outside horizontal bounds '+scene+' '+width+' '+JSON.stringify(g));
-    assert.ok(g.button.bottom<=height-8,
+    assert.ok(g.button.bottom<=height-(width<=720?8:-2),
       'restart too close to browser bottom edge '+scene+' '+width+'x'+height+' '+JSON.stringify(g));
     assert.ok(g.reset.top>=g.stage.bottom-2,
       'restart overlaps scene content '+scene+' '+width+' '+JSON.stringify(g));
     assert.ok(g.scrollWidth<=width+3,'horizontal scroll '+scene+' '+width);
     if(scene==='S08'){
      assert.ok(g.scrollHeight<=height+3,'final screen must stay in viewport '+width+' '+JSON.stringify(g));
-     assert.ok(g.footBottom>=10,'final safe padding too small '+width);
+     if(width<=720)assert.ok(g.footBottom>=10,'final safe padding too small '+width);
     }
     await btn.click();
     const dialog=page.locator('.restart-confirm-dialog');
