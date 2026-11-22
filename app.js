@@ -360,7 +360,7 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
    const n=Math.max(0,Math.min(3,Number(s.s05Phase.replace('notice',''))||0));
    const notice='<aside class="s05-tablet-notice" aria-label="Уведомление на планшете Андрея Громова"><div class="s05-tablet-notice__heading"><span class="s05-tablet-notice__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 21h20L12 3Z"/><path d="M12 9v5M12 17h.01"/></svg></span><strong>Производственное уведомление</strong></div><div class="s05-tablet-notice__meta"><time datetime="2026-11-11T12:00">11.11.2026 · 12:00</time><span class="s05-tablet-notice__order">Заказ З-214</span></div><p><span class="s05-tablet-notice__alert">Обнаружено отклонение от графика:</span> шлифование заказа З-214 не началось в запланированное время. Требуется уточнить ситуацию на производственном участке.</p></aside>';
    const text='Коллеги, на мой планшет только что пришло сообщение с производства. По заказу З-214 возникло отклонение от графика. Предлагаю прерваться и разобраться, что происходит на участке.';
-   const dialogue=chapterDialogue('S05:notice:gromov','Андрей Громов','Участник инвесткомитета',text,A.andrey,btn('Перейти на производственный участок','s05ToS06','','primary'));
+   const dialogue=chapterDialogue('S05:notice:gromov','Андрей Громов','Начальник производства',text,A.andrey,btn('Перейти на производственный участок','s05ToS06','','primary'));
    // Separate compact top notification; dialogue stays intact below Gromov.
    html=frame(A.meeting,notice+dialogue,'dialogue-stage dialogue-stage--meeting s05-notice-scene');
   }else html=frame(A.meeting,h+'</div>','investment-scene');
