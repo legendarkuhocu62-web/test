@@ -81,7 +81,9 @@
    if(combine)candidate[candidate.length-1].text+=' '+sentence;
    else candidate.push({...item,text:sentence});
    const sections=new Set(candidate.map(x=>x.section)).size;
-   if(current.length&&(pageCost(candidate,width,report)>budget||sections>maxSections)){
+   // A long portfolio is a semantic list: do not crowd all A–M labels onto one card.
+   const markers=(candidate.map(x=>x.text).join(' ').match(/\b[A-M] «/g)||[]).length;
+   if(current.length&&(pageCost(candidate,width,report)>budget||sections>maxSections||markers>(report?2:4))){
     flush();
     current.push({...item,text:sentence});
    }else{
