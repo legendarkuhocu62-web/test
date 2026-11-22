@@ -156,6 +156,16 @@ function renderS08(s,data){
     '<div><strong>Какой риск</strong><p>'+e(x.risks)+'</p></div>'+
     '<div><strong>Не решает автоматически</strong><p>'+e(x.not)+'</p></div>'+
     '</div>';
+  }else if(page.type==='initiativeGroup'){
+   h+='<div class="s08-initiative-group">'+page.items.map(x=>
+    '<section class="s08-initiative-compact" aria-label="Мероприятие '+e(x.id)+'">'+
+    '<h3>'+e(x.id)+' · '+e(x.title)+' <small>'+e(x.cost)+' млн у.е.</small></h3>'+
+    '<div class="s08-initiative-fields">'+
+    '<div><strong>Когда может помочь</strong><p>'+e(x.conditions)+'</p></div>'+
+    '<div><strong>Какой риск</strong><p>'+e(x.risks)+'</p></div>'+
+    '<div><strong>Не решает автоматически</strong><p>'+e(x.not)+'</p></div>'+
+    '</div></section>'
+   ).join('')+'</div>';
   }else if(page.type==='takeaway'){
    h+='<ul class="s08-takeaway-list">'+page.items.map(x=>'<li>'+e(x)+'</li>').join('')+'</ul>';
   }
