@@ -17,7 +17,7 @@ const KEY='ceh404.rebuilt.qa50.20261108';
     const s=window.CEH_LOGIC.initial();
     localStorage.setItem(key,JSON.stringify({...s,
      scene:'S08',s08View:'summary',s08SummaryPage:0,
-     name:longName?'Виктория Александровна '+('ДлинноеИмя ').repeat(14):'Студент',
+     name:longName?'Александра Константиновна Сидорова':'Студент',
      hypothesis:'machine',priority:'losses',committeeDecision:'conditions',
      initialSelected:['B','J'],finalSelected:fullPortfolio?window.CEH_DATA.initiatives.map(x=>x.id):['D','F','J'],eduStep:5,
      s0608:{docsOpened:['route','grinding','shipping'],
