@@ -45,7 +45,7 @@ test('Three causal chains + four EDU-01 explanations + final takeaway are comple
  const s=state(['D','F','J']), vm=M.buildS08ViewModel(s.s0608,history(s));
  const pages=P.causes(vm,320,568);
  assert.deepEqual([...new Set(pages.filter(x=>x.type==='statement').map(x=>x.section))],[1,2,3]);
- assert.equal(pages.filter(x=>x.type==='edu').length,4);
+ assert.equal(new Set(pages.filter(x=>x.type==='edu').flatMap(x=>x.blocks.map(b=>b.stage))).size,4);
  assert.equal(pages.filter(x=>x.type==='takeaway').length,1);
  const final=display({...s,s08PageIndex:pages.length-1});
  assert.match(final,/Главное, что стоит запомнить/);
@@ -60,7 +60,7 @@ test('Teacher report keeps all 8 sections, paginates rather than scrolling',()=>
  const sections=M.buildS08(s.s0608,history(s)),pages=P.report(sections,320,568);
  assert.equal(sections.length,8);assert.ok(pages.length>8);
  for(const [i,section] of sections.entries()){
-  const text=pages.filter(x=>x.section===i+1).map(x=>x.text).join(' ');
+  const text=pages.flatMap(x=>x.entries).filter(x=>x.section===i+1).map(x=>x.text).join(' ');
   assert.equal(text,section.body.replace(/\s+/g,' ').trim(),'Section '+(i+1)+' text lost');
  }
  const html=display({...s,s08ReportOpen:true,s08ReportPage:pages.length-1});
@@ -86,4 +86,36 @@ test('No pagination CSS scroll traps or accidental global overflow',()=>{
  assert.match(css,/S08 · Page-by-page reading/);
  assert.match(css,/body:has\(#app \.s08-screen\)\{height:100dvh;overflow:hidden\}/);
  assert.match(css,/#app \.s08-report-page\{[\s\S]*?overflow:hidden/);
+});
+
+
+test('Semantic pages keep the original chain paragraphs and EDU-01 task text exactly',()=>{
+ const s=state(['D','F','J']);
+ const vm=M.buildS08ViewModel(s.s0608,history(s));
+ for(const [i,chain] of vm.chains.entries()){
+  const blocks=P.causes(vm,390,844).filter(x=>x.type==='statement'&&x.section===i+1)
+   .flatMap(x=>x.blocks||[{text:x.text}]);
+  assert.equal(blocks.map(x=>x.text).join(' '),chain.parts.join(' ').replace(/\s+/g,' ').trim(),
+   'chain '+(i+1)+' must not lose text');
+ }
+ const edu=P.causes(vm,390,844).filter(x=>x.type==='edu').flatMap(x=>x.blocks);
+ assert.equal(edu.map(x=>x.text).join(' '),vm.eduDetails.join(' ').replace(/\s+/g,' ').trim());
+});
+test('Sentence boundary semantics do not split compound initiative markers',()=>{
+ const sentence='Нестабильные поставки действительно прерывают операции. Прежде чем менять график, проверь причины.';
+ assert.deepEqual(P.semanticSentences(sentence),[
+  'Нестабильные поставки действительно прерывают операции.',
+  'Прежде чем менять график, проверь причины.'
+ ]);
+ const measure='A «SMED»: условие — устойчивый процесс; риск — срыв; не решает автоматически — нехватку мощности.';
+ assert.deepEqual(P.semanticSentences(measure),[measure]);
+});
+test('Semantic pages reduce clicks for a typical two-measure portfolio',()=>{
+ const s=state(['A','J']), vm=M.buildS08ViewModel(s.s0608,history(s));
+ const pages=P.causes(vm,390,844);
+ assert.ok(pages.length>=5&&pages.length<=12,'Expected compact but readable narrative; got '+pages.length);
+ assert.equal(pages.filter(x=>x.type==='initiative').length,2);
+ const sections=M.buildS08(s.s0608,history(s)),report=P.report(sections,390,844);
+ assert.ok(report.length>=4&&report.length<=13,'Report must be grouped; got '+report.length);
+ assert.equal(new Set(report.flatMap(x=>x.entries.map(e=>e.section))).size,8);
 });
