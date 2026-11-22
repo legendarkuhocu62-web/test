@@ -126,7 +126,7 @@ test('Semantic pages reduce clicks for a typical two-measure portfolio',()=>{
  const s=state(['A','J']), vm=M.buildS08ViewModel(s.s0608,history(s));
  const pages=P.causes(vm,390,844);
  assert.ok(pages.length>=5&&pages.length<=12,'Expected compact but readable narrative; got '+pages.length);
- assert.equal(pages.filter(x=>x.type==='initiative').length,2);
+ assert.deepEqual(pages.flatMap(x=>x.type==='initiative'?[x.item.id]:x.type==='initiativeGroup'?x.items.map(i=>i.id):[]),['A','J']);
  const sections=M.buildS08(s.s0608,history(s)),report=P.report(sections,390,844);
  assert.ok(report.length>=4&&report.length<=13,'Report must be grouped; got '+report.length);
  assert.equal(new Set(report.flatMap(x=>x.entries.map(e=>e.section))).size,8);
@@ -140,5 +140,37 @@ test('Long portfolios keep no more than four initiative-list items per causes pa
  for(const page of pages.filter(x=>x.type==='statement')){
   const markers=(page.text.match(/\b[A-M] «/g)||[]).length;
   assert.ok(markers<=4,'too many comma-list initiatives on one page: '+markers);
+ }
+});
+
+
+test('Dense pages preserve every selected A–M initiative and its exact conditions, risk, limitation',()=>{
+ const ids=data.initiatives.map(x=>x.id);
+ const s=state(ids),vm=M.buildS08ViewModel(s.s0608,history(s));
+ for(const [width,height] of [[320,568],[390,844],[1366,768]]){
+  const pages=P.causes(vm,width,height);
+  const initiatives=pages.flatMap(x=>x.type==='initiative'?[x.item]:x.type==='initiativeGroup'?x.items:[]);
+  assert.deepEqual(initiatives.map(x=>x.id),ids,'initiative order changed '+width);
+  assert.equal(new Set(initiatives.map(x=>x.id)).size,ids.length);
+  initiatives.forEach((x,i)=>{
+   const original=vm.initiativeDetails[i];
+   assert.deepEqual([x.title,x.cost,x.conditions,x.risks,x.not],
+    [original.title,original.cost,original.conditions,original.risks,original.not],
+    'measure text mutated '+x.id);
+  });
+ }
+});
+test('Densified consequence chain remains complete and report unchanged on both formats',()=>{
+ const s=state(['D','F','J']),vm=M.buildS08ViewModel(s.s0608,history(s));
+ for(const [w,h] of [[390,844],[1366,768]]){
+  const pg=P.causes(vm,w,h);
+  for(const [i,chain] of vm.chains.entries()){
+   const actual=pg.filter(x=>x.type==='statement'&&x.section===i+1)
+    .flatMap(x=>x.blocks).map(x=>x.text).join(' ');
+   assert.equal(actual,chain.parts.join(' ').replace(/\s+/g,' ').trim());
+  }
+  const tasks=pg.filter(x=>x.type==='edu').flatMap(x=>x.blocks).map(x=>x.text).join(' ');
+  assert.equal(tasks,vm.eduDetails.join(' ').replace(/\s+/g,' ').trim());
+  assert.equal(pg.filter(x=>x.type==='takeaway').length,1);
  }
 });

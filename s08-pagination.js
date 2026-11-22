@@ -84,7 +84,7 @@
    // A long portfolio is a semantic list: do not crowd all A–M labels onto one card.
    const markers=(candidate.map(x=>x.text).join(' ').match(/\b[A-M] «/g)||[]).length;
    const stagesCount=new Set(candidate.map(x=>x.stage)).size;
-   if(current.length&&(pageCost(candidate,width,report)>budget||sections>maxSections||markers>(report?3:4)||(!report&&width>720&&stagesCount>2))){
+   if(current.length&&(pageCost(candidate,width,report)>budget||sections>maxSections||markers>(report?3:4)||(!report&&width>720&&stagesCount>3))){
     flush();
     current.push({...item,text:sentence});
    }else{
@@ -104,6 +104,33 @@
    text:blocks.map(x=>x.text).join(' '),blocks,label:''
   }));
  }
+ // The approved condition / risk / limitation triplet must remain intact.
+ // Pair compact initiatives only where the actual viewport has enough room.
+ function initiativePages(selected,width,height){
+  const w=Number(width)||390,h=Number(height)||844;
+  const desktop=w>=960&&h>=720;
+  const tallPhone=w>=390&&w<=720&&h>=800;
+  const pairAllowed=desktop||tallPhone;
+  const length=x=>[x.title,x.conditions,x.risks,x.not].reduce((n,v)=>n+clean(v).length,0);
+  const pages=[];
+  for(let k=0;k<selected.length;k++){
+   const item=selected[k],next=selected[k+1];
+   const combined=next&&length(item)+length(next);
+   const bothFit=pairAllowed&&next&&
+    length(item)<=(desktop?320:215)&&length(next)<=(desktop?320:215)&&
+    combined<=(desktop?600:405);
+   if(bothFit){
+    pages.push({type:'initiativeGroup',section:1,title:'Твоё инвестиционное предложение',
+     stage:'Мероприятия '+(k+1)+'–'+(k+2)+' из '+selected.length,
+     items:[item,next]});
+    k++;
+   }else{
+    pages.push({type:'initiative',section:1,title:'Твоё инвестиционное предложение',
+     stage:'Мероприятие '+(k+1)+' из '+selected.length,item});
+   }
+  }
+  return pages;
+ }
  function causes(model,width,height){
   const result=[],chains=Array.isArray(model?.chains)?model.chains:[];
   chains.forEach((chain,i)=>{
@@ -118,10 +145,7 @@
      type:'statement',section:1,title:chain.title,stage:'Выбранные мероприятия',
      text:'Нет сохранённых данных об итоговом наборе инвестиций.',label:''
     });
-    selected.forEach((item,k)=>result.push({
-     type:'initiative',section:1,title:'Твоё инвестиционное предложение',
-     stage:'Мероприятие '+(k+1)+' из '+selected.length,item
-    }));
+    result.push(...initiativePages(selected,width,height));
    }
    if(i===2){
     const details=Array.isArray(model.eduDetails)?model.eduDetails:[];
