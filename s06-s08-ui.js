@@ -197,5 +197,5 @@ function render(s,data,bg,frame,chapterDialogue,portrait){
  return frame(bg,content,'order-stage');
 }
 window.CEH_ORDER_UI={render,fitS08Summary};
-window.addEventListener('resize',()=>requestAnimationFrame(fitS08Summary));
+if(typeof window.addEventListener==='function'&&typeof requestAnimationFrame==='function')window.addEventListener('resize',()=>requestAnimationFrame(fitS08Summary));
 })();
