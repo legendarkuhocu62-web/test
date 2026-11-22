@@ -8,7 +8,7 @@ const lines=[
 ];
 (async()=>{
  const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
- for(const [width,height] of [[360,640],[375,667],[390,844],[430,932],[1366,768]]){
+ for(const [width,height] of [[360,640],[375,667],[390,844],[430,932],[1024,768],[1366,768]]){
   const page=await browser.newPage({viewport:{width,height}});
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto('http://127.0.0.1:8765/');
@@ -30,7 +30,7 @@ const lines=[
   }));
   assert.match(portrait.src,/Громов/,'wrong character portrait');
   assert.ok(portrait.width>80&&portrait.height>100,'Andrey portrait should be visible on character scene');
-  const source=lines.join('\n\n');
+  const source=lines[0]+'\n\n'+lines[1]+' '+lines[2];
   let presses=0;
   while(true){
     const read=await page.evaluate(()=>window.CEH_DIALOGUE.getReadState());
@@ -39,6 +39,7 @@ const lines=[
     assert.ok(++presses<30,'Gromov pagination loop');
     await page.locator('[data-act="dlgMore"]').dispatchEvent('click');await page.waitForTimeout(55);
   }
+  if(width>=1024)assert.ok(presses<=1,'Gromov should use at most two screens at desktop/tablet '+width+'x'+height+'; screens='+String(presses+1));
   assert.equal(await page.locator('[data-act="gromovNext"]').count(),1,'final action missing');
   await page.locator('[data-act="gromovNext"]').dispatchEvent('click');
   const result=await page.evaluate(()=>window.__CEH_TEST__.getState());

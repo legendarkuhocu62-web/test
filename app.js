@@ -318,7 +318,7 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
   // fixed dialogue renderer paginate only when the physical panel is full,
   // rather than forcing a click after each short authored sentence.
   const lines=['Видишь, по этому акту одну деталь изолировали, а партию задержали до дополнительной проверки. Подобные случаи у нас бывают: после окончательного контроля часть деталей возвращается на доработку. Это время, которое производство теряет.','Где именно возникают отклонения, мы пока не установили.','Я по-прежнему считаю, что нам нужно обновлять оборудование. Но прежде чем защищать инвестиционные предложения, стоит учесть и эти потери.'];
-  const content=chapterDialogue('S04:gromov:combined','Андрей Громов','Начальник производства',lines.join('\n\n'),A.andrey,btn('Пересмотреть портфель','gromovNext','','primary'));
+  const content=chapterDialogue('S04:gromov:combined','Андрей Громов','Начальник производства',lines[0]+'\n\n'+lines[1]+' '+lines[2],A.andrey,btn('Пересмотреть портфель','gromovNext','','primary'));
   html=frame(A.meeting,content,'dialogue-stage dialogue-stage--meeting');
  }else if(s.s04Mode==='reviewFinal'){
   const initial=Array.isArray(s.initialSelected)?s.initialSelected:[];
