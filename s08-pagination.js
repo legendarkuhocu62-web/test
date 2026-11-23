@@ -52,7 +52,7 @@
  function estimate(text,width,report){
   const w=Number(width)||390;
   const usable=w<=720?Math.max(190,w-(report?87:98)):Math.min(830,w-200);
-  const chars=Math.max(23,Math.floor(usable/(w<=720?(report?7.3:7.9):9.3)));
+  const chars=Math.max(23,Math.floor(usable/(w<=720?(report?7.3:7.9):(report?11.2:9.3))));
   const words=clean(text).split(' ');
   let lines=1,used=0;
   for(const word of words){
