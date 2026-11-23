@@ -74,6 +74,8 @@ jobs:
           node tests/edu01-reference-flow.test.js
           node tests/gromov-character-dialogue.test.js
           node tests/s05-dialogue-mobile-layout.test.js
+          node tests/s05-mobile-wide-alert.test.js
+          node tests/mobile-word-breaks.test.js
           node tests/save-continue-label.test.js
           node integration/s06-s08/module.test.js
           node tests/s08-top-aligned-cards.test.js
