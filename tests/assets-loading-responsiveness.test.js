@@ -49,9 +49,9 @@ const KEY='ceh404.rebuilt.qa50.20261108';
    await page.waitForFunction(name=>window.CEH_PRELOAD.stats().started.some(url=>decodeURIComponent(url).includes(name)),
      expected,{timeout:15000});
    await page.locator('[data-act="s02Open"]').click();
+   await page.locator('.s02-report-sheet img').evaluate(el=>el.decode());
    const actual=await page.locator('.s02-report-sheet img').evaluate(el=>decodeURIComponent(el.currentSrc));
    assert.ok(actual.includes(expected),'the prefetched report is NOT the displayed approved report '+actual);
-   await page.locator('.s02-report-sheet img').evaluate(el=>el.decode());
    assert.deepEqual(errors,[],'browser JavaScript errors at '+width+'x'+height);
    console.log('PASS poster loading and S02 exact report '+width+'x'+height);
    await page.close();
