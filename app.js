@@ -220,13 +220,20 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
  if(s.s00===1)html=frame(A.gate,chapterDialogue('S00:gate:1','ЦЕХ 404','Первый день на предприятии','Сегодня твой первый день на машиностроительном предприятии «ЦЕХ 404». За проходной уже началась рабочая смена.', '',btn('Далее','s00next','','primary'),'inline'),'gate-scene');
  if(s.s00===2)html=frame(A.gate,chapterDialogue('S00:gate:2','ЦЕХ 404','Первый рабочий день','Тебе предстоит познакомиться с людьми, оборудованием и процессами, от которых зависит работа всего предприятия.', '',btn('Подойти к проходной','s00next','','primary'),'inline'),'gate-scene');
  if(s.s00===3)html=frame(A.entry,`<div class="glass"><h1>ДОПУСК НА ПРЕДПРИЯТИЕ</h1><p>Для входа на территорию необходимо оформить персональный пропуск.</p><label for="name">Как тебя зовут?</label><input id="name" maxlength="40" placeholder="Введите имя" value="${e(s.name)}">${btn('Получить пропуск','badge','','primary')}</div>`,'entrance-scene');
- if(s.s00===4)html=frame(A.entry,`<div class="glass badge-screen"><h1>Пропуск получен</h1><div class="badge-card"><img src="${(s.avatarRecommendation || window.CEH_NAME_REGISTRY?.detect(s.name)?.recommendedAvatar)==='female'?A.badgeFemale:A.badge}" alt="Пропуск техника-технолога"><div class="badge-overlay"><strong>${e(s.name)}</strong></div></div>${btn('Пройти через турникет','next','S01','primary')}</div>`,'entrance-scene entrance-scene--badge');
+ if(s.s00===4)html=frame(A.entry,`<div class="glass badge-screen"><h1>Пропуск получен</h1><div class="badge-card"><img src="${(s.avatarRecommendation || window.CEH_NAME_REGISTRY?.detect(s.name)?.recommendedAvatar)==='female'?A.badgeFemale:A.badge}" alt="Пропуск техника-технолога" decoding="async" fetchpriority="high"><div class="badge-overlay"><strong>${e(s.name)}</strong></div></div>${btn('Пройти через турникет','next','S01','primary')}</div>`,'entrance-scene entrance-scene--badge');
  }else if(s.scene==='S01'){
  const speaker=d.characters.irina;
  let text='';
  if(s.s01<4){
+   // Only on wide screens: join the first TWO approved lines into one speech.
+   // The dialogue component still splits by measured height if necessary.
+   // Narrow phones and old saves at s01=1 retain the original sequence.
+   const joined=s.s01===0&&window.matchMedia('(min-width:1024px)').matches;
+   const speech=joined
+     ?d.intro[0]+'\n'+d.intro[1]
+     :d.intro[s.s01];
    const asset=s.s01===0?'irina_friendly':s.s01>=2?'irina_focused':'irina';
-   text=chapterDialogue('S01:intro:'+s.s01,speaker.name,speaker.role,d.intro[s.s01].replace('[Имя]',s.name),A[asset],btn(s.s01===3?'Задать вопросы Ирине':'Далее','introNext','','primary'));
+   text=chapterDialogue('S01:intro:'+s.s01+(joined?':joined':''),speaker.name,speaker.role,speech.replace('[Имя]',s.name),A[asset],btn(s.s01===3?'Задать вопросы Ирине':'Далее','introNext',joined?'skipSecondIntro':'','primary'));
  }else if(s.reply){
    const q=d.questions.find(x=>x.id===s.reply);
    const asset=s.reply==='problems'?'irina_focused':'irina';
@@ -386,7 +393,7 @@ function act(action,id){if(action==='eduToggleDocuments'&&s.scene==='S04'&&s.s04
  else if(action==='s00next')s.s00=Math.min(3,s.s00+1);
  else if(action==='badge'){const name=L.cleanName(document.getElementById('name')?.value);if(!name){showBadgeNameRequired();return}s.name=name;const avatar=window.CEH_NAME_REGISTRY?.detect(name);s.avatarRecommendation=avatar?.recommendedAvatar||null;s.s00=4}
  else if(action==='next'){const next={S00:'S01',S01:'S02',S02:'S03',S03:'S04'};if(next[s.scene]===id){if(s.scene==='S01'&&s.asked.length!==3)return;if(s.scene==='S02'&&(!s.hypothesisConfirmed||s.s02Step!=='feedback'))return;if(s.scene==='S03'&&(!s.s03ConclusionSeen||s.s03Read.length!==3))return;s.scene=id}}
- else if(action==='introNext')s.s01=Math.min(4,s.s01+1);
+ else if(action==='introNext')s.s01=Math.min(4,s.s01+(s.s01===0&&id==='skipSecondIntro'?2:1));
  else if(action==='ask'){s.reply=id;if(!s.asked.includes(id))s.asked.push(id)}
  else if(action==='replyClose')s.reply=null;
  else if(action==='hypothesis'&&s.scene==='S02'&&s.s02Step==='conclusion'&&!s.hypothesisConfirmed&&d.hypotheses.some(x=>x.id===id))s.hypothesis=id;
@@ -475,6 +482,17 @@ function act(action,id){if(action==='eduToggleDocuments'&&s.scene==='S04'&&s.s04
   else if(action==='s08ReportClose')s.s08ReportOpen=false;
  }
  render()}
+// A–M posters are large approved originals: warm only the card the player
+// actually explores, rather than competing with six unrelated downloads.
+function warmCatalogPoster(target){
+ const b=target?.closest?.('[data-act="catalogOpen"]');
+ if(b&&app.contains(b)&&s.scene==='S04'&&s.s04Mode==='catalog')
+   window.CEH_PRELOAD?.warmPoster(b.dataset.id);
+}
+app.addEventListener('pointerover',ev=>{
+ if(ev.pointerType==='mouse'||ev.pointerType==='pen')warmCatalogPoster(ev.target);
+});
+app.addEventListener('focusin',ev=>warmCatalogPoster(ev.target));
 app.addEventListener('click',ev=>{const b=ev.target.closest('[data-act]');if(b)act(b.dataset.act,b.dataset.id)});
 app.addEventListener('change',ev=>{const input=ev.target.closest('input[data-order-answer]');if(input&&s.scene==='S06')act('orderAnswer',input.dataset.orderAnswer+':'+input.value)});
 app.addEventListener('keydown',ev=>{
