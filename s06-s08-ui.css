@@ -1242,7 +1242,7 @@ body:has(#app .s08-screen) #app>.reset .btn{
  border-radius:0;box-shadow:none;
 }
 #app .s08-complete__future::before{
- content:"";display:block;width:44px;height:44px;margin:0 auto 3px;
+ content:"";display:block;width:100px;height:100px;margin:0 auto 8px;
  background:url("assets/final/CH1-FINAL-DECOR-DOMINO-001.webp") center / contain no-repeat;
  pointer-events:none;
 }
@@ -1277,5 +1277,25 @@ body:has(#app .s08-screen) #app>.reset .btn{
  #app .s08-complete__card:first-child,
  #app .s08-complete__card:nth-child(2){
   background-position:center right;
+ }
+}
+
+/* Chapter 01 completion only: final art polish, 2026-11-23.
+   Override the global orange ::before button surface without touching
+   buttons elsewhere in the game or changing HTML/game logic. */
+#app .s08-complete__actions .btn{
+ text-shadow:0 1px 4px rgba(26,10,72,.72)!important;
+}
+#app .s08-complete__actions .btn.primary::before{
+ background:linear-gradient(125deg,#b78bff 0%,#995cf4 52%,#7441dc 100%)!important;
+ box-shadow:inset 0 2px 0 #eadbffaa,0 5px 17px rgba(79,37,151,.62)!important;
+}
+#app .s08-complete__actions .btn:not(.primary)::before{
+ background:linear-gradient(125deg,#55528e 0%,#3b386f 52%,#262a54 100%)!important;
+ box-shadow:inset 0 2px 0 #c2b6fc70,0 5px 14px rgba(14,15,52,.52)!important;
+}
+@media(max-width:720px){
+ #app .s08-complete__future::before{
+  width:88px;height:88px;margin:0 auto 8px;
  }
 }
