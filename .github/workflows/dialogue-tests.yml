@@ -51,6 +51,8 @@ jobs:
           python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/ceh404-http.log 2>&1 &
           sleep 2
           node tests/dialogue-browser.test.js
+          node tests/s05-mobile-wide-alert.test.js
+          node tests/mobile-word-breaks.test.js
           node tests/s01-intro-joined-wide.test.js
           node tests/s08-semantic-pagination.test.js
           node tests/s08-dense-consequences.test.js
@@ -74,8 +76,6 @@ jobs:
           node tests/edu01-reference-flow.test.js
           node tests/gromov-character-dialogue.test.js
           node tests/s05-dialogue-mobile-layout.test.js
-          node tests/s05-mobile-wide-alert.test.js
-          node tests/mobile-word-breaks.test.js
           node tests/save-continue-label.test.js
           node integration/s06-s08/module.test.js
           node tests/s08-top-aligned-cards.test.js
