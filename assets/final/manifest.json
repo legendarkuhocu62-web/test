@@ -1,0 +1,53 @@
+{
+  "project": "ЦЕХ 404: Эффект домино",
+  "screen": "Глава 01 пройдена",
+  "status": "Графика подготовлена для интеграции; пока НЕ подключена к игре",
+  "root": "assets/final/",
+  "assets": [
+    {
+      "id": "CH1-FINAL-BG-D-001",
+      "path": "assets/final/CH1-FINAL-BG-D-001.webp",
+      "type": "background",
+      "view": "desktop"
+    },
+    {
+      "id": "CH1-FINAL-BG-M-001",
+      "path": "assets/final/CH1-FINAL-BG-M-001.webp",
+      "type": "background",
+      "view": "mobile"
+    },
+    {
+      "id": "CH1-FINAL-CARD-02-001",
+      "path": "assets/final/CH1-FINAL-CARD-02-001.webp",
+      "type": "object",
+      "chapter": "02",
+      "review": "На иллюстрации возможно напечатано 3-214 вместо З-214 — проверить перед использованием"
+    },
+    {
+      "id": "CH1-FINAL-CARD-03-001",
+      "path": "assets/final/CH1-FINAL-CARD-03-001.webp",
+      "type": "object",
+      "chapter": "03"
+    },
+    {
+      "id": "CH1-FINAL-ICON-COMPLETE-001",
+      "path": "assets/final/CH1-FINAL-ICON-COMPLETE-001.webp",
+      "type": "object",
+      "alpha": true
+    },
+    {
+      "id": "CH1-FINAL-DECOR-DOMINO-001",
+      "path": "assets/final/CH1-FINAL-DECOR-DOMINO-001.webp",
+      "type": "object",
+      "alpha": true
+    },
+    {
+      "id": "CH1-FINAL-DECOR-LAUREL-001",
+      "path": "assets/final/CH1-FINAL-DECOR-LAUREL-001.webp",
+      "type": "object",
+      "alpha": true
+    }
+  ],
+  "loading": "В будущей интеграции загружать только фон по текущему медиаусловию; карточки — при показе; не добавлять все семь в стартовый preload.",
+  "source_folder": "https://drive.google.com/drive/folders/1vy1G_EjXcA4tyysZ7sn5qMtJ7UcmK6mC"
+}
