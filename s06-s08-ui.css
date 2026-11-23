@@ -1013,3 +1013,52 @@ body:has(#app .s08-screen) #app>.reset .btn{
  #app .s08-complete__actions{flex-direction:column;gap:9px}
  #app .s08-complete__actions .btn{flex:auto;width:100%;max-width:none;min-height:48px}
 }
+
+/* Mobile S05: make the approved alert a full-width, natural-height
+   block ABOVE the dialogue. It never scrolls internally or covers Gromov.
+   Desktop/tablet composition is unchanged. */
+@media(max-width:720px){
+ #app .s05-notice-scene .scene-content{
+  display:flex;flex-direction:column;justify-content:flex-start;min-height:0;
+ }
+ #app .s05-notice-scene .s05-tablet-notice{
+  position:relative!important;
+  top:auto!important;right:auto!important;left:auto!important;
+  transform:none!important;flex:0 0 auto;
+  width:calc(100% - 16px)!important;
+  max-width:none!important;max-height:none!important;
+  height:auto!important;margin:6px auto 0!important;
+  overflow:visible!important;
+  box-sizing:border-box;
+ }
+ #app .s05-notice-scene .s05-tablet-notice__heading{
+  padding:6px 9px;gap:6px;
+ }
+ #app .s05-notice-scene .s05-tablet-notice__heading strong{font-size:clamp(13px,3.6vw,16px)}
+ #app .s05-notice-scene .s05-tablet-notice__icon{flex-basis:25px;width:25px;height:25px}
+ #app .s05-notice-scene .s05-tablet-notice__meta{padding:5px 9px;font-size:clamp(10px,2.6vw,12px)}
+ #app .s05-notice-scene .s05-tablet-notice p{
+  padding:6px 9px 8px;font-size:clamp(11px,2.8vw,13px);
+  line-height:1.27;overflow-wrap:normal;word-break:normal;hyphens:none;
+ }
+ #app .s05-notice-scene .game-dialogue--scene{
+  flex:1 1 auto;min-height:0;
+  overflow:visible;
+ }
+}
+/* Long phone text: preserve complete words and deliberate phrase boundaries.
+   No global reflow of approved desktop dialogue panels. */
+@media(max-width:720px){
+ #app .dialogue-stage--meeting .game-dialogue__actions [data-act="s03Ask"]{
+  min-width:0!important;overflow-wrap:normal!important;word-break:normal!important;
+  hyphens:none!important;white-space:normal;
+ }
+ #app .dialogue-stage--meeting .game-dialogue__actions [data-act="s03Ask"] .s03-question-first,
+ #app .dialogue-stage--meeting .game-dialogue__actions [data-act="s03Ask"] .s03-question-second{
+  display:block!important;white-space:normal!important;
+  overflow-wrap:normal;word-break:keep-all;hyphens:none;
+ }
+ #app .dialogue-stage--meeting .game-dialogue__actions [data-act="closePerson"]{
+  white-space:nowrap;word-break:keep-all;hyphens:none;
+ }
+}
