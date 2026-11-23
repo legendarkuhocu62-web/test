@@ -102,10 +102,10 @@ function fitS08Summary(){
 function renderS08Complete(){
  return '<div class="s08-complete" data-s08-view="complete" aria-labelledby="s08-complete-title">'+
   '<div class="s08-complete__brand">ЦЕХ 404 · ЭФФЕКТ ДОМИНО</div>'+
-  '<header class="s08-complete__heading"><span class="s08-complete__chapter">ГЛАВА 01</span>'+
+  '<header class="s08-complete__heading"><span class="s08-complete__chapter" aria-hidden="true">✓</span><div class="s08-complete__heading-copy">'+
   '<h1 id="s08-complete-title">ГЛАВА 01 ПРОЙДЕНА</h1>'+
-  '<p class="s08-complete__subtitle">Первое решение принято. Эффект запущен.</p></header>'+
-  '<p class="s08-complete__summary">Ты изучил производственные данные, сформировал инвестиционный план и разобрал ситуацию с заказом З-214. Но на производстве каждое решение запускает цепочку последствий. Часть из них уже проявилась. Остальные — ещё впереди.</p>'+
+  '<p class="s08-complete__subtitle">Первое решение принято. Эффект запущен.</p></div></header>'+
+  '<div class="s08-complete__summary"><p>Ты изучил производственные данные, сформировал инвестиционный план и разобрал ситуацию с заказом З-214.</p><p>Но на производстве каждое решение запускает цепочку последствий. Часть из них уже проявилась. Остальные — ещё впереди.</p></div>'+
   '<section class="s08-complete__future" aria-labelledby="s08-complete-future">'+
   '<h2 id="s08-complete-future">ПРОДОЛЖЕНИЕ ИСТОРИИ</h2>'+
   '<div class="s08-complete__chapters">'+
