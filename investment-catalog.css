@@ -766,3 +766,17 @@ dialog.ic-detail::backdrop { background:#020811d9; backdrop-filter:blur(3px); }
     padding:3px!important;
   }
 }
+
+/* The original full-resolution A–M sheet remains untouched. Visible progress
+   prevents a blank dialog while a 2–3 MB sheet arrives on a slower network. */
+#app .ic-detail .ic-poster__loading{
+ position:absolute;inset:0;z-index:3;display:none;
+ place-items:center;text-align:center;padding:18px;
+ background:#10273d;color:#ffe0a0;
+ font-size:clamp(13px,2.5vw,16px);font-weight:700;line-height:1.45;
+ pointer-events:none;
+}
+#app .ic-detail--loading .ic-poster__loading,
+#app .ic-detail--error .ic-poster__loading{display:grid}
+#app .ic-detail--loading .ic-poster__hit,
+#app .ic-detail--error .ic-poster__hit{pointer-events:none}
