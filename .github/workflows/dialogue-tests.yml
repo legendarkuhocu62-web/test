@@ -51,11 +51,17 @@ jobs:
           python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/ceh404-http.log 2>&1 &
           sleep 2
           node tests/dialogue-browser.test.js
+          node tests/s05-mobile-wide-alert.test.js
+          node tests/mobile-word-breaks.test.js
+          node tests/dialogue-fixed-frame.test.js
+          node tests/s01-intro-joined-wide.test.js
           node tests/s08-semantic-pagination.test.js
           node tests/s08-dense-consequences.test.js
+          node tests/s08-chapter-completion.test.js
           node tests/s08-summary-compact.test.js
           node tests/s06-s08-ui.test.js
           node tests/scene-preload.test.js
+          node tests/assets-loading-responsiveness.test.js
           node tests/budget-overflow-modal.test.js
           node tests/restart-confirmation.test.js
           node tests/mobile-restart-safe-area.test.js
@@ -63,7 +69,6 @@ jobs:
           node tests/investment-card-modal.test.js
           node tests/s04-priority-one-choice.test.js
           node tests/s04-review-cta-layout.test.js
-          node tests/dialogue-fixed-frame.test.js
           node tests/dialogue-fill-panel.test.js
           node tests/dialogue-all-content.test.js
           node tests/dialogue-question-pages.test.js

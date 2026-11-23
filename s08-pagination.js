@@ -52,7 +52,7 @@
  function estimate(text,width,report){
   const w=Number(width)||390;
   const usable=w<=720?Math.max(190,w-(report?87:98)):Math.min(830,w-200);
-  const chars=Math.max(23,Math.floor(usable/(w<=720?(report?7.3:7.9):9.3)));
+  const chars=Math.max(23,Math.floor(usable/(w<=720?(report?7.3:7.9):(report?11.2:9.3))));
   const words=clean(text).split(' ');
   let lines=1,used=0;
   for(const word of words){
@@ -71,7 +71,7 @@
    (width<=720?(report?28:29):(report?36:38)),0);
  }
  function pack(items,width,height,report,maxSections=1){
-  const budget=heightBudget(width,height,report);
+  const budget=heightBudget(width,height,report)-(report&&width>720?35:0);
   const output=[];let current=[];
   const flush=()=>{if(current.length)output.push(current);current=[];};
   function add(item,sentence){
@@ -84,7 +84,7 @@
    // A long portfolio is a semantic list: do not crowd all A–M labels onto one card.
    const markers=(candidate.map(x=>x.text).join(' ').match(/\b[A-M] «/g)||[]).length;
    const stagesCount=new Set(candidate.map(x=>x.stage)).size;
-   if(current.length&&(pageCost(candidate,width,report)>budget||sections>maxSections||markers>(report?3:4)||(!report&&width>720&&stagesCount>3))){
+   if(current.length&&(pageCost(candidate,width,report)+(report&&markers>1?28:0)>budget||sections>maxSections||markers>(report?3:4)||(!report&&width>720&&stagesCount>3))){
     flush();
     current.push({...item,text:sentence});
    }else{
@@ -92,6 +92,10 @@
    }
   }
   for(const item of items){
+   // A long professional conclusion is a coherent learning section, not
+   // an appendage of the preceding operational decision. Begin it on a
+   // fresh desktop report page; the sentence paginator handles any excess.
+   if(report&&width>720&&item.section===8&&clean(item.text).length>450)flush();
    const pieces=semanticSentences(item.text);
    for(const sentence of pieces)add(item,sentence);
   }
@@ -164,7 +168,11 @@
   const items=(Array.isArray(sections)?sections:[]).map((section,i)=>({
    section:i+1,stage:section.title,title:section.title,text:clean(section.body)
   }));
-  const pages=pack(items,width,height,true,2).map(entries=>({
+  // The detailed report has eight immutable semantic sections, but a section
+  // is NOT a page. On spacious viewports group 3–4 short related sections,
+  // preserving every sentence and letting the measured browser tests guard fit.
+  const maxSections=width>720?3:(width>=390&&height>=760?3:2);
+  const pages=pack(items,width,height,true,maxSections).map(entries=>({
    title:entries[0].title,section:entries[0].section,
    text:entries.map(x=>x.text).join(' '),entries
   }));

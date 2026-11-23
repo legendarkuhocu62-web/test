@@ -926,3 +926,294 @@ body:has(#app .s08-screen) #app>.reset .btn{
   padding:5px 8px;
  }
 }
+
+/* Chapter 01 closing screen */
+#app .order-stage--complete{
+ min-height:calc(100dvh - 58px);height:auto;overflow:visible;align-items:center;
+ background-image:radial-gradient(ellipse at 78% 15%,rgba(74,54,137,.55),transparent 58%),
+ linear-gradient(125deg,rgba(6,18,40,.94),rgba(12,18,44,.93) 54%,rgba(9,37,59,.93)),var(--bg);
+ background-position:center;background-size:cover;
+}
+#app .order-stage--complete .scene-content{
+ display:flex;align-items:center;justify-content:center;padding:clamp(12px,3vw,32px);
+}
+#app .s08-complete{
+ box-sizing:border-box;width:min(100%,1050px);margin:auto;min-width:0;
+ padding:clamp(17px,3.3vw,38px);display:flex;flex-direction:column;gap:clamp(11px,1.7vh,18px);
+ border:1px solid rgba(189,178,233,.48);border-radius:22px;
+ color:#f6f8ff;background:linear-gradient(150deg,rgba(14,35,67,.97),rgba(18,24,57,.97));
+ box-shadow:0 20px 70px rgba(0,0,0,.46),inset 0 0 48px rgba(64,99,162,.12);
+}
+#app .s08-complete__brand{
+ text-align:center;color:#f2cb88;font-weight:800;font-size:clamp(10px,1.2vw,13px);letter-spacing:.18em;
+}
+#app .s08-complete__heading{text-align:center}
+#app .s08-complete__chapter{
+ display:inline-block;padding:5px 13px;border:1px solid #bd9d62;border-radius:20px;
+ color:#f7d7a0;font-size:clamp(10px,1.15vw,12px);letter-spacing:.13em;font-weight:800;
+}
+#app .s08-complete__heading h1{
+ margin:11px 0 4px;font-size:clamp(27px,4.4vw,51px);line-height:1.06;
+ letter-spacing:.025em;color:#fff2d3;text-wrap:balance;
+}
+#app .s08-complete__subtitle{
+ margin:0;color:#f3cf94;font-size:clamp(15px,2vw,21px);font-weight:650;
+}
+#app .s08-complete__summary{
+ margin:0 auto;max-width:810px;text-align:center;
+ font-size:clamp(14px,1.4vw,17px);line-height:1.55;color:#e6edf9;
+}
+#app .s08-complete__future h2{
+ margin:0 0 10px;text-align:center;color:#f3ce8d;
+ font-size:clamp(13px,1.5vw,17px);letter-spacing:.11em;
+}
+#app .s08-complete__chapters{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(10px,1.6vw,18px);
+}
+#app .s08-complete__card{
+ min-width:0;padding:clamp(14px,1.9vw,21px);border:1px solid rgba(150,177,223,.55);
+ border-radius:14px;background:linear-gradient(120deg,rgba(39,64,98,.74),rgba(28,35,78,.82));
+}
+#app .s08-complete__card-top{
+ display:flex;align-items:center;justify-content:space-between;gap:12px;
+ font-size:clamp(11px,1.1vw,13px);font-weight:800;color:#f1cb90;letter-spacing:.05em;
+}
+#app .s08-complete__status{
+ color:#cfdae9;font-weight:650;letter-spacing:0;padding:4px 8px;
+ background:rgba(139,157,186,.14);border:1px solid rgba(139,157,186,.38);
+ border-radius:8px;white-space:nowrap;font-size:clamp(10px,1vw,12px);
+}
+#app .s08-complete__card h3{
+ margin:11px 0 6px;font-size:clamp(19px,2.1vw,25px);line-height:1.18;color:#fff;
+}
+#app .s08-complete__card p{
+ margin:0;font-size:clamp(13px,1.25vw,15px);line-height:1.48;color:#dce9fa;
+}
+#app .s08-complete__actions{
+ display:flex;gap:12px;align-items:stretch;justify-content:center;
+}
+#app .s08-complete__actions .btn{
+ flex:1 1 0;max-width:300px;min-height:51px;
+ margin:0!important;text-align:center;white-space:normal;font-weight:800;
+}
+#app .s08-complete__actions .btn:not(.primary){border-color:#829ebc;background:#18344e}
+#app .s08-complete__actions .btn:focus-visible{outline:3px solid #fff;outline-offset:3px}
+@media(max-width:720px){
+ #app .order-stage--complete{min-height:calc(100dvh - 58px)}
+ #app .order-stage--complete .scene-content{
+  align-items:flex-start;padding:10px 10px max(20px,env(safe-area-inset-bottom,0px));
+ }
+ #app .s08-complete{gap:12px;padding:18px 14px;border-radius:15px}
+ #app .s08-complete__heading h1{font-size:clamp(26px,7.8vw,38px)}
+ #app .s08-complete__summary{text-align:left;font-size:14px;line-height:1.47}
+ #app .s08-complete__chapters{grid-template-columns:minmax(0,1fr);gap:9px}
+ #app .s08-complete__card{padding:12px}
+ #app .s08-complete__card h3{font-size:19px;margin:8px 0 4px}
+ #app .s08-complete__card p{font-size:13px;line-height:1.4}
+ #app .s08-complete__actions{flex-direction:column;gap:9px}
+ #app .s08-complete__actions .btn{flex:auto;width:100%;max-width:none;min-height:48px}
+}
+
+/* Mobile S05: make the approved alert a full-width, natural-height
+   block ABOVE the dialogue. It never scrolls internally or covers Gromov.
+   Desktop/tablet composition is unchanged. */
+@media(max-width:720px){
+ #app .s05-notice-scene .scene-content{
+  display:flex;flex-direction:column;justify-content:flex-start;min-height:0;
+ }
+ #app .s05-notice-scene .s05-tablet-notice{
+  position:relative!important;
+  top:auto!important;right:auto!important;left:auto!important;
+  transform:none!important;flex:0 0 auto;
+  width:calc(100% - 16px)!important;
+  max-width:none!important;max-height:none!important;
+  height:auto!important;margin:6px auto 0!important;
+  overflow:visible!important;
+  box-sizing:border-box;
+ }
+ #app .s05-notice-scene .s05-tablet-notice__heading{
+  padding:6px 9px;gap:6px;
+ }
+ #app .s05-notice-scene .s05-tablet-notice__heading strong{font-size:clamp(13px,3.6vw,16px)}
+ #app .s05-notice-scene .s05-tablet-notice__icon{flex-basis:25px;width:25px;height:25px}
+ #app .s05-notice-scene .s05-tablet-notice__meta{padding:5px 9px;font-size:clamp(10px,2.6vw,12px)}
+ #app .s05-notice-scene .s05-tablet-notice p{
+  padding:6px 9px 8px;font-size:clamp(11px,2.8vw,13px);
+  line-height:1.27;overflow-wrap:normal;word-break:normal;hyphens:none;
+ }
+ #app .s05-notice-scene .game-dialogue--scene{
+  flex:1 1 auto;min-height:0;
+  overflow:visible;
+ }
+}
+/* Long phone text: preserve complete words and deliberate phrase boundaries.
+   No global reflow of approved desktop dialogue panels. */
+@media(max-width:720px){
+ #app .dialogue-stage--meeting .game-dialogue__actions [data-act="s03Ask"]{
+  min-width:0!important;overflow-wrap:normal!important;word-break:normal!important;
+  hyphens:none!important;white-space:normal;
+ }
+ #app .dialogue-stage--meeting .game-dialogue__actions [data-act="s03Ask"] .s03-question-first,
+ #app .dialogue-stage--meeting .game-dialogue__actions [data-act="s03Ask"] .s03-question-second{
+  display:block!important;white-space:normal!important;
+  overflow-wrap:normal;word-break:keep-all;hyphens:none;
+ }
+ #app .dialogue-stage--meeting .game-dialogue__actions [data-act="closePerson"]{
+  white-space:nowrap;word-break:keep-all;hyphens:none;
+ }
+}
+
+
+/* Approved Chapter 01 purple visual direction (HTML controls, no screenshot overlay).
+   Reuses the local approved shop background; the Drive files are references only. */
+#app .order-stage--complete{
+ background-image:radial-gradient(circle at 83% 68%,rgba(142,59,244,.28),transparent 42%),
+  linear-gradient(120deg,rgba(5,18,42,.84),rgba(10,17,47,.83) 54%,rgba(19,9,52,.76)),var(--bg);
+}
+#app .s08-complete{
+ border-color:rgba(164,144,255,.76);
+ background:linear-gradient(145deg,rgba(18,28,61,.95),rgba(17,25,53,.96));
+ box-shadow:0 0 0 1px rgba(163,147,255,.18),0 20px 70px #0009,0 0 55px rgba(131,59,243,.2);
+}
+#app .s08-complete__brand{
+ align-self:center;display:inline-flex;align-items:center;justify-content:center;
+ border:1px solid #b499ff;border-radius:30px;letter-spacing:.075em;
+ background:linear-gradient(110deg,rgba(47,40,100,.6),rgba(10,20,44,.8));
+ padding:9px 24px;color:#f6f1ff;
+ box-shadow:0 0 22px rgba(153,80,255,.18);
+}
+#app .s08-complete__heading{
+ display:flex;align-items:center;justify-content:center;gap:clamp(12px,2vw,22px);
+}
+#app .s08-complete__chapter{
+ display:grid;place-items:center;flex:0 0 clamp(58px,6.5vw,78px);
+ width:clamp(58px,6.5vw,78px);height:clamp(58px,6.5vw,78px);
+ font-size:clamp(35px,4vw,48px);line-height:1;border:2px solid #a56cff;
+ border-radius:22px;color:#e1c5ff;background:#392362;
+ box-shadow:0 0 16px #9d5bff94,inset 0 0 19px #4f36a0;
+}
+#app .s08-complete__heading-copy{text-align:left;min-width:0}
+#app .s08-complete__heading h1{
+ margin:0 0 5px;font-size:clamp(27px,4vw,51px);
+ background:linear-gradient(100deg,#fff 5%,#f7f4ff 45%,#ae87ff 100%);
+ -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+#app .s08-complete__subtitle{color:#d8d6f3}
+#app .s08-complete__summary{
+ text-align:left;color:#f2f1fc;max-width:870px;line-height:1.47;
+}
+#app .s08-complete__summary p{margin:0 0 8px}
+#app .s08-complete__summary p:last-child{margin-bottom:0}
+#app .s08-complete__future h2{
+ color:#f7f0ff;font-size:clamp(16px,2vw,23px);letter-spacing:.07em;
+ display:flex;align-items:center;justify-content:center;gap:15px;
+}
+#app .s08-complete__future h2::before,
+#app .s08-complete__future h2::after{
+ content:'';display:block;flex:1 1 0;max-width:160px;height:1px;
+ background:linear-gradient(90deg,transparent,#b39bff);
+}
+#app .s08-complete__future h2::after{transform:rotate(180deg)}
+#app .s08-complete__card{
+ position:relative;min-height:200px;padding-bottom:55px;
+ border-color:rgba(176,154,255,.86);
+ background:linear-gradient(135deg,rgba(44,49,95,.86),rgba(22,36,73,.82));
+ box-shadow:inset 0 0 40px rgba(109,78,213,.12);
+}
+#app .s08-complete__card-top{color:#ece5ff}
+#app .s08-complete__card-top>span:first-child{
+ padding:5px 11px;border:1px solid #ad96ed;border-radius:17px;
+ background:rgba(89,74,161,.36);
+}
+#app .s08-complete__card h3{color:#fff}
+#app .s08-complete__card p{max-width:38ch;color:#f1effb}
+#app .s08-complete__status{
+ position:absolute;left:clamp(14px,1.9vw,21px);bottom:14px;
+ border-color:#a89be9;background:#34335e;color:#f0edff;
+ border-radius:30px;padding:6px 11px;
+}
+#app .s08-complete__actions .btn{
+ border-radius:13px;min-height:53px;font-size:clamp(13px,1.35vw,17px);
+ letter-spacing:.03em;
+}
+#app .s08-complete__actions .btn.primary{
+ background:linear-gradient(170deg,#ad88ff,#8146f5);
+ border:1px solid #c1a3ff;color:white;
+ box-shadow:0 0 21px rgba(159,91,250,.53);
+}
+#app .s08-complete__actions .btn:not(.primary){
+ color:#ebe6ff;border:1px solid #a29ada;
+ background:linear-gradient(150deg,#303757,#222947);
+}
+@media(max-width:720px){
+ #app .s08-complete{padding:18px 13px 22px;gap:14px}
+ #app .s08-complete__brand{font-size:clamp(10px,3vw,13px);padding:8px 13px}
+ #app .s08-complete__heading{flex-direction:column;gap:8px}
+ #app .s08-complete__chapter{
+  width:54px;height:54px;flex:0 0 54px;
+  font-size:35px;border-radius:50%;
+ }
+ #app .s08-complete__heading-copy{text-align:center}
+ #app .s08-complete__heading h1{
+  margin:0 auto 8px;max-width:275px;
+  font-size:clamp(28px,8vw,39px);line-height:1.12;text-wrap:balance;
+ }
+ #app .s08-complete__subtitle{font-size:clamp(14px,3.8vw,17px)}
+ #app .s08-complete__summary{font-size:clamp(13px,3.45vw,15px);line-height:1.47}
+ #app .s08-complete__summary p{margin:0 0 12px}
+ #app .s08-complete__future h2{font-size:clamp(13px,3.65vw,17px)}
+ #app .s08-complete__future h2::before,
+ #app .s08-complete__future h2::after{max-width:45px}
+ #app .s08-complete__card{min-height:0;padding:13px 13px 47px}
+ #app .s08-complete__card h3{font-size:clamp(18px,5.2vw,23px)}
+ #app .s08-complete__status{left:13px;bottom:10px}
+ #app .s08-complete__actions .btn{max-width:none;min-height:50px}
+}
+
+/* S08 report: reclaim unused frame space on taller phones without
+   reducing text size or allowing hidden scroll/clipped sections. */
+@media(min-width:390px) and (max-width:720px) and (min-height:760px){
+ #app .s08-report-page{padding:7px 10px!important}
+ #app .s08-report-counter{margin-bottom:5px!important}
+ #app .s08-report-sections{gap:4px!important}
+ #app .s08-report-section h3{margin-bottom:2px!important}
+ #app .s08-report-section small{margin-bottom:2px!important}
+}
+
+
+/* S03 phones 351–720px: grant the two deliberate question lines their
+   full available row width, instead of shrinking the first button to 87px.
+   <=350px keeps the approved two-row arrangement. */
+@media(min-width:351px) and (max-width:720px){
+ body.dialogue-mode-active #app .dialogue-stage--meeting .game-dialogue__actions:has([data-act="s03Ask"]){
+  box-sizing:border-box;display:flex;width:100%;flex:1 1 auto;
+  margin-left:0!important;justify-content:space-between;
+  flex-wrap:nowrap!important;gap:4px;
+ }
+ #app .dialogue-stage--meeting .game-dialogue__actions [data-act="s03Ask"]{
+  flex:1 1 0!important;width:auto!important;min-width:0!important;
+  box-sizing:border-box;
+ }
+ #app .dialogue-stage--meeting .game-dialogue__actions [data-act="closePerson"]{
+  flex:0 0 auto!important;max-width:max-content;
+ }
+}
+
+/* Short phones: the dialogue frame height is approved and fixed.
+   Give the complete two-line question enough width without adding
+   another footer row or splitting a speech into dozens of pages. */
+@media(min-width:351px) and (max-width:430px){
+ body.dialogue-mode-active #app .dialogue-stage--meeting .game-dialogue__actions:has([data-act="s03Ask"]){
+  flex-wrap:nowrap!important;gap:3px!important;justify-content:flex-end;
+ }
+ body.dialogue-mode-active #app .dialogue-stage--meeting .game-dialogue__actions [data-act="s03Ask"]{
+  box-sizing:border-box;flex:1 1 55%!important;min-width:118px!important;
+  width:auto!important;max-width:none!important;padding:7px 6px!important;
+  font-size:clamp(10.5px,2.95vw,12px)!important;
+ }
+ body.dialogue-mode-active #app .dialogue-stage--meeting .game-dialogue__actions [data-act="closePerson"]{
+  box-sizing:border-box;flex:0 1 auto!important;min-width:0!important;
+  max-width:45%!important;padding:7px 5px!important;
+  font-size:clamp(10px,2.9vw,12px)!important;
+ }
+}

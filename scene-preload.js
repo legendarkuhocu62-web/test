@@ -63,14 +63,16 @@ function plan(s,A){
  const add=(...x)=>files.push(...x);
  if(mode==='S00'){
    if(s.s00<=2)add(A.gate,A.entry);
-   if(s.s00>=2)add(A.entry,A.badge,A.office,A.irina_friendly);
+   if(s.s00>=2)add(A.entry,A.badge,A.badgeFemale,A.office,A.irina_friendly);
  }else if(mode==='S01'){
    add(A.office,A.irina,A.irina_friendly,A.irina_focused);
    if(s.s01>=3||s.asked?.length>=2)add(A.office,A.irina);
+   // Preload the EXACT approved report shown at S02; never download a different lookalike.
+   if(s.asked?.length>=2)add(mobile?'assets/optimized/objects/CH1-S02-production-report-mobile.webp?v=webp-lossless-20261112':'assets/optimized/objects/CH1-IMG-024_S02_production_report_desktop.png?v=ch1-img-024-20261115');
  }else if(mode==='S02'){
    add(A.office,A.irina,A.irina_focused);
    if(s.s02Step==='intro'||s.s02Step==='report'){
-     add(mobile?'assets/optimized/objects/CH1-S02-production-report-mobile.webp?v=webp-lossless-20261112':'assets/optimized/objects/CH1-S02-production-report-desktop.webp?v=webp-lossless-20261112');
+     add(mobile?'assets/optimized/objects/CH1-S02-production-report-mobile.webp?v=webp-lossless-20261112':'assets/optimized/objects/CH1-IMG-024_S02_production_report_desktop.png?v=ch1-img-024-20261115');
    }
    if(s.s02Step==='feedback')add(A.group,mobile?'assets/optimized/backgrounds/CH1-IMG-022_S03_meeting_three_characters_mobile.webp':A.group);
  }else if(mode==='S03'){
@@ -82,19 +84,21 @@ function plan(s,A){
    if(s.s04Mode==='reviewFinal'||s.s04Mode==='savedFinal')add(A.meeting);
    add(A.engineer);
    if(s.s04Mode==='eduIntro'||s.s04Mode==='edu')add('assets/edu01/schema-ek-v20-01.jpg','assets/edu01/act-ns-008-26.jpg');
-   if(s.s04Mode==='catalog'){
-     // Preview images in the grid are small and loaded by the browser.
-     // Queue only the full original posters for the current catalog page.
-     const catalog=window.CEH_INVESTMENT_CATALOG;
-     const entries=catalog?.visibleIds?.()||[];
-     for(const id of entries)add('assets/investments/CH1-VA-'+id+'-001.png');
-   }
+   // Catalog thumbnails remain fast WebP resources. Full-resolution posters
+   // are only requested for the actual card the player points to or opens;
+   // preloading 4–6 originals (up to 19 MB) caused network contention.
  }else if(mode==='S05'){
    // S06 shop background is large; begin its request during the committee scene.
    // Keep the approved original image and all rendering unchanged.
    add(A.shop);
  }
  return [...new Set(files)];
+}
+function warmPoster(id){
+ if(typeof id!=='string'||!/^[A-M]$/.test(id)||navigator.connection?.saveData)return;
+ const url=resource('assets/investments/CH1-VA-'+id+'-001.png');
+ if(!url||cache.has(url)||queued.has(url))return;
+ queued.add(url);queue.unshift({url,token:generation});pump();
 }
 function afterRender(state,assets){
  // Avoid preloading before the current scene has rendered; yield browser time
@@ -113,5 +117,5 @@ function afterRender(state,assets){
    ?requestIdleCallback(schedule,{timeout:1200})
    :setTimeout(schedule,180);
 }
-window.CEH_PRELOAD={afterRender,stats:()=>({cached:cache.size,active,queued:queue.length,started:[...started],finished:[...finished]})};
+window.CEH_PRELOAD={afterRender,warmPoster,stats:()=>({cached:cache.size,active,queued:queue.length,started:[...started],finished:[...finished]})};
 })();
