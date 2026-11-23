@@ -71,7 +71,7 @@
    (width<=720?(report?28:29):(report?36:38)),0);
  }
  function pack(items,width,height,report,maxSections=1){
-  const budget=heightBudget(width,height,report);
+  const budget=heightBudget(width,height,report)-(report&&width>720?35:0);
   const output=[];let current=[];
   const flush=()=>{if(current.length)output.push(current);current=[];};
   function add(item,sentence){
@@ -167,7 +167,7 @@
   // The detailed report has eight immutable semantic sections, but a section
   // is NOT a page. On spacious viewports group 3–4 short related sections,
   // preserving every sentence and letting the measured browser tests guard fit.
-  const maxSections=width>720?4:(width>=390&&height>=760?3:2);
+  const maxSections=width>720?3:(width>=390&&height>=760?3:2);
   const pages=pack(items,width,height,true,maxSections).map(entries=>({
    title:entries[0].title,section:entries[0].section,
    text:entries.map(x=>x.text).join(' '),entries
