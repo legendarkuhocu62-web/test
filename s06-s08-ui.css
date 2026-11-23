@@ -1169,3 +1169,13 @@ body:has(#app .s08-screen) #app>.reset .btn{
  #app .s08-complete__status{left:13px;bottom:10px}
  #app .s08-complete__actions .btn{max-width:none;min-height:50px}
 }
+
+/* S08 report: reclaim unused frame space on taller phones without
+   reducing text size or allowing hidden scroll/clipped sections. */
+@media(min-width:390px) and (max-width:720px) and (min-height:760px){
+ #app .s08-report-page{padding:7px 10px!important}
+ #app .s08-report-counter{margin-bottom:5px!important}
+ #app .s08-report-sections{gap:4px!important}
+ #app .s08-report-section h3{margin-bottom:2px!important}
+ #app .s08-report-section small{margin-bottom:2px!important}
+}
