@@ -41,6 +41,12 @@ const KEY='ceh404.rebuilt.qa50.20261108';
       s03Person:id,s03QuestionMode:'speech'}));
     },[KEY,specialist[0]]);
     await page.reload();
+    // The approved long specialist speech may occupy several dialogue pages.
+    // The question action belongs to its LAST page, never to an early fragment.
+    for(let guard=0;await page.locator('[data-act="dlgMore"]').count();guard++){
+     assert.ok(guard<25,'S03 dialogue stuck before question');
+     await page.locator('[data-act="dlgMore"]').click();
+    }
     const ask=page.locator('[data-act="s03Ask"]');
     assert.equal(await ask.count(),1);
     assert.equal(await ask.locator('.s03-question-first').innerText(),specialist[1]);
