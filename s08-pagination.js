@@ -92,6 +92,10 @@
    }
   }
   for(const item of items){
+   // A long professional conclusion is a coherent learning section, not
+   // an appendage of the preceding operational decision. Begin it on a
+   // fresh desktop report page; the sentence paginator handles any excess.
+   if(report&&width>720&&item.section===8&&clean(item.text).length>450)flush();
    const pieces=semanticSentences(item.text);
    for(const sentence of pieces)add(item,sentence);
   }
