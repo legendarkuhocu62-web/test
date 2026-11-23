@@ -98,7 +98,28 @@ function fitS08Summary(){
   if(status)status.textContent=page===0?'Карточки 1–2 из 3':'Карточка 3 из 3';
  }
 }
+/* Standalone Chapter 01 closure; previous S08 results are not reset or modified. */
+function renderS08Complete(){
+ return '<div class="s08-complete" data-s08-view="complete" aria-labelledby="s08-complete-title">'+
+  '<div class="s08-complete__brand">ЦЕХ 404 · ЭФФЕКТ ДОМИНО</div>'+
+  '<header class="s08-complete__heading"><span class="s08-complete__chapter">ГЛАВА 01</span>'+
+  '<h1 id="s08-complete-title">ГЛАВА 01 ПРОЙДЕНА</h1>'+
+  '<p class="s08-complete__subtitle">Первое решение принято. Эффект запущен.</p></header>'+
+  '<p class="s08-complete__summary">Ты изучил производственные данные, сформировал инвестиционный план и разобрал ситуацию с заказом З-214. Но на производстве каждое решение запускает цепочку последствий. Часть из них уже проявилась. Остальные — ещё впереди.</p>'+
+  '<section class="s08-complete__future" aria-labelledby="s08-complete-future">'+
+  '<h2 id="s08-complete-future">ПРОДОЛЖЕНИЕ ИСТОРИИ</h2>'+
+  '<div class="s08-complete__chapters">'+
+  '<article class="s08-complete__card"><div class="s08-complete__card-top"><span>ГЛАВА 02</span><span class="s08-complete__status">Планируется</span></div>'+
+  '<h3>Заказ под угрозой</h3><p>Сможешь ли ты удержать выполнение заказа, когда ситуация начнёт выходить из-под контроля?</p></article>'+
+  '<article class="s08-complete__card"><div class="s08-complete__card-top"><span>ГЛАВА 03</span><span class="s08-complete__status">Планируется</span></div>'+
+  '<h3>Потерянные часы</h3><p>Сколько на самом деле стоит время, которое предприятие теряет незаметно?</p></article>'+
+  '</div></section>'+
+  '<nav class="s08-complete__actions" aria-label="Действия после завершения главы">'+
+  button('ВЕРНУТЬСЯ К ИТОГУ','s08ReturnToSummary','',true)+
+  button('НАЧАТЬ ЗАНОВО','reset')+'</nav></div>';
+}
 function renderS08(s,data){
+ if(s.s08View==='complete')return renderS08Complete();
  // Two approved final screens. Each screen has self-contained pages instead of scrolling.
  const history={
   hypothesis:s.hypothesis,priority:s.priority,
@@ -172,7 +193,7 @@ function renderS08(s,data){
   h+='</article></div>';
   h+='<nav class="s08-chain-nav" aria-label="Переключение карточек последствий">'+
    button('Назад','s08PageGo',String(index-1),false,index===0)+
-   button('Далее','s08PageGo',String(index+1),false,index===pages.length-1)+'</nav>';
+   button(index===pages.length-1?'Завершить главу':'Далее',index===pages.length-1?'s08Complete':'s08PageGo',String(index+1),index===pages.length-1)+'</nav>';
   h+='<div class="s08-footer s08-footer--two">'+button('К твоему итогу','s08Back')+
    button('Подробный отчёт','s08ReportOpen')+'</div>';
   if(s.s08ReportOpen&&report){
@@ -204,7 +225,7 @@ function render(s,data,bg,frame,chapterDialogue,portrait){
   return frame(bg,content,'dialogue-stage dialogue-stage--shop');
  }
  const content=s.scene==='S06'?renderS06(s):s.scene==='S07'?renderS07(s):renderS08(s,data);
- return frame(bg,content,'order-stage');
+ return frame(bg,content,s.scene==='S08'&&s.s08View==='complete'?'order-stage order-stage--complete':'order-stage');
 }
 window.CEH_ORDER_UI={render,fitS08Summary};
 if(typeof window.addEventListener==='function'&&typeof requestAnimationFrame==='function')window.addEventListener('resize',()=>requestAnimationFrame(fitS08Summary));
