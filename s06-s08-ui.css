@@ -1202,9 +1202,6 @@ body:has(#app .s08-screen) #app>.reset .btn{
 /* Short phones: the two authored lines need a whole button, not half a
    squeezed footer row. Reuse the proven 320px two-row interaction. */
 @media(min-width:351px) and (max-width:430px){
- body.dialogue-mode-active #app .s03-specialist-speech .game-dialogue--scene{
-  --dialogue-panel-height:clamp(215px,35dvh,250px);
- }
  body.dialogue-mode-active #app .dialogue-stage--meeting .game-dialogue__actions:has([data-act="s03Ask"]){
   flex-wrap:wrap!important;justify-content:flex-end;
  }
