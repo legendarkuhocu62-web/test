@@ -369,7 +369,7 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
  }else if(['S06','S07','S08'].includes(s.scene)){
   html=window.CEH_ORDER_UI.render(s,d,(s.scene==='S06'&&!s.s06IntroSeen)?A.shop:A.engineer,frame,chapterDialogue,A.andrey);
  }
- app.innerHTML=`<div class="statusline" aria-hidden="true"></div>${html}<div class="reset">${btn('Начать заново','reset')}</div>`;
+ app.innerHTML=`<div class="statusline" aria-hidden="true"></div>${html}${s.scene==='S08'&&s.s08View==='complete'?'':`<div class="reset">${btn('Начать заново','reset')}</div>`}`;
  // S08 must start at the visible top after entering from a long S07 page.
  if(s.scene==='S08')requestAnimationFrame(()=>window.scrollTo(0,0));
  if(s.scene==='S04'&&s.s04Mode==='catalog')window.CEH_INVESTMENT_CATALOG.attach(app,()=>render());
@@ -462,7 +462,9 @@ function act(action,id){if(action==='eduToggleDocuments'&&s.scene==='S04'&&s.s04
   s.s08PageIndex=0;s.s08SummaryPage=0;s.s08ReportPage=0;
  }
  else if(s.scene==='S08'&&O.canMoveToS08(s.s0608)){
-  if(action==='s08ShowCauses'){s.s08View='causes';s.s08ReportOpen=false;if(!Number.isInteger(s.s08PageIndex))s.s08PageIndex=0}
+  if(action==='s08Complete'&&s.s08View==='causes'&&app.querySelector('[data-act="s08Complete"]')){s.s08View='complete';s.s08ReportOpen=false}
+  else if(action==='s08ReturnToSummary'&&s.s08View==='complete'){s.s08View='summary';s.s08ReportOpen=false}
+  else if(action==='s08ShowCauses'){s.s08View='causes';s.s08ReportOpen=false;if(!Number.isInteger(s.s08PageIndex))s.s08PageIndex=0}
   else if(action==='s08Back'){s.s08View='summary';s.s08ReportOpen=false}
   else if(action==='s08PageGo'&&/^\d+$/.test(id))s.s08PageIndex=Number(id);
   else if(action==='s08SummaryGo'&&/^\d+$/.test(id))s.s08SummaryPage=Number(id);
