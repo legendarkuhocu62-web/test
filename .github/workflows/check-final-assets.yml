@@ -7,6 +7,7 @@ on:
       - 'assets/final/**'
       - 's06-s08-ui.css'
       - 'index.html'
+      - 'tests/s08-final-art-browser.test.js'
       - 'scripts/check-final-assets.py'
 jobs:
   check:
@@ -18,3 +19,23 @@ jobs:
           python-version: '3.11'
       - run: python scripts/check-final-assets.py
       - run: node --check s06-s08-ui.js
+  browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save playwright@1.58.2 && npx playwright install --with-deps chromium
+      - name: Check desktop and mobile final art
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/ceh404-final-http.log 2>&1 &
+          sleep 2
+          node tests/s08-final-art-browser.test.js
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: final-art-mobile-desktop
+          path: tests/screenshot-final-art-*.png
+          if-no-files-found: ignore
