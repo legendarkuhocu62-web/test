@@ -1217,3 +1217,65 @@ body:has(#app .s08-screen) #app>.reset .btn{
   font-size:clamp(10px,2.9vw,12px)!important;
  }
 }
+
+
+/* CH1 final-screen art assets. Only S08 completion view is affected.
+   WebP files live in assets/final/; no external Drive requests or
+   preloads on the opening screen. Keep all interactive HTML controls. */
+#app .order-stage--complete{
+ background-image:
+  linear-gradient(110deg,rgba(5,10,30,.65),rgba(8,11,36,.52) 48%,rgba(10,7,33,.62)),
+  url("assets/final/CH1-FINAL-BG-D-001.webp");
+ background-position:center center;
+ background-size:cover;
+ background-repeat:no-repeat;
+ background-color:#0a1026;
+}
+#app .s08-complete{
+ background:linear-gradient(145deg,rgba(16,24,56,.86),rgba(15,19,49,.88));
+ backdrop-filter:blur(3px);
+ -webkit-backdrop-filter:blur(3px);
+}
+#app .s08-complete__chapter{
+ color:transparent;font-size:0;border:0;
+ background:transparent url("assets/final/CH1-FINAL-ICON-COMPLETE-001.webp") center / contain no-repeat;
+ border-radius:0;box-shadow:none;
+}
+#app .s08-complete__future::before{
+ content:"";display:block;width:44px;height:44px;margin:0 auto 3px;
+ background:url("assets/final/CH1-FINAL-DECOR-DOMINO-001.webp") center / contain no-repeat;
+ pointer-events:none;
+}
+#app .s08-complete__card{
+ background-position:center right;background-size:cover;background-repeat:no-repeat;
+}
+#app .s08-complete__card:first-child{
+ background-image:
+  linear-gradient(90deg,rgba(22,26,66,.97) 0%,rgba(25,28,67,.94) 38%,rgba(25,25,58,.64) 72%,rgba(26,24,61,.48)),
+  url("assets/final/CH1-FINAL-CARD-02-001.webp");
+}
+#app .s08-complete__card:nth-child(2){
+ background-image:
+  linear-gradient(90deg,rgba(22,26,66,.97) 0%,rgba(25,28,67,.94) 38%,rgba(25,25,58,.64) 72%,rgba(26,24,61,.48)),
+  url("assets/final/CH1-FINAL-CARD-03-001.webp");
+}
+@media(max-width:720px){
+ #app .order-stage--complete{
+  background-image:
+   linear-gradient(180deg,rgba(7,13,33,.72),rgba(10,8,30,.58) 58%,rgba(8,7,27,.72)),
+   url("assets/final/CH1-FINAL-BG-M-001.webp");
+  background-position:center top;background-size:cover;
+ }
+ #app .s08-complete{background:rgba(12,17,42,.86)}
+ #app .s08-complete__heading{position:relative;isolation:isolate}
+ #app .s08-complete__heading::before{
+  content:"";position:absolute;width:min(92%,360px);height:124px;
+  left:50%;top:0;transform:translateX(-50%);z-index:-1;
+  background:url("assets/final/CH1-FINAL-DECOR-LAUREL-001.webp") center top / contain no-repeat;
+  opacity:.36;pointer-events:none;
+ }
+ #app .s08-complete__card:first-child,
+ #app .s08-complete__card:nth-child(2){
+  background-position:center right;
+ }
+}

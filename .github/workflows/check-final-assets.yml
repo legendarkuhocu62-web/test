@@ -1,0 +1,20 @@
+name: Check final screen optimized art
+on:
+  push:
+    branches: [feat/ch1-final-art-assets-20261123]
+  pull_request:
+    paths:
+      - 'assets/final/**'
+      - 's06-s08-ui.css'
+      - 'index.html'
+      - 'scripts/check-final-assets.py'
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python scripts/check-final-assets.py
+      - run: node --check s06-s08-ui.js

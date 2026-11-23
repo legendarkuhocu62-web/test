@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "scene": "S08",
+  "status": "visual_review_pending",
+  "note": "Approved visual direction; image assets attached to HTML/CSS final screen. No changes to game state or button actions. Source PNG archived in Google Drive.",
+  "source_drive_folder": "https://drive.google.com/drive/folders/1vy1G_EjXcA4tyysZ7sn5qMtJ7UcmK6mC",
+  "assets": [
+    {
+      "id": "CH1-FINAL-BG-D-001",
+      "type": "background",
+      "screen": "desktop",
+      "path": "assets/final/CH1-FINAL-BG-D-001.webp"
+    },
+    {
+      "id": "CH1-FINAL-BG-M-001",
+      "type": "background",
+      "screen": "mobile",
+      "path": "assets/final/CH1-FINAL-BG-M-001.webp"
+    },
+    {
+      "id": "CH1-FINAL-CARD-02-001",
+      "type": "object",
+      "screen": "all",
+      "path": "assets/final/CH1-FINAL-CARD-02-001.webp"
+    },
+    {
+      "id": "CH1-FINAL-CARD-03-001",
+      "type": "object",
+      "screen": "all",
+      "path": "assets/final/CH1-FINAL-CARD-03-001.webp"
+    },
+    {
+      "id": "CH1-FINAL-ICON-COMPLETE-001",
+      "type": "object",
+      "screen": "all",
+      "path": "assets/final/CH1-FINAL-ICON-COMPLETE-001.webp"
+    },
+    {
+      "id": "CH1-FINAL-DECOR-DOMINO-001",
+      "type": "object",
+      "screen": "all",
+      "path": "assets/final/CH1-FINAL-DECOR-DOMINO-001.webp"
+    },
+    {
+      "id": "CH1-FINAL-DECOR-LAUREL-001",
+      "type": "object",
+      "screen": "mobile",
+      "path": "assets/final/CH1-FINAL-DECOR-LAUREL-001.webp"
+    }
+  ]
+}
