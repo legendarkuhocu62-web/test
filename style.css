@@ -2349,3 +2349,34 @@ body.dialogue-mode-active #app .game-dialogue__text--question p{
   display:block!important;clear:both;height:0!important;
  }
 }
+
+/* 23.11 · exact iPhone screenshot corrections for S01/S04, mobile only.
+   S01 must never split "серьёзные" inside a word. S04 button used inline-flex
+   which laid the two pieces of its label out as COLUMNS; render normal text
+   flow with the approved deliberate line break instead. */
+@media (max-width:720px){
+ #app .s01-questions .choices [data-act="ask"]{
+  hyphens:none!important;
+  -webkit-hyphens:none!important;
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+  white-space:normal!important;
+ }
+ #app .document--priority [data-act="priority"][data-id="quality"].priority-quality{
+  display:block!important;
+  width:100%;
+  max-width:100%;
+  text-align:center;
+  hyphens:none!important;
+  -webkit-hyphens:none!important;
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+ }
+ #app .document--priority [data-act="priority"][data-id="quality"] .priority-quality-break{
+  display:block!important;
+  clear:both;
+  height:0!important;
+  line-height:0!important;
+  overflow:hidden;
+ }
+}

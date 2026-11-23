@@ -53,6 +53,7 @@ jobs:
           node tests/dialogue-browser.test.js
           node tests/s05-mobile-wide-alert.test.js
           node tests/mobile-word-breaks.test.js
+          node tests/mobile-s01-s04-user-screenshots.test.js
           node tests/dialogue-fixed-frame.test.js
           node tests/s01-intro-joined-wide.test.js
           node tests/s08-semantic-pagination.test.js
