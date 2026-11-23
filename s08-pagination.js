@@ -164,7 +164,11 @@
   const items=(Array.isArray(sections)?sections:[]).map((section,i)=>({
    section:i+1,stage:section.title,title:section.title,text:clean(section.body)
   }));
-  const pages=pack(items,width,height,true,2).map(entries=>({
+  // The detailed report has eight immutable semantic sections, but a section
+  // is NOT a page. On spacious viewports group 3–4 short related sections,
+  // preserving every sentence and letting the measured browser tests guard fit.
+  const maxSections=width>720?4:(width>=390&&height>=760?3:2);
+  const pages=pack(items,width,height,true,maxSections).map(entries=>({
    title:entries[0].title,section:entries[0].section,
    text:entries.map(x=>x.text).join(' '),entries
   }));
