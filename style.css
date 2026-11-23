@@ -2339,3 +2339,13 @@ body.dialogue-mode-active #app .game-dialogue__text--question p{
 #app [data-act="priority"][data-id="quality"].priority-quality { overflow-wrap:normal; word-break:normal; hyphens:none; }
 #app .priority-quality-break { display:inline; }
 @media (max-width:430px) { #app .priority-quality-break { display:block; height:0; } }
+/* Mobile S04 approved two-line quality label: no mid-word wraps. */
+@media(max-width:720px){
+ #app [data-act="priority"][data-id="quality"].priority-quality{
+  white-space:normal;overflow-wrap:normal!important;word-break:keep-all!important;
+  hyphens:none!important;
+ }
+ #app [data-act="priority"][data-id="quality"] .priority-quality-break{
+  display:block!important;clear:both;height:0!important;
+ }
+}
