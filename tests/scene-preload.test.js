@@ -21,7 +21,7 @@ const KEY='ceh404.rebuilt.qa50.20261108';
    const expectations=[
      'Внешняя проходная.webp',
      'irina_focused.webp',
-     'production-report-'+(width<=720?'mobile':'desktop')+'.webp',
+     width<=720?'production-report-mobile.webp':'CH1-IMG-024_S02_production_report_desktop.png',
      width<=720?'S03_meeting_three_characters_mobile.webp':'Переговорная_без_персонажей.jpeg',
      'act-ns-008-26.jpg',
      'Производственный цех.png',
@@ -43,29 +43,38 @@ const KEY='ceh404.rebuilt.qa50.20261108';
       assert.ok(result.stats.active<=2,'exceeded concurrent preloads');
    }
  
-   // Full-resolution cards begin preloading while their catalog page is
-   // visible; no 36 MB burst at the game's first screen.
+   // Heavy 2–3 MB posters must NEVER all preload when entering the catalog.
+   // Request the one image that receives hover or keyboard focus.
    for(const [pageIndex,targetId] of [[0,'A'],[1,width<=720?'E':'G']]){
-     await page.evaluate(([key,pageIndex])=>{
+     await page.evaluate(key=>{
        const base=window.CEH_LOGIC.initial();
        localStorage.setItem(key,JSON.stringify({...base,scene:'S04',s04Mode:'catalog'}));
-     },[KEY,pageIndex]);
+     },KEY);
      await page.reload({waitUntil:'load'});
      if(pageIndex===1)await page.locator('[data-act="catalogPage"][data-id="next"]').click();
-     await page.waitForFunction(id=>window.CEH_PRELOAD.stats().started.some(url=>url.includes('CH1-VA-'+id+'-001.png')),targetId,{timeout:15000});
+     await page.waitForTimeout(350);
+     const before=await page.evaluate(()=>window.CEH_PRELOAD.stats());
+     assert.equal(before.started.filter(x=>x.includes('/assets/investments/CH1-VA-')).length,0,
+       'unexpected 2–3 MB poster burst from catalog');
+     await page.locator('[data-act="catalogOpen"][data-id="'+targetId+'"]').focus();
+     await page.waitForFunction(id=>window.CEH_PRELOAD.stats().started.some(url=>url.includes('CH1-VA-'+id+'-001.png')),
+      targetId,{timeout:10000});
      const stats=await page.evaluate(()=>window.CEH_PRELOAD.stats());
-     assert.ok(stats.started.every(url=>new URL(url).origin==='http://127.0.0.1:8765'),'poster preload must be same-origin');
-     assert.ok(stats.active<=2,'poster preload must respect global concurrency');
-     const posterIds=stats.started.map(url=>url.match(/CH1-VA-([A-M])-001\.png/)?.[1]).filter(Boolean);
-     const allowed=pageIndex===0
-       ? (width<=720?'ABCD':'ABCDEF')
-       : (width<=720?'ABCDEFGH':'ABCDEFGHIJKL');
-     assert.ok(posterIds.every(id=>allowed.includes(id)),
-       'preloader started posters outside visited catalogue pages: '+posterIds.join(','));
-     assert.ok(posterIds.length <= (width<=720?(pageIndex===0?4:8):(pageIndex===0?6:12)),
-       'excess poster preloads: '+posterIds.join(','));
-     assert.ok(!stats.started.some(url=>url.includes('CH1-VA-M-001.png')),'do not preload unrelated end-of-catalog images');
+     const posters=stats.started.filter(url=>url.includes('/assets/investments/CH1-VA-'));
+     assert.equal(posters.length,1,'only intent-targeted full poster may prewarm');
+     assert.ok(posters[0].includes('CH1-VA-'+targetId+'-001.png'));
+     assert.ok(stats.active<=2,'prefetch concurrency not controlled');
    }
+   // Female employee badge is requested during the earlier arrival scenes,
+   // before it appears on the official approved badge.
+   await page.evaluate(key=>{
+     const base=window.CEH_LOGIC.initial();
+     localStorage.setItem(key,JSON.stringify({...base,scene:'S00',s00:3,name:'Анна'}));
+   },KEY);
+   await page.reload({waitUntil:'load'});
+   await page.waitForFunction(()=>window.CEH_PRELOAD.stats().started.some(url=>
+     url.includes('CH404-CH1-S00-002_employee_badge_female_blurred.png')),{timeout:15000});
+   assert.equal((await page.evaluate(()=>window.__CEH_TEST__.getState())).scene,'S00');
    assert.deepEqual(errors,[],'preload JS errors '+width+'x'+height);
    console.log('PASS next-scene preload '+width+'x'+height);
    await page.close();
