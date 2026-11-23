@@ -53,8 +53,8 @@ const KEY='ceh404.rebuilt.qa50.20261108';
     }
     const ask=page.locator('[data-act="s03Ask"]');
     assert.equal(await ask.count(),1);
-    assert.equal(await ask.locator('.s03-question-first').innerText(),specialist[1]);
-    assert.equal(await ask.locator('.s03-question-second').innerText(),specialist[2]);
+    assert.equal(await ask.locator('.s03-question-first').textContent(),specialist[1]);
+    assert.equal(await ask.locator('.s03-question-second').textContent(),specialist[2]);
     assert.equal(await page.locator('[data-act="closePerson"]').count(),1);
     const geometry=await ask.evaluate(el=>{
      const rect=el.getBoundingClientRect(),parent=el.closest('.game-dialogue__actions');
