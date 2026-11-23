@@ -53,6 +53,7 @@ jobs:
           node tests/dialogue-browser.test.js
           node tests/s05-mobile-wide-alert.test.js
           node tests/mobile-word-breaks.test.js
+          node tests/dialogue-fixed-frame.test.js
           node tests/s01-intro-joined-wide.test.js
           node tests/s08-semantic-pagination.test.js
           node tests/s08-dense-consequences.test.js
@@ -68,7 +69,6 @@ jobs:
           node tests/investment-card-modal.test.js
           node tests/s04-priority-one-choice.test.js
           node tests/s04-review-cta-layout.test.js
-          node tests/dialogue-fixed-frame.test.js
           node tests/dialogue-fill-panel.test.js
           node tests/dialogue-all-content.test.js
           node tests/dialogue-question-pages.test.js
