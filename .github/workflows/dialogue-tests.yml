@@ -53,6 +53,7 @@ jobs:
           node tests/dialogue-browser.test.js
           node tests/s08-semantic-pagination.test.js
           node tests/s08-dense-consequences.test.js
+          node tests/s08-chapter-completion.test.js
           node tests/s08-summary-compact.test.js
           node tests/s06-s08-ui.test.js
           node tests/scene-preload.test.js
