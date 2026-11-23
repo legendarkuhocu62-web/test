@@ -56,6 +56,7 @@ window.CEH_INVESTMENT_CATALOG = (() => {
         '<div class="ic-detail__head"><span>ИНВЕСТИЦИОННОЕ ПРЕДЛОЖЕНИЕ '+esc(entry.id)+'</span>'+
         '<button type="button" class="btn ic-detail__close" data-act="catalogClose" aria-label="Закрыть инвестиционное предложение" title="Закрыть"><span aria-hidden="true">✕</span></button>'+'</div>'+
         '<div class="ic-detail__body"><div class="ic-poster">'+
+        '<span class="ic-poster__loading" role="status">Загружается изображение предложения…</span>'+
         '<img alt="Полное инвестиционное предложение '+esc(entry.id)+': '+esc(entry.title)+
         '. Условия и ограничения приведены на изображении." src="'+poster(entry.id)+
         '" width="1024" height="1536" fetchpriority="high">'+
@@ -73,6 +74,21 @@ window.CEH_INVESTMENT_CATALOG = (() => {
     const dlg=root.querySelector('.ic-detail');
     if(!dlg)return;
     dlg.addEventListener('cancel',event=>{event.preventDefault();close();onDismiss();});
+    // Keep the approved poster pixels untouched. Indicate slow 2–3 MB loads
+    // instead of exposing a blank modal while its network request is pending.
+    const image=dlg.querySelector('.ic-poster img');
+    const loading=dlg.querySelector('.ic-poster__loading');
+    const finish=()=>{
+      dlg.classList.remove('ic-detail--loading');
+      if(!image.naturalWidth){
+        dlg.classList.add('ic-detail--error');
+        loading.textContent='Изображение не загрузилось. Закрой и открой предложение ещё раз.';
+      }
+    };
+    dlg.classList.add('ic-detail--loading');
+    image.addEventListener('load',finish,{once:true});
+    image.addEventListener('error',finish,{once:true});
+    if(image.complete)finish();
     if(!dlg.open)dlg.showModal();
     dlg.querySelector('.ic-detail__close')?.focus({preventScroll:true});
   }
