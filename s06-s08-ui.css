@@ -1198,3 +1198,17 @@ body:has(#app .s08-screen) #app>.reset .btn{
   flex:0 0 auto!important;max-width:max-content;
  }
 }
+
+/* Short phones: the two authored lines need a whole button, not half a
+   squeezed footer row. Reuse the proven 320px two-row interaction. */
+@media(min-width:351px) and (max-width:430px){
+ body.dialogue-mode-active #app .s03-specialist-speech .game-dialogue--scene{
+  --dialogue-panel-height:clamp(215px,35dvh,250px);
+ }
+ body.dialogue-mode-active #app .dialogue-stage--meeting .game-dialogue__actions:has([data-act="s03Ask"]){
+  flex-wrap:wrap!important;justify-content:flex-end;
+ }
+ #app .dialogue-stage--meeting .game-dialogue__actions [data-act="s03Ask"]{
+  flex:0 0 100%!important;width:100%!important;max-width:100%!important;
+ }
+}
