@@ -1199,13 +1199,21 @@ body:has(#app .s08-screen) #app>.reset .btn{
  }
 }
 
-/* Short phones: the two authored lines need a whole button, not half a
-   squeezed footer row. Reuse the proven 320px two-row interaction. */
+/* Short phones: the dialogue frame height is approved and fixed.
+   Give the complete two-line question enough width without adding
+   another footer row or splitting a speech into dozens of pages. */
 @media(min-width:351px) and (max-width:430px){
  body.dialogue-mode-active #app .dialogue-stage--meeting .game-dialogue__actions:has([data-act="s03Ask"]){
-  flex-wrap:wrap!important;justify-content:flex-end;
+  flex-wrap:nowrap!important;gap:3px!important;justify-content:flex-end;
  }
- #app .dialogue-stage--meeting .game-dialogue__actions [data-act="s03Ask"]{
-  flex:0 0 100%!important;width:100%!important;max-width:100%!important;
+ body.dialogue-mode-active #app .dialogue-stage--meeting .game-dialogue__actions [data-act="s03Ask"]{
+  box-sizing:border-box;flex:1 1 55%!important;min-width:118px!important;
+  width:auto!important;max-width:none!important;padding:7px 6px!important;
+  font-size:clamp(10.5px,2.95vw,12px)!important;
+ }
+ body.dialogue-mode-active #app .dialogue-stage--meeting .game-dialogue__actions [data-act="closePerson"]{
+  box-sizing:border-box;flex:0 1 auto!important;min-width:0!important;
+  max-width:45%!important;padding:7px 5px!important;
+  font-size:clamp(10px,2.9vw,12px)!important;
  }
 }
