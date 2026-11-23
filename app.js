@@ -374,7 +374,7 @@ function render(){document.body.classList.toggle('s00-mobile-cover-active',s.sce
    html=frame(A.meeting,notice+dialogue,'dialogue-stage dialogue-stage--meeting s05-notice-scene');
   }else html=frame(A.meeting,h+'</div>','investment-scene');
  }else if(['S06','S07','S08'].includes(s.scene)){
-  html=window.CEH_ORDER_UI.render(s,d,(s.scene==='S06'&&!s.s06IntroSeen)?A.shop:A.engineer,frame,chapterDialogue,A.andrey);
+  html=window.CEH_ORDER_UI.render(s,d,(s.scene==='S06'&&!s.s06IntroSeen)||(s.scene==='S08'&&s.s08View==='complete')?A.shop:A.engineer,frame,chapterDialogue,A.andrey);
  }
  app.innerHTML=`<div class="statusline" aria-hidden="true"></div>${html}${s.scene==='S08'&&s.s08View==='complete'?'':`<div class="reset">${btn('Начать заново','reset')}</div>`}`;
  // S08 must start at the visible top after entering from a long S07 page.
