@@ -1179,3 +1179,22 @@ body:has(#app .s08-screen) #app>.reset .btn{
  #app .s08-report-section h3{margin-bottom:2px!important}
  #app .s08-report-section small{margin-bottom:2px!important}
 }
+
+
+/* S03 phones 351–720px: grant the two deliberate question lines their
+   full available row width, instead of shrinking the first button to 87px.
+   <=350px keeps the approved two-row arrangement. */
+@media(min-width:351px) and (max-width:720px){
+ body.dialogue-mode-active #app .dialogue-stage--meeting .game-dialogue__actions:has([data-act="s03Ask"]){
+  box-sizing:border-box;display:flex;width:100%;flex:1 1 auto;
+  margin-left:0!important;justify-content:space-between;
+  flex-wrap:nowrap!important;gap:4px;
+ }
+ #app .dialogue-stage--meeting .game-dialogue__actions [data-act="s03Ask"]{
+  flex:1 1 0!important;width:auto!important;min-width:0!important;
+  box-sizing:border-box;
+ }
+ #app .dialogue-stage--meeting .game-dialogue__actions [data-act="closePerson"]{
+  flex:0 0 auto!important;max-width:max-content;
+ }
+}
