@@ -51,6 +51,7 @@ jobs:
           python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/ceh404-http.log 2>&1 &
           sleep 2
           node tests/dialogue-browser.test.js
+          node tests/s01-intro-joined-wide.test.js
           node tests/s08-semantic-pagination.test.js
           node tests/s08-dense-consequences.test.js
           node tests/s08-chapter-completion.test.js
